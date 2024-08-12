@@ -1,8 +1,8 @@
 import express from "express";
 import { mongodbURL, PORT } from "./config.js";
 import mongoose from "mongoose";
-import { Part } from "./models/partModel.js";
-import router from "./routes/partRoutes.js";
+import itemRouter from "./routes/itemRoute.js";
+import poRouter from "./routes/poRoute.js";
 import cors from'cors';
 
 const app = express();
@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
     return res.send('<h1>my first app yas</h1>');
 })
 
-app.use('/parts', router);
+app.use('/hardware', itemRouter);
+app.use('/PO', poRouter);
 
 mongoose
     .connect(mongodbURL)

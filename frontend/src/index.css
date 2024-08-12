@@ -12,18 +12,19 @@
 
 .topbar {
   display: flex;
-  justify-content: space-between;
+  align-items: center;  /* Ensure the items are aligned vertically */
+  gap: 10px;            /* Adjust the gap between the two elements */
   margin: 10px;
   padding: 20px;
   background-color: rgb(49, 84, 115);
   border-radius: 15px;
   opacity: 80%;
-  box-shadow:40cm;
+  box-shadow: 40cm;
 }
-
 .addButton {
   color: white;
   font-size: xx-large;
+  cursor: pointer;
 }
 
 .part {
@@ -46,4 +47,117 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+.navbar-brand {
+  font-size: 1.5em;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+}
+
+.inventory_table, .po-table {
+  width: 98%;
+  margin: 0 auto; /* Centers the div horizontally */
+  overflow-x: auto; /* Optional: Adds horizontal scroll if needed */
+}
+
+.inventory_table table, .po-table table {
+  width: 100%;         /* Ensure the table itself uses full width of its container */
+  border-collapse: collapse; /* Optional: Removes gaps between table cells */
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* Ensure it's on top of other elements */
+}
+
+.modal-content {
+  background: white;
+  padding: 40px;  /* Increase padding */
+  border-radius: 8px;
+  position: relative;
+  width: 600px;   /* Increase width */
+  max-width: 90%; /* Responsive width */
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column; /* Arrange form elements vertically */
+}
+
+.modal-content label {
+  margin-bottom: 15px; /* Space between form elements */
+  position: relative;
+}
+.modal-content label:not(:last-child)::after {
+  content: '';
+  display: block;
+  border-bottom: 1px solid #ddd; /* Divider line color */
+  margin: 10px 0; /* Space around the divider line */
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.form-title {
+  background-color: grey;  /* Grey background */
+  color: white;            /* White text */
+  font-weight: bold;       /* Bold text */
+  padding: 10px;           /* Padding around the title */
+  border-radius: 8px;      /* Rounded corners */
+  text-align: center;      /* Centered text */
+  margin-bottom: 20px;     /* Space below the title */
+}
+
+.submit-button {
+  background-color: green;  /* Grey background */
+  color: white;            /* White text */
+  font-weight: bold;       /* Bold text */
+  padding: 10px;           /* Padding around the title */
+  border-radius: 8px;      /* Rounded corners */
+  text-align: center;
+  width: 50%;   /* Centered text */
 }

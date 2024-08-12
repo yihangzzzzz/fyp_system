@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
 
-const partSchema = mongoose.Schema(
+const itemSchema = mongoose.Schema(
     {
         name: {
             type: String,
             required: true
         },
-        serial: {
+        category: {
+            type: String,
+            required: true
+        },
+        quantity: {
             type: Number,
             required: true
         }
@@ -16,4 +20,4 @@ const partSchema = mongoose.Schema(
     }
 );
 
-export const Part = mongoose.model('Part' , { name : String, serial: Number});
+export const hwItem = mongoose.model('hardware_item' , itemSchema);
