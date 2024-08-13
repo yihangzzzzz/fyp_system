@@ -1,5 +1,5 @@
 import express from 'express';
-import { hwItem } from '../models/HWitemModel.js';
+import { Inventory } from '../models/inventoryModel.js';
 
 const inventoryRouter = express.Router();
 
@@ -11,14 +11,10 @@ inventoryRouter.post('/', async (req, res) => {
             name: req.body.name,
             serial: req.body.serial,
             category: req.body.category,
-            labs: [
-                {
-                    name: req.body.labs
-                }
-            ] 
+            labs: req.body.labs
         };
 
-        const item = await hwItem.create(newItem);
+        const item = await Inventory.create(newItem);
 
         return res.send(item);
 
@@ -29,10 +25,10 @@ inventoryRouter.post('/', async (req, res) => {
 })
 
 // GETTING ALL RECORDS
-itemRouter.get('/', async (req, res) => {
+inventoryRouter.get('/', async (req, res) => {
     try {
 
-        const items = await hwItem.find({});
+        const items = await Inventory.find({});
         return res.json(items);
 
     } catch (error) {
@@ -42,46 +38,46 @@ itemRouter.get('/', async (req, res) => {
 })
 
 
-// UPDATE ONE QTY RECORD
-itemRouter.put('/qty', async (req, res) => {
-    try {
-        const updateQuery = {
-            serial: req.body.serial
-        };
+// // UPDATE ONE QTY RECORD
+// itemRouter.put('/qty', async (req, res) => {
+//     try {
+//         const updateQuery = {
+//             serial: req.body.serial
+//         };
 
-        const updateItem = {
-            $inc: {quantity: (req.body.quantity)}
-        };
+//         const updateItem = {
+//             $inc: {quantity: (req.body.quantity)}
+//         };
 
-        const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
+//         const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
 
-        return res.send(item);
+//         return res.send(item);
 
-    } catch (error) {
-        console.log("error is " + error.message);
-        res.send({message : error.message});
-    }
-})
+//     } catch (error) {
+//         console.log("error is " + error.message);
+//         res.send({message : error.message});
+//     }
+// })
 
-// UPDATE ONE ORDERED RECORD
-itemRouter.put('/ordered', async (req, res) => {
-    try {
-        const updateQuery = {
-            serial: req.body.serial
-        };
+// // UPDATE ONE ORDERED RECORD
+// itemRouter.put('/ordered', async (req, res) => {
+//     try {
+//         const updateQuery = {
+//             serial: req.body.serial
+//         };
 
-        const updateItem = {
-            $inc: {ordered: (req.body.quantity)}
-        };
+//         const updateItem = {
+//             $inc: {ordered: (req.body.quantity)}
+//         };
 
-        const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
+//         const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
 
-        return res.send(item);
+//         return res.send(item);
 
-    } catch (error) {
-        console.log("error is " + error.message);
-        res.send({message : error.message});
-    }
-})
+//     } catch (error) {
+//         console.log("error is " + error.message);
+//         res.send({message : error.message});
+//     }
+// })
 
-export default itemRouter;
+export default inventoryRouter;

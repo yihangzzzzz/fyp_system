@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from "express";
 import mongoose from "mongoose";
 import { mongodbURL, PORT } from "./config.js";
+import inventoryRouter from './routes/inventoryRoute.js';
 import itemRouter from "./routes/itemRoute.js";
 import orderRouter from './routes/orderRoute.js';
 import poRouter from "./routes/poRoute.js";
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 app.use('/hardware', itemRouter);
 app.use('/po', poRouter);
 app.use('/order', orderRouter);
-
+app.use('/inventory', inventoryRouter);
 mongoose
     .connect(mongodbURL)
     .then(() => {

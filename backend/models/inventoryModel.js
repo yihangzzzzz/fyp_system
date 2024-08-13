@@ -55,4 +55,4 @@ const itemSchema = mongoose.Schema(
     }
 );
 
-export const item = mongoose.model('item' , itemSchema);
+export const Inventory = mongoose.model('item' , itemSchema);
