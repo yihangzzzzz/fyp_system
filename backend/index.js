@@ -1,9 +1,10 @@
+import cors from 'cors';
 import express from "express";
-import { mongodbURL, PORT } from "./config.js";
 import mongoose from "mongoose";
+import { mongodbURL, PORT } from "./config.js";
 import itemRouter from "./routes/itemRoute.js";
+import orderRouter from './routes/orderRoute.js';
 import poRouter from "./routes/poRoute.js";
-import cors from'cors';
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/hardware', itemRouter);
-app.use('/PO', poRouter);
+app.use('/po', poRouter);
+app.use('/order', orderRouter);
 
 mongoose
     .connect(mongodbURL)
@@ -29,4 +31,5 @@ mongoose
     })
     .catch((error) => {
         console.log("error la sia");
+        console.log("error is " + error);
     });

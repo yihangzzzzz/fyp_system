@@ -6,6 +6,11 @@ const itemSchema = mongoose.Schema(
             type: String,
             required: true
         },
+        serial: {
+            type: String,
+            required: true
+
+        },
         category: {
             type: String,
             required: true
@@ -13,6 +18,10 @@ const itemSchema = mongoose.Schema(
         quantity: {
             type: Number,
             required: true
+        },
+        ordered: {
+            type: Number,
+            default: 0
         }
     },
     {

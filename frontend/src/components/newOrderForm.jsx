@@ -1,34 +1,40 @@
 // src/components/Modal.jsx
 import React from 'react';
 
-const NewItemForm = ({ onFormSubmit }) => {
+const NewOrderForm = ({ onFormSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const newItem = {
+    const newOrder = {
+      date: formData.get('date'),
+      number: formData.get('number'),
       name: formData.get('name'),
       serial: formData.get('serial'),
-      category: formData.get('category'),
-      quantity: formData.get('quantity'),
+      quantity: formData.get('quantity')
     };
-    onFormSubmit(newItem);
+
+    onFormSubmit(newOrder);
   };
 
   return (
     <div>
         <form onSubmit={handleSubmit}>
+        <label>
+            Date:⠀
+            <input type="date" name="date" required />
+          </label>
           <label>
-            Name:⠀
+            Order Number:⠀
+            <input type="text" name="number" required />
+          </label>
+          <label>
+            Item Name:⠀
             <input type="text" name="name" required />
           </label>
           <label>
             Serial Number:⠀
             <input type="text" name="serial" required />
-          </label>
-          <label>
-            Category:⠀
-            <input type="text" name="category" required />
           </label>
           <label>
             Quantity:⠀
@@ -40,4 +46,4 @@ const NewItemForm = ({ onFormSubmit }) => {
   );
 };
 
-export default NewItemForm;
+export default NewOrderForm;

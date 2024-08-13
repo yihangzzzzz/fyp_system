@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const poSchema = mongoose.Schema(
+const orderSchema = mongoose.Schema(
     {
         number: {
             type: String,
@@ -21,6 +21,12 @@ const poSchema = mongoose.Schema(
         date: {
             type: Date,
             required: true
+        },
+        status: {
+            type: String,
+            enum: ['Pending', 'Fulfilled', 'Cancelled'],
+            default: 'Pending'
+            
         }
     },
     {
@@ -28,4 +34,4 @@ const poSchema = mongoose.Schema(
     }
 );
 
-export const PO = mongoose.model('PO' , poSchema);
+export const Order = mongoose.model('Order' , orderSchema);

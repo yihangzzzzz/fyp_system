@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
-import Modal from '../components/modal';
+import React, { useState } from 'react';
 import Navbar from '../components/navbar';
-import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 
 const Transfer = () => {
 
@@ -18,6 +15,16 @@ const Transfer = () => {
                 {/* <MdOutlineAddBox className='addButton' /> */}
                 {/* <MdOutlineAddBox className='addButton' onClick={() => setIsModalOpen(true)} /> */}
             </div>
+            <body>
+              <header class="topbar">
+                  <div class="topbar-section" onclick="selectSection('home')">Home</div>
+                  <div class="topbar-section" onclick="selectSection('about')">About</div>
+                  <div class="topbar-section" onclick="selectSection('services')">Services</div>
+                  <div class="topbar-section" onclick="selectSection('contact')">Contact</div>
+              </header>
+
+    <script src="scripts.js"></script>
+</body>
     </div>
    
   )

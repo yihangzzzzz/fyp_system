@@ -10,6 +10,7 @@ const NewPOForm = ({ onFormSubmit }) => {
       date: formData.get('date'),
       number: formData.get('number'),
       name: formData.get('name'),
+      serial: formData.get('serial'),
       quantity: formData.get('quantity')
     };
     onFormSubmit(newPO);
@@ -29,6 +30,10 @@ const NewPOForm = ({ onFormSubmit }) => {
           <label>
             Item Name:⠀
             <input type="text" name="name" required />
+          </label>
+          <label>
+            Serial Number:⠀
+            <input type="text" name="serial" required />
           </label>
           <label>
             Quantity:⠀

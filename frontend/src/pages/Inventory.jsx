@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react"
-import React from 'react'
-import axios from "axios"
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { MdOutlineAddBox } from 'react-icons/md';
 import Modal from '../components/modal';
-import { Link } from 'react-router-dom';
-import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import Navbar from '../components/navbar';
 import NewItemForm from "../components/newItemForm";
 
@@ -42,7 +40,7 @@ const Inventory = () => {
             <Navbar />
             <div className='topbar'>
                 <h1 className="title">Hardware Inventory</h1>
-                <MdOutlineAddBox className='addButton' onClick={() => setIsModalOpen(true)} />
+                <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} />
                 {/* <Link to='/inventory/add'>
                     <MdOutlineAddBox className='addButton' />
                 </Link> */}
@@ -55,8 +53,10 @@ const Inventory = () => {
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Name</th>
+                              <th style={{ fontWeight: 'bold' }}>Serial Number</th>
                               <th style={{ fontWeight: 'bold' }}>Category</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Ordered</th>
                               <th style={{ fontWeight: 'bold' }}>Actions</th>
                           </tr>
                       </thead>
@@ -64,8 +64,10 @@ const Inventory = () => {
                           {items.map((item, index) => (
                               <tr key={index}>
                                   <td>{item.name}</td>
+                                  <td>{item.serial}</td>
                                   <td>{item.category}</td>
                                   <td>{item.quantity}</td>
+                                  <td>{item.ordered}</td>
                               </tr>
                           ))}
                       </tbody>

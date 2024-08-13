@@ -1,18 +1,21 @@
 import express from 'express';
 import { hwItem } from '../models/HWitemModel.js';
 
-const itemRouter = express.Router();
+const inventoryRouter = express.Router();
 
 // ADDING NEW RECORD
-itemRouter.post('/', async (req, res) => {
+inventoryRouter.post('/', async (req, res) => {
     try {
 
         const newItem = {
             name: req.body.name,
             serial: req.body.serial,
             category: req.body.category,
-            quantity: req.body.quantity,
-            ordered: req.body.ordered
+            labs: [
+                {
+                    name: req.body.labs
+                }
+            ] 
         };
 
         const item = await hwItem.create(newItem);

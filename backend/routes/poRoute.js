@@ -10,6 +10,7 @@ poRouter.post('/', async (req, res) => {
         const newPO = {
             number: req.body.number,
             name: req.body.name,
+            serial: req.body.serial,
             quantity: req.body.quantity,
             date: req.body.date
         };

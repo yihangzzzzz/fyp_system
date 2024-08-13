@@ -1,7 +1,7 @@
 // src/components/Modal.jsx
-import React, { useEffect, useState } from 'react'
+import React from 'react';
 import NewItemForm from './newItemForm';
-// import NewItemForm from './newItemForm';
+import NewPOForm from './newPOForm';
 
 const Modal = ({ isOpen, onClose, onSubmit, FormComponent }) => {
   if (!isOpen) return null;
@@ -28,8 +28,10 @@ const Modal = ({ isOpen, onClose, onSubmit, FormComponent }) => {
         <button className="close-button" onClick={onClose}>X</button>
         {FormComponent == NewItemForm ? (
           <h2 className='form-title'>Add New Item</h2>
-        ) : (
+        ) : FormComponent == NewPOForm ? (
           <h2 className='form-title'>Add New PO</h2>
+        ) : (
+          <h2 className='form-title'>Add New Order</h2>
         )
         }
         {/* <form onSubmit={handleSubmit}>

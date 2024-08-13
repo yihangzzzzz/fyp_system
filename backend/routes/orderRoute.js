@@ -1,23 +1,25 @@
 import express from 'express';
 import { hwItem } from '../models/HWitemModel.js';
+import { Order } from '../models/orderModel.js';
 
-const itemRouter = express.Router();
+const orderRouter = express.Router();
 
 // ADDING NEW RECORD
-itemRouter.post('/', async (req, res) => {
+orderRouter.post('/', async (req, res) => {
     try {
 
-        const newItem = {
+        const newOrder = {
+            number: req.body.number,
             name: req.body.name,
             serial: req.body.serial,
-            category: req.body.category,
             quantity: req.body.quantity,
-            ordered: req.body.ordered
+            date: req.body.date,
+            status: req.body.status
         };
 
-        const item = await hwItem.create(newItem);
+        const order = await Order.create(newOrder);
 
-        return res.send(item);
+        return res.send(order);
 
     } catch (error) {
         console.log("error is " + error.message);
@@ -26,11 +28,11 @@ itemRouter.post('/', async (req, res) => {
 })
 
 // GETTING ALL RECORDS
-itemRouter.get('/', async (req, res) => {
+orderRouter.get('/', async (req, res) => {
     try {
 
-        const items = await hwItem.find({});
-        return res.json(items);
+        const orders = await Order.find({});
+        return res.json(orders);
 
     } catch (error) {
         console.log("error is " + error.message);
@@ -38,16 +40,15 @@ itemRouter.get('/', async (req, res) => {
     }
 })
 
-
-// UPDATE ONE QTY RECORD
-itemRouter.put('/qty', async (req, res) => {
+// UPDATE ONE RECORD
+orderRouter.put('/', async (req, res) => {
     try {
         const updateQuery = {
             serial: req.body.serial
         };
 
         const updateItem = {
-            $inc: {quantity: (req.body.quantity)}
+            $inc: {ordered: (req.body.ordered)}
         };
 
         const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
@@ -60,18 +61,11 @@ itemRouter.put('/qty', async (req, res) => {
     }
 })
 
-// UPDATE ONE ORDERED RECORD
-itemRouter.put('/ordered', async (req, res) => {
+// UPDATE ONE STATUS
+orderRouter.put('/status', async (req, res) => {
     try {
-        const updateQuery = {
-            serial: req.body.serial
-        };
 
-        const updateItem = {
-            $inc: {ordered: (req.body.quantity)}
-        };
-
-        const item = await hwItem.findOneAndUpdate(updateQuery, updateItem, {new: true});
+        const item = await Order.findByIdAndUpdate(req.body.id, {status: req.body.status}, {new: true});
 
         return res.send(item);
 
@@ -80,5 +74,4 @@ itemRouter.put('/ordered', async (req, res) => {
         res.send({message : error.message});
     }
 })
-
-export default itemRouter;
+export default orderRouter;
