@@ -9,7 +9,6 @@ const NewItemForm = ({ onFormSubmit }) => {
     const newItem = {
       name: formData.get('name'),
       serial: formData.get('serial'),
-      category: formData.get('category'),
       quantity: formData.get('quantity'),
     };
     onFormSubmit(newItem);
@@ -25,10 +24,6 @@ const NewItemForm = ({ onFormSubmit }) => {
           <label>
             Serial Number:⠀
             <input type="text" name="serial" required />
-          </label>
-          <label>
-            Category:⠀
-            <input type="text" name="category" required />
           </label>
           <label>
             Quantity:⠀

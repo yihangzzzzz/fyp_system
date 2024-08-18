@@ -161,3 +161,15 @@ th {
   text-align: center;
   width: 50%;   /* Centered text */
 }
+
+.inventory_actions {
+  display: flex;
+  gap: 10px;
+  
+}
+
+.inventory_actions svg {
+  font-size: 15; /* Adjust icon size if needed */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
