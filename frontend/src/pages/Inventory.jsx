@@ -65,7 +65,7 @@ const Inventory = () => {
     }
 
     const filteredInventory = inventory.filter((item) =>
-        item["Item Name"].toLowerCase().includes(searchQuery.toLowerCase())
+        item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -100,20 +100,22 @@ const Inventory = () => {
                               <th style={{ fontWeight: 'bold' }}>Item Name</th>
                               <th style={{ fontWeight: 'bold' }}>Serial Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Ordered</th>
                               <th style={{ fontWeight: 'bold' }}>Actions</th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td>{item["Item Name"]}</td>
-                              <td>{item["Serial Number"]}</td>
-                              <td>{item["Quantity"]}</td>
+                              <td>{item.itemName}</td>
+                              <td>{item.serialNumber}</td>
+                              <td>{item.quantity}</td>
+                              <td>{item.ordered}</td>
                               <td>
                               {editingOrderId === index ? ( <h1>pls</h1>
                                 ) : (
                                     <Actions
-                                    toDelete={item["Item Name"]}/>
+                                    toDelete={item.itemName}/>
                                     // <Actions/>
                                 )}
                               </td>

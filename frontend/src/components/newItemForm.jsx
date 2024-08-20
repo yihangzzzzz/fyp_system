@@ -23,7 +23,7 @@ const NewItemForm = ({ onFormSubmit }) => {
           </label>
           <label>
             Serial Number:⠀
-            <input type="text" name="serial" required />
+            <input type="number" name="serial" required />
           </label>
           <label>
             Quantity:⠀
