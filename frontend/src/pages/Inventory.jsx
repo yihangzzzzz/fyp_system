@@ -12,7 +12,7 @@ const Inventory = () => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
-    const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
+    // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     
     useEffect(() => {
@@ -61,7 +61,6 @@ const Inventory = () => {
 
     const handleReset = () => {
         setSearchQuery("");
-        setSortAttribute("");
         fetchInventory();
     }
 
