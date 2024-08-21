@@ -1,5 +1,6 @@
 import express from 'express';
 import sql from 'mssql';
+import { json } from 'express';
 
 const sqlConfig = {
     server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
@@ -133,12 +134,35 @@ inventoryRouter.put('/order', async (req, res) => {
     const orders = req.body;
    
     try {
+        
         orders.forEach(order => {
-            const {name, ordered} = order;
+
+            const name = order.name;
+            const ordered = order.quantity;
             sql.query(`UPDATE warehouse
-                            SET ordered = ${ordered}
-                            WHERE itemName = '${name}'`);
-        })
+                SET ordered = ordered + ${ordered}
+                WHERE itemName = '${name}'`);
+            })
+
+        res.status(200).json({ message: 'Items updated successfully' });
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+
+})
+
+// UPDATE ONE RECORD
+inventoryRouter.put('/lowstock', async (req, res) => {
+
+    const {name, newLowStock} = req.body;
+   
+    try {
+            sql.query(`UPDATE warehouse
+                SET lowStock = ${newLowStock}
+                WHERE itemName = '${name}'`);
+
 
         res.status(200).json({ message: 'Items updated successfully' });
 

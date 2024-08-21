@@ -32,7 +32,7 @@ const Order = ({}) => {
     const handleSelectChange = (event) => {
       // setSelectedItem(event.target.value);
       const today = new Date().toISOString().split('T')[0];
-      setOrderItems([...orderItems, { name: event.target.value, date: today, quantity: '' }]);
+      setOrderItems([...orderItems, { name: event.target.value, date: today, quantity: 0 }]);
       // setSelectedItem(''); // Clear the selection after adding
     };
   
@@ -55,7 +55,7 @@ const Order = ({}) => {
     } 
 
     const handleSubmitOrder = async () => {
-      console.log(orderItems);
+
       try {
         await axios
         .put('http://localhost:3000/inventory/order', orderItems)
@@ -109,7 +109,7 @@ const Order = ({}) => {
                       <input
                         type="number"
                         value={orderItem.quantity}
-                        onChange={(e) => handleInputChange(index, 'quantity', e.target.value)}
+                        onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
                       />
                     </td>
                     <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>

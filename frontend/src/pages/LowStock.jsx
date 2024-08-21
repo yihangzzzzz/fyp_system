@@ -1,30 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { MdOutlineAddBox } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
-import Actions from "../components/actions";
-import Modal from "../components/modal";
-import Navbar from '../components/navbar';
-import NewItemForm from "../components/newItemForm";
+import Navbar from "../components/navbar";
 
-const Inventory = () => {
+export const LowStock = () => {
+
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
-    // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
-    const [editingOrderId, setEditingOrderId] = useState(null);
-    
+
     useEffect(() => {
         fetchInventory();
     }, []);
-    // const refreshData = () => {
-    //     fetchInventory(setInventory, setLoading);
-    //   };
-    
-    //   useEffect(() => {
-    //     refreshData();
-    //   }, []);
 
     const fetchInventory = async (sortAtt) => {
         await axios
@@ -39,22 +26,6 @@ const Inventory = () => {
         });
     }
 
-    const handleAddItem = (newItem) => {
-      axios
-        .post("http://localhost:3000/inventory", newItem)
-        .then(() => {
-            setLoading(false);
-            
-        })
-        .catch((error) => {
-          console.log("Error adding item: " + error);
-          setLoading(false);
-        });
-        setIsModalOpen(false);
-        fetchInventory();
-
-    };
-
     const handleSearch = (e) => {
         setSearchQuery(e.target.value); // Update search query as the user types
     };
@@ -68,13 +39,18 @@ const Inventory = () => {
         item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    return (
+    const handleLowStockChange = async (name, newLowStock) => {
+        
+        await axios
+        .put("http://localhost:3000/inventory/lowstock", {name: name, newLowStock: newLowStock});
+        fetchInventory();
+    }
 
-        <div>
+  return (
+    <div>
             <Navbar />
             <div className='topbar'>
-                <h1 className="title">Hardware Inventory</h1>
-                <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} />
+                <h1 className="title">Set Low Stock Limit</h1>
                 <input 
                     type="text"
                     placeholder="Search items..."
@@ -99,9 +75,8 @@ const Inventory = () => {
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Item Name</th>
                               <th style={{ fontWeight: 'bold' }}>Serial Number</th>
-                              <th style={{ fontWeight: 'bold' }}>Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Ordered</th>
-                              <th style={{ fontWeight: 'bold' }}>Actions</th>
+                              <th style={{ fontWeight: 'bold' }}>Currrent Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Low Stock Limit</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -109,20 +84,13 @@ const Inventory = () => {
                               <tr key={index}>
                               <td>{item.itemName}</td>
                               <td>{item.serialNumber}</td>
-                              {item.quantity < item.lowStock ? (
-                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.quantity}</td>
-                              ) : (
-                                <td>{item.quantity}</td>
-                              )}
-                              
-                              <td>{item.ordered}</td>
+                              <td>{item.quantity}</td>
                               <td>
-                              {editingOrderId === index ? ( <h1>pls</h1>
-                                ) : (
-                                    <Actions
-                                    toDelete={item.itemName}/>
-                                    // <Actions/>
-                                )}
+                              <input
+                                    type="number"
+                                    value={item.lowStock}
+                                    onChange={(e) => handleLowStockChange(item.itemName, e.target.value)}
+                                />
                               </td>
                               </tr>
                           ))}
@@ -130,15 +98,8 @@ const Inventory = () => {
                   </table>
                 </div>
             )}
-            <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={(newitem) => {handleAddItem(newitem);}}
-        FormComponent={NewItemForm}
-      />
       </div>
-
-    );
+  )
 }
 
-export default Inventory
+export default LowStock;

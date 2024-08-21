@@ -33,18 +33,24 @@ const Navbar = () => {
                         <li>
                             <Link to="/inventory/order">Order</Link>
                         </li>
+                        <li>
+                            <Link to="/inventory/lowstock">Low Stock</Link>
+                        </li>
                     </ul>
                 )}
           </li>
           <li>
-            <Link to="/Orders">PO</Link>
+            <Link to="/inventory/order">Orders</Link>
           </li>
+          {/* <li>
+            <Link to="/Orders">PO</Link>
+          </li> */}
           <li>
             <Link to="/transfer">Transfers</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/inventory">Items</Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     );

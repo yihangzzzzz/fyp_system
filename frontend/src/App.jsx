@@ -6,6 +6,7 @@ import Inventory from './pages/Inventory'
 import Orders from './pages/Orders'
 import Transfer from './pages/Transfer'
 import Order from './pages/Order'
+import LowStock from './pages/LowStock'
 
 export const App = () => {
   return (
@@ -15,6 +16,7 @@ export const App = () => {
         <Route path = '/inventory/order' element = {<Order/>} />
         <Route path = '/Orders' element = {<Orders/>} />
         <Route path = '/transfer' element = {<Transfer/>} />
+        <Route path = '/inventory/lowstock' element = {<LowStock/>} />
       </Routes>
   );
 };
