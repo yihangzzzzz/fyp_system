@@ -3,14 +3,17 @@ import React from 'react'
 import Navbar from '../components/navbar'
 import axios from 'axios'
 
-const Order = ({}) => {
+const NewTransfer = ({}) => {
     const [items, setItems] = useState([]);
+    const [labs, setLabs] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
     const [orderItems, setOrderItems] = useState([]);
+    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '' });
     const x = '';
   
     useEffect(() => {
       fetchItems();
+      fetchLabs();
     }, []);
 
     const fetchItems = async () => {
@@ -24,6 +27,18 @@ const Order = ({}) => {
         console.error('Error fetching items:', error);
       }
     };
+
+    const fetchLabs = async () => {
+      try {
+        await axios
+        .get('http://localhost:3000/transfers/labs')
+        .then((res) => {
+            setLabs(res.data.recordset);
+        })
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
   
     const handleAddItem = () => {
       fetchItems();
@@ -32,9 +47,23 @@ const Order = ({}) => {
     const handleSelectChange = (event) => {
       // setSelectedItem(event.target.value);
       const today = new Date().toISOString().split('T')[0];
-      setOrderItems([...orderItems, { name: event.target.value, date: today, quantity: 0 }]);
+      setOrderItems([...orderItems, { name: event.target.value, quantity: 0 }]);
       // setSelectedItem(''); // Clear the selection after adding
     };
+
+    const handleTransferInfoChange = (e, info) => {
+      setTransferInfo(prevState => ({
+        ...prevState,
+        [info]: e  // Replace with the new value for destination
+    }));
+    console.log('New Date:', transferInfo.date);
+    // console.log('New Destination:', transferInfo.destination);
+        // switch (info) {
+        //   case 'destination':
+        //     setTransferInfo
+            
+        // }
+    }
   
     // const handleAddToOrder = () => {
     //   if (selectedItem) {
@@ -54,11 +83,12 @@ const Order = ({}) => {
       setOrderItems(updatedItems);
     } 
 
-    const handleSubmitOrder = async () => {
-
+    const handleSubmitTransfer = async () => {
+      const newTransfer = {info: transferInfo, items: orderItems}
       try {
         await axios
-        .put('http://localhost:3000/inventory/order', orderItems)
+        .post('http://localhost:3000/transfers', newTransfer);
+        console.log("submit button pressed");
       } catch (error) {
         console.error('Error updating items:', error);
       }
@@ -68,10 +98,42 @@ const Order = ({}) => {
       <div>
         <Navbar />
         <div className='topbar'>
-          <h1 className="title">Order Form</h1>
+          <h1 className="title">New Transfer Form</h1>
         </div>
         <div className='order_table'>
           {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
+          {labs.length > 0 && (
+            <div className='transfer_info'>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h5>Destination</h5>
+                <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
+                  <option value="">Select Lab</option>
+                  {labs.map(item => (
+                    <option key={item.id} value={item.labCode}>
+                      {item.labCode}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h5>Date</h5>
+                  <input
+                    type="date"
+                    value={transferInfo.date}
+                    onChange={(e) => handleTransferInfoChange(e.target.value, 'date')}
+                  />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h5>Recipient</h5>
+                  <input
+                    type="text"
+                    value={transferInfo.recipient}
+                    onChange={(e) => handleTransferInfoChange(e.target.value, 'recipient')}
+                    style={{ outline: '2px solid black' }}
+                  />
+              </div>
+            </div>
+          )}
           {items.length > 0 && (
             <div>
               <select value={x} onChange={handleSelectChange}>
@@ -90,7 +152,6 @@ const Order = ({}) => {
               <thead>
                 <tr>
                   <th>Item</th>
-                  <th>Date</th>
                   <th>Quantity</th>
                 </tr>
               </thead>
@@ -98,13 +159,6 @@ const Order = ({}) => {
                 {orderItems.map((orderItem, index) => (
                   <tr key={index}>
                     <td>{orderItem.name}</td>
-                    <td>
-                      <input
-                        type="date"
-                        value={orderItem.date}
-                        onChange={(e) => handleInputChange(index, 'date', e.target.value)}
-                      />
-                    </td>
                     <td>
                       <input
                         type="number"
@@ -118,10 +172,10 @@ const Order = ({}) => {
               </tbody>
             </table>
           )}
-          <button className="submit-button" type="submit" onClick={handleSubmitOrder}>Submit</button>
+          <button className="submit-button" type="submit" onClick={handleSubmitTransfer}>Submit</button>
         </div>
       </div>
     );
   }
   
-  export default Order;
+  export default NewTransfer;

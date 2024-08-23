@@ -1,8 +1,11 @@
 import cors from 'cors';
 import express from "express";
 import sql from "mssql";
+import nodemailer from "nodemailer";
+// import 'dotenv/config';
 import { PORT } from './config.js';
 import inventoryRouter from './routes/inventoryRoute.js';
+import transferRouter from './routes/transferRoute.js';
 import itemRouter from "./routes/itemRoute.js";
 import orderRouter from './routes/orderRoute.js';
 import poRouter from "./routes/poRoute.js";
@@ -21,6 +24,20 @@ const sqlConfig = {
         encrypt: false
     }
 };
+
+
+// Create a transporter object
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // use SSL
+    auth: {
+      user: 'fyp.inventory.system@gmail.com',
+      pass: 'mjqvcfewvocuaztd',
+    }
+  });
+  
+
 
 const app = express();
 
@@ -50,7 +67,15 @@ app.use((req, res, next) => {
     req.pool = pool;
     next();
 })
+
+app.use((req, res, next) => {
+    req.transporter = transporter;
+    next();
+});
+
 app.use('/inventory', inventoryRouter);
+app.use('/transfers', transferRouter);
+app.use('/orders', orderRouter);
 connectDB();
 
 

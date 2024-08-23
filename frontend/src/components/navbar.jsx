@@ -31,26 +31,55 @@ const Navbar = () => {
                             <Link to="/inventory">Items</Link>
                         </li>
                         <li>
-                            <Link to="/inventory/order">Order</Link>
-                        </li>
-                        <li>
                             <Link to="/inventory/lowstock">Low Stock</Link>
                         </li>
                     </ul>
                 )}
           </li>
-          <li>
-            <Link to="/inventory/order">Orders</Link>
+          <li 
+              className="dropdown"
+              onClick={toggleDropdown}
+              onBlur={toggleDropdown}
+              // onMouseEnter={toggleDropdown}
+              // onMouseLeave={toggleDropdown}
+                >
+                <Link to="#" className="dropbtn">
+                    Orders
+                </Link>
+                { (
+                    <ul className="dropdown-content">
+                        <li>
+                          <Link to="/orders">All Orders</Link>
+                        </li>
+                        <li>
+                          <Link to="/orders/neworder">New Order</Link>
+                        </li>
+                    </ul>
+                )}
           </li>
-          {/* <li>
-            <Link to="/Orders">PO</Link>
-          </li> */}
-          <li>
-            <Link to="/transfer">Transfers</Link>
+          <li 
+              className="dropdown"
+              onClick={toggleDropdown}
+              onBlur={toggleDropdown}
+              // onMouseEnter={toggleDropdown}
+              // onMouseLeave={toggleDropdown}
+                >
+                <Link to="#" className="dropbtn">
+                    Transfer
+                </Link>
+                { (
+                    <ul className="dropdown-content">
+                        <li>
+                          <Link to="/transfers">All Transfers</Link>
+                        </li>
+                        <li>
+                          <Link to="/transfers/newtransfer">New Transfer</Link>
+                        </li>
+                    </ul>
+                    
+                )}
           </li>
-          {/* <li>
-            <Link to="/inventory">Items</Link>
-          </li> */}
+
         </ul>
       </nav>
     );

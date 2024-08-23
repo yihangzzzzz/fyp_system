@@ -4,7 +4,7 @@ import { MdOutlineAddBox } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Navbar from "../components/navbar";
 
-const Orders = () => {
+const Transfers = () => {
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://localhost:3000/orders", {params: {sortBy: sortAtt}})
+        .get("http://localhost:3000/transfers", {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -54,7 +54,7 @@ const Orders = () => {
     <div>
       <Navbar />
       <div className='topbar'>
-                <h1 className="title">Order Records</h1>
+                <h1 className="title">Transfer Records</h1>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
                 <input 
                     type="text"
@@ -68,6 +68,7 @@ const Orders = () => {
                     <option value="name">Item Name</option>
                     <option value="quantity">Quantity</option>
                     <option value="date">Date</option>
+                    <option value="destination">Destination</option>
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
             </div>
@@ -79,29 +80,21 @@ const Orders = () => {
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Order Date</th>
+                              <th style={{ fontWeight: 'bold' }}>Date</th>
+                              <th style={{ fontWeight: 'bold' }}>Destination</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Status</th>
-                              <th style={{ fontWeight: 'bold' }}>Reference No.</th>
-                              <th style={{ fontWeight: 'bold' }}>PO No.</th>
-                              <th style={{ fontWeight: 'bold' }}>Delivery Date</th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredInventory.map((item, index) => {
-                                const orderdate = new Date(item.orderDate);
-                                const formattedOrderDate = `${String(orderdate.getDate()).padStart(2, '0')}/${String(orderdate.getMonth() + 1).padStart(2, '0')}/${orderdate.getFullYear()}`;
-                                const deliveryDate = new Date(item.deliveryDate);
-                                const formattedDeliveryDate = `${String(deliveryDate.getDate()).padStart(2, '0')}/${String(deliveryDate.getMonth() + 1).padStart(2, '0')}/${deliveryDate.getFullYear()}`;
+                                const date = new Date(item.date);
+                                const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
                                 return ((
                                     <tr key={index}>
                                         <td>{item.itemName}</td>
-                                        <td>{formattedOrderDate}</td>
+                                        <td>{formattedDate}</td>
+                                        <td>{item.destination}</td>
                                         <td>{item.quantity}</td>
-                                        <td>{item.status}</td>
-                                        <td>{item.referenceNumber}</td>
-                                        <td>{item.poNumber}</td>
-                                        <td>{(item.deliveryDate === null) ? (item.deliveryDate) : (formattedDeliveryDate)}</td>
                                     </tr>
                                 ))
                           })}
@@ -116,4 +109,4 @@ const Orders = () => {
    
   
 
-export default Orders
+export default Transfers

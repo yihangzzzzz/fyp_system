@@ -13,25 +13,28 @@ const sqlConfig = {
     }
 };
 
-const inventoryRouter = express.Router();
+const transferRoute = express.Router();
 
 // GETTING ALL RECORDS
-inventoryRouter.get('/', async (req, res) => {
+transferRoute.get('/', async (req, res) => {
 
     const {sortBy} = req.query;
     let query;
     switch (sortBy) {
         case 'name':
-            query = 'select * from warehouse order by itemName';
-            break;
-        case 'serial':
-            query = 'select * from warehouse order by serialNumber';
+            query = 'select * from transfers order by itemName';
             break;
         case 'quantity':
-            query = 'select * from warehouse order by quantity';
+            query = 'select * from transfers order by quantity';
+            break;
+        case 'date':
+            query = 'select * from transfers order by date';
+            break;
+        case 'destination':
+            query = 'select * from transfers order by destination';
             break;
         default:
-            query = 'select * from warehouse';
+            query = 'select * from transfers';
     }
 
     try {
@@ -52,28 +55,19 @@ inventoryRouter.get('/', async (req, res) => {
     }
 })
 
-// ADDING NEW RECORD
-inventoryRouter.post('/', async (req, res) => {
-
-    const {name, serial, quantity} = req.body;
-    // const name = req.body.name;
-    // const serial = req.body.serial;
-    // const quantity = req.body.quantity;
+transferRoute.get('/labs', async (req, res) => {
 
     try {
         // const pool = req.pool;
-        // const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
-        //                VALUES (${name}, ${serial}, ${quantity})`;
-            const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
-                    VALUES ('${name}', ${serial}, ${quantity})`;
-        // const request = pool.request()
-        // request.input('name', sql.NVarChar, name);
-        // request.input('serial', sql.NVarChar, serial);
-        // request.input('quantity', sql.Int, quantity);
+        // const data = pool.request().query(query)
+        // data.then((res1) => {
+        //     return res.json(res1)
 
-        // request.query(query);
-        sql.query(query);
-        res.status(200).json({ message: 'Item added successfully' });
+        // })
+        const data = sql.query(`SELECT labCode from LABS`);
+        data.then((res1) => {
+            return res.json(res1)
+        })
 
     } catch (error) {
         console.log("error is " + error.message);
@@ -81,8 +75,52 @@ inventoryRouter.post('/', async (req, res) => {
     }
 })
 
+// ADDING NEW RECORD
+transferRoute.post('/', async (req, res) => {
+
+    const {info, items} = req.body;
+    // const name = req.body.name;
+    // const serial = req.body.serial;
+    // const quantity = req.body.quantity;
+    try {
+        
+        items.forEach(item => {
+        sql.query(`INSERT INTO transfers (itemName, date, destination, quantity) 
+            VALUES ('${item.name}', '${info.date}', '${info.destination}', ${item.quantity})`);
+        sql.query(`UPDATE warehouse 
+            SET quantity = quantity - ${item.quantity}
+            WHERE itemName = '${item.name}'`);
+
+        console.log("sql is done");
+
+        // Configure the mailoptions object
+        const mailOptions = {
+            from: 'fyp.inventory.system@gmail.com',
+            to: 'yihangzzzzz@gmail.com',
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+        
+        // Send the email
+        req.transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+            console.log('Error:', error);
+            } else {
+            console.log('Email sent:', info.response);
+            }
+        });
+    })
+    
+    res.status(200).json({ message: 'Items updated successfully' });
+    
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    };
+})
+
 // DELETE ONE RECORD
-inventoryRouter.delete('/:itemName', async (req, res) => {
+transferRoute.delete('/:itemName', async (req, res) => {
     try {
         const { itemName } = req.params;
         // Replace this with your actual SQL query to delete the item
@@ -95,7 +133,7 @@ inventoryRouter.delete('/:itemName', async (req, res) => {
 });
 
 // UPDATE ONE RECORD
-inventoryRouter.put('/order', async (req, res) => {
+transferRoute.put('/order', async (req, res) => {
 
     const orders = req.body;
    
@@ -120,7 +158,7 @@ inventoryRouter.put('/order', async (req, res) => {
 })
 
 // UPDATE ONE RECORD
-inventoryRouter.put('/lowstock', async (req, res) => {
+transferRoute.put('/lowstock', async (req, res) => {
 
     const {name, newLowStock} = req.body;
    
@@ -140,4 +178,4 @@ inventoryRouter.put('/lowstock', async (req, res) => {
 })
 
 
-export default inventoryRouter;
+export default transferRoute;

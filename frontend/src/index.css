@@ -183,3 +183,10 @@ th {
   gap: 20px; 
 
 }
+
+.transfer_info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  gap: 20px; 
+}
