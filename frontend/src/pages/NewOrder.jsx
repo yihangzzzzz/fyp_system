@@ -1,12 +1,16 @@
 import { useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import Navbar from '../components/navbar'
 import axios from 'axios'
+import Confirmation from '../components/confirmation'
 
 const NewOrder = ({}) => {
+    const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
     const [orderItems, setOrderItems] = useState([]);
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
     useEffect(() => {
@@ -59,10 +63,14 @@ const NewOrder = ({}) => {
       try {
         await axios
         .post('http://localhost:3000/orders', orderItems)
+        
       } catch (error) {
         console.error('Error updating items:', error);
       }
+      navigate('/orders');
+      
     };
+
 
     return (
       <div>
@@ -118,8 +126,13 @@ const NewOrder = ({}) => {
               </tbody>
             </table>
           )}
-          <button className="submit-button" type="submit" onClick={handleSubmitOrder}>Submit</button>
+          {/* <button className="submit-button" type="submit" onClick={handleSubmitOrder}>Submit</button> */}
+          <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
         </div>
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleSubmitOrder}/>
       </div>
     );
   }

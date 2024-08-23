@@ -45,7 +45,7 @@ const Transfers = () => {
     }
 
     const filteredInventory = inventory.filter((item) =>
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
+        item.recipient.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
 
@@ -79,24 +79,53 @@ const Transfers = () => {
                   <table>
                       <thead>
                           <tr>
-                              <th style={{ fontWeight: 'bold' }}>Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Date</th>
                               <th style={{ fontWeight: 'bold' }}>Destination</th>
+                              <th style={{ fontWeight: 'bold' }}>Date</th>
+                              <th style={{ fontWeight: 'bold' }}>Recipient</th>
+                              <th style={{ fontWeight: 'bold' }}>Email</th>
+                              <th style={{ fontWeight: 'bold' }}>Items</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredInventory.map((item, index) => {
+
+                                const itemsArray = item.items.split(', ');
+                                const rowSpan = itemsArray.length;
                                 const date = new Date(item.date);
                                 const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-                                return ((
-                                    <tr key={index}>
-                                        <td>{item.itemName}</td>
-                                        <td>{formattedDate}</td>
-                                        <td>{item.destination}</td>
-                                        <td>{item.quantity}</td>
-                                    </tr>
-                                ))
+
+                                return (
+                                    <>
+                                        {itemsArray.map((itemDetail, idx) => (
+                                            
+                                            <tr key={`${index}-${idx}`}>
+                                                {idx === 0 && (
+                                                    <>
+                                                        <td rowSpan={rowSpan}>{item.destination}</td>
+                                                        <td rowSpan={rowSpan}>{formattedDate}</td>
+                                                        <td rowSpan={rowSpan}>{item.recipient}</td>
+                                                        <td rowSpan={rowSpan}>{item.email}</td>
+                                                    </>
+                                                )}
+                                                {/* Split itemDetail to separate itemName and quantity */}
+                                                <td>{itemDetail.split(':')[0]}</td>
+                                                <td>{itemDetail.split(':')[1]}</td>
+                                            </tr>
+                                        ))}
+                                    </>
+                                );
+
+
+                                // const date = new Date(item.date);
+                                // const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+                                // return ((
+                                //     <tr key={index}>
+                                //         <td>{item.destination}</td>
+                                //         <td>{formattedDate}</td>
+                                //         <td>{item.recipient}</td>
+                                //     </tr>
+                                // ))
                           })}
                       </tbody>
                   </table>

@@ -1,29 +1,56 @@
 import React, { useEffect, useState } from 'react'
-import Inventory from './Inventory';
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import Navbar from '../components/navbar';
 
 const Home  = () => {
 
-  const [msg, setMsg] = useState('step1');
-
-  const navigate = useNavigate();
-  const gotoInvnetory = () => {
-    navigate('/inventory');
-  }
-
-  useEffect(() => {
-    // setMsg('step2');
-  }, []);
-
   return (
-    <div>
+    <div className='home-page'>
         <Navbar />
-        <h1 className='home_title'>Inventory Management System</h1>
-        <button onClick={gotoInvnetory}>View Inventory</button>
-        <h2>{msg}</h2>
+        <div className="home-page-container">
+            <h1 className="home-title">Inventory Management System</h1>
+            <div className="header-container">
+                <div className="header-section">
+                    <h2>Inventory</h2>
+                    <ul>
+                      <li>
+                          <Link to="/inventory">Warehouse Items</Link>
+                      </li>
+                      <li>
+                          <Link to="/inventory/lowstock">Set Low Stock Limit</Link>
+                      </li>
+                      <li>
+                          <Link to="/inventory/newitem">Add New Item</Link>
+                      </li>
+                    </ul>
+                </div>
+                <div className="header-section">
+                    <h2>Orders</h2>
+                    <ul>
+                      <li>
+                            <Link to="/orders">All Orders</Link>
+                      </li>
+                      <li>
+                            <Link to="/orders/neworder">New Order</Link>
+                      </li>
+                    </ul>
+                </div>
+                <div className="header-section">
+                    <h2>Transfers</h2>
+                    <ul>
+                      <li>
+                            <Link to="/transfers">All Transfers</Link>
+                      </li>
+                      <li>
+                            <Link to="/transfers/newtransfer">New Transfer</Link>
+                      </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
   )
 }
+
 
 export default Home 

@@ -1,6 +1,7 @@
 import express from 'express';
 import sql from 'mssql';
 import { json } from 'express';
+import sendEmail from '../functions/email.js';
 
 const sqlConfig = {
     server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
@@ -18,24 +19,26 @@ const transferRoute = express.Router();
 // GETTING ALL RECORDS
 transferRoute.get('/', async (req, res) => {
 
-    const {sortBy} = req.query;
-    let query;
-    switch (sortBy) {
-        case 'name':
-            query = 'select * from transfers order by itemName';
-            break;
-        case 'quantity':
-            query = 'select * from transfers order by quantity';
-            break;
-        case 'date':
-            query = 'select * from transfers order by date';
-            break;
-        case 'destination':
-            query = 'select * from transfers order by destination';
-            break;
-        default:
-            query = 'select * from transfers';
-    }
+
+
+    // const {sortBy} = req.query;
+    // let query;
+    // switch (sortBy) {
+    //     case 'name':
+    //         query = 'select * from transfers order by itemName';
+    //         break;
+    //     case 'quantity':
+    //         query = 'select * from transfers order by quantity';
+    //         break;
+    //     case 'date':
+    //         query = 'select * from transfers order by date';
+    //         break;
+    //     case 'destination':
+    //         query = 'select * from transfers order by destination';
+    //         break;
+    //     default:
+    //         query = 'select * from transfers';
+    // }
 
     try {
         // const pool = req.pool;
@@ -44,7 +47,20 @@ transferRoute.get('/', async (req, res) => {
         //     return res.json(res1)
 
         // })
-        const data = sql.query(query);
+
+        const data = sql.query(`SELECT
+    t.transferID,
+    t.destination,
+    t.date,
+    t.recipient,
+    t.email,
+    STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+    FROM transfers t
+    JOIN transferItems ti
+    ON t.transferID = ti.transferID
+    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email`);
+
+        // const data = sql.query(query);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -75,40 +91,108 @@ transferRoute.get('/labs', async (req, res) => {
     }
 })
 
-// ADDING NEW RECORD
+// ADDING NEW TRANSFER RECORD
 transferRoute.post('/', async (req, res) => {
 
     const {info, items} = req.body;
-    // const name = req.body.name;
-    // const serial = req.body.serial;
-    // const quantity = req.body.quantity;
+    // const {destination, date, recipient, email} = req.body;
+
+    // let transferID;
+
+    // sql.query(`INSERT INTO transfers (date, destination, recipient) 
+    //     VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
+    //     SELECT SCOPE_IDENTITY() AS transferID`)
+    //     .then((res1) => {
+    //         transferID = res1;
+    //     });
+
+    // res.status(200).json({ message: transferID });
+
+    // const transferID = result.recordset[0].transferID;
+
+    // // const name = req.body.name;
+    // // const serial = req.body.serial;
+    // // const quantity = req.body.quantity;
+    try {
+    
+        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email) 
+        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}')
+        SELECT SCOPE_IDENTITY() AS transferID`)
+
+        sendEmail(info, items);
+
+
+// EMAIL PART ========================================================================================
+        // const mailOptions = {
+        //     from: 'fyp.inventory.system@gmail.com',
+        //     to: 'yihangzzzzz@gmail.com',
+        //     subject: 'Sending Email using Node.js',
+        //     text: 'That was easy!'
+        // };
+        
+        // req.transporter.sendMail(mailOptions, function(error, info){
+        //     if (error) {
+        //     console.log('Error:', error);
+        //     } else {
+        //     console.log('Email sent:', info.response);
+        //     }
+        // });
+// ===================================================================================================
+
+        result.then((res1) => {
+            return res.json(res1)
+    })
+    
+    // res.status(200).json({ message: 'Items updated successfully' });
+    
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    };
+})
+
+// ADDING NEW TRANSFER ITEMS RECORD
+transferRoute.post('/:transferID', async (req, res) => {
+
+    // const {info, items} = req.body;
+
+    const transferID = parseInt(req.params.transferID);
+    const items = req.body;
+
+    // res.status(200).json({ message: transferID });
+
+    // let transferID;
+
+    // sql.query(`INSERT INTO transfers (date, destination, recipient) 
+    //     VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
+    //     SELECT SCOPE_IDENTITY() AS transferID`)
+    //     .then((res1) => {
+    //         transferID = res1;
+    //     });
+
+    // res.status(200).json({ message: transferID });
+
+    // const transferID = result.recordset[0].transferID;
+
+    // // const name = req.body.name;
+    // // const serial = req.body.serial;
+    // // const quantity = req.body.quantity;
     try {
         
         items.forEach(item => {
-        sql.query(`INSERT INTO transfers (itemName, date, destination, quantity) 
-            VALUES ('${item.name}', '${info.date}', '${info.destination}', ${item.quantity})`);
+
+        // const result = sql.query(`INSERT INTO transfers (date, destination, recipient) 
+        // VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
+        // SELECT SCOPE_IDENTITY() AS transferID`)
+
+
+        sql.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
+            VALUES (${transferID}, '${item.name}', ${item.quantity})`);
+
+
         sql.query(`UPDATE warehouse 
             SET quantity = quantity - ${item.quantity}
             WHERE itemName = '${item.name}'`);
-
-        console.log("sql is done");
-
-        // Configure the mailoptions object
-        const mailOptions = {
-            from: 'fyp.inventory.system@gmail.com',
-            to: 'yihangzzzzz@gmail.com',
-            subject: 'Sending Email using Node.js',
-            text: 'That was easy!'
-        };
-        
-        // Send the email
-        req.transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-            console.log('Error:', error);
-            } else {
-            console.log('Email sent:', info.response);
-            }
-        });
     })
     
     res.status(200).json({ message: 'Items updated successfully' });
@@ -118,7 +202,6 @@ transferRoute.post('/', async (req, res) => {
         res.send({message : error.message});
     };
 })
-
 // DELETE ONE RECORD
 transferRoute.delete('/:itemName', async (req, res) => {
     try {
@@ -131,6 +214,7 @@ transferRoute.delete('/:itemName', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete item' });
     }
 });
+
 
 // UPDATE ONE RECORD
 transferRoute.put('/order', async (req, res) => {

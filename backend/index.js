@@ -13,8 +13,8 @@ import poRouter from "./routes/poRoute.js";
 const sqlConfig = {
     user: "testuser",
     password: '1234',
-    // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    server: 'YIHANG\\SQLEXPRESS',
+    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+    // server: 'YIHANG\\SQLEXPRESS',
     database: 'inventory',
     driver: 'msnodesqlv8',
     options: {

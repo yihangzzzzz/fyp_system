@@ -2,13 +2,18 @@ import { useState, useEffect} from 'react'
 import React from 'react'
 import Navbar from '../components/navbar'
 import axios from 'axios'
+import Confirmation from '../components/confirmation'
+import { useNavigate } from 'react-router-dom';
 
 const NewTransfer = ({}) => {
+    const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     const [labs, setLabs] = useState([]);
+    // const [transferID, setTransferID] = useState();
     // const [selectedItem, setSelectedItem] = useState('');
     const [orderItems, setOrderItems] = useState([]);
-    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '' });
+    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '' });
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
     useEffect(() => {
@@ -56,7 +61,6 @@ const NewTransfer = ({}) => {
         ...prevState,
         [info]: e  // Replace with the new value for destination
     }));
-    console.log('New Date:', transferInfo.date);
     // console.log('New Destination:', transferInfo.destination);
         // switch (info) {
         //   case 'destination':
@@ -85,13 +89,25 @@ const NewTransfer = ({}) => {
 
     const handleSubmitTransfer = async () => {
       const newTransfer = {info: transferInfo, items: orderItems}
+      let transferID;
       try {
         await axios
-        .post('http://localhost:3000/transfers', newTransfer);
+        .post('http://localhost:3000/transfers', newTransfer)
+        .then((res) => {
+          // setTransferID(res.data.recordset[0].transferID);
+          transferID = res.data.recordset[0].transferID
+        });
+
+        await axios
+        .post(`http://localhost:3000/transfers/${encodeURIComponent(transferID)}`, orderItems)
+
+
+
         console.log("submit button pressed");
       } catch (error) {
         console.error('Error updating items:', error);
       }
+      navigate('/transfers');
     };
 
     return (
@@ -132,6 +148,16 @@ const NewTransfer = ({}) => {
                     style={{ outline: '2px solid black' }}
                   />
               </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h5>Email</h5>
+                  <input
+                    type="text"
+                    value={transferInfo.email}
+                    onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
+                    style={{ outline: '2px solid black' }}
+                  />
+              </div>
+              
             </div>
           )}
           {items.length > 0 && (
@@ -172,8 +198,12 @@ const NewTransfer = ({}) => {
               </tbody>
             </table>
           )}
-          <button className="submit-button" type="submit" onClick={handleSubmitTransfer}>Submit</button>
+          <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
         </div>
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleSubmitTransfer}/>
       </div>
     );
   }

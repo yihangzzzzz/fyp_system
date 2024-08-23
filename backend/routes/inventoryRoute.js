@@ -55,7 +55,10 @@ inventoryRouter.get('/', async (req, res) => {
 // ADDING NEW RECORD
 inventoryRouter.post('/', async (req, res) => {
 
-    const {name, serial, quantity} = req.body;
+    const name = req.body.name;
+    const serial = req.body.serial;
+    const quantity = req.body.quantity;
+    const picture = req.file.buffer;
     // const name = req.body.name;
     // const serial = req.body.serial;
     // const quantity = req.body.quantity;
@@ -64,8 +67,8 @@ inventoryRouter.post('/', async (req, res) => {
         // const pool = req.pool;
         // const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
         //                VALUES (${name}, ${serial}, ${quantity})`;
-            const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
-                    VALUES ('${name}', ${serial}, ${quantity})`;
+            const query = `INSERT INTO warehouse (picture, itemName, serialNumber, quantity) 
+                    VALUES (${picture}, '${name}', ${serial}, ${quantity})`;
         // const request = pool.request()
         // request.input('name', sql.NVarChar, name);
         // request.input('serial', sql.NVarChar, serial);

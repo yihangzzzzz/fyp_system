@@ -8,6 +8,7 @@ import Transfers from './pages/Transfers'
 import NewOrder from './pages/NewOrder'
 import LowStock from './pages/LowStock'
 import NewTransfer from './pages/NewTransfer'
+import NewItem from './pages/NewItem'
 
 export const App = () => {
   return (
@@ -19,6 +20,7 @@ export const App = () => {
         <Route path = '/transfers' element = {<Transfers/>} />
         <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
         <Route path = '/inventory/lowstock' element = {<LowStock/>} />
+        <Route path = '/inventory/newitem' element = {<NewItem/>} />
       </Routes>
   );
 };

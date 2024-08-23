@@ -1,39 +1,38 @@
-// src/components/StatusDropdown.js
-import React, { useEffect, useState } from 'react';
-import { MdOutlineAddBox, MdModeEditOutline, MdDelete} from 'react-icons/md';
-import axios from 'axios';
+// src/components/Modal.jsx
+import React from 'react';
+import NewItemForm from './newItemForm';
+import NewPOForm from './newPOForm';
 
-const Confirmation = ({toDelete}) => {
-  const [deleteItemName, setDeleteItemName] = useState(toDelete);
+const Confirmation = ({isOpen, onClose, onSubmit}) => {
+  if (!isOpen) return null;
 
-  const handleDelete = () => {
-      axios
-        .delete(`http://localhost:3000/inventory/'${encodeURIComponent(deleteItemName)}'`)
-        .catch((error) => {
-          console.log("Error deleting item: " + error);
-        });
-  }
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.target);
+  //   const newItem = {
+  //     name: formData.get('name'),
+  //     category: formData.get('category'),
+  //     quantity: formData.get('quantity'),
+  //   };
+  //   onSubmit(newItem);
+  // };
+
+    const handleSubmit = (newRecord) => {
+      onSubmit(newRecord);
+    }
+
 
   return (
-    // <select
-    //   value={status}
-    //   onChange={handleChange}
-    //   onBlur={handleBlur}
-    //   autoFocus
-    //   style={{ marginLeft: '8px' }}
-    // >
-    //   <option value="Pending">Pending</option>
-    //   <option value="Fulfilled">Fulfilled</option>
-    //   <option value="Cancelled">Cancelled</option>
-    //   {/* Add more options as needed */}
-    // </select>
-    <div className='inventory_actions'>
-      <MdOutlineAddBox title='Add'/>
-      <MdModeEditOutline title='Edit'/>
-      <MdDelete onClick={handleDelete} title='Delete' />
+    <div className="modal-overlay">
+      <div className="modal-content">
+      <h2 className='form-title'>Confirm to Submit?</h2>
+        <div className='submission-buttons'>
+          <button className="submit-button" onClick={onSubmit} type="submit">Submit</button>
+          <button className="cancel-button" onClick={onClose}>Cancel</button>
+        </div>
+      </div>
     </div>
-
   );
-}
+};
 
 export default Confirmation;
