@@ -36,8 +36,6 @@ const transporter = nodemailer.createTransport({
       pass: 'mjqvcfewvocuaztd',
     }
   });
-  
-
 
 const app = express();
 
@@ -72,6 +70,7 @@ app.use((req, res, next) => {
     req.transporter = transporter;
     next();
 });
+
 
 app.use('/inventory', inventoryRouter);
 app.use('/transfers', transferRouter);

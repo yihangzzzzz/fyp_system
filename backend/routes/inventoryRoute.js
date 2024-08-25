@@ -1,6 +1,12 @@
 import express from 'express';
 import sql from 'mssql';
+import multer from 'multer';
+import fs from 'fs';
+import bodyParser from 'body-parser';
+import path from 'path';
 import { json } from 'express';
+import { log } from 'console';
+
 
 const sqlConfig = {
     server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
@@ -51,6 +57,35 @@ inventoryRouter.get('/', async (req, res) => {
         res.send({message : error.message});
     }
 })
+
+inventoryRouter.post('/newitem', async (req, res) => {
+
+    try {
+
+
+        const file = req.file;
+        res.send('Image uploaded and saved to database', file.filename);
+        // Read the uploaded file data
+        // const arrayBuffer = e.arrayBuffer();
+        
+
+        // Create a connection pool
+        // const pool = await sql.connect(config);
+
+        // Insert the binary data into the database
+        // await pool.request()
+        //     .input('ImageData', sql.VarBinary(sql.MAX), imageData)
+        //     .query('INSERT INTO Images (ImageData) VALUES (@ImageData)');
+        sql.query(`INSERT INTO imageTest (id, picture)
+                   VALUES (1, ${imageData})`);
+
+        res.send('Image uploaded and saved to database');
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
 
 // ADDING NEW RECORD
 inventoryRouter.post('/', async (req, res) => {

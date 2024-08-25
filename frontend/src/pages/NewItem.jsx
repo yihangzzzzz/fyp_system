@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import Navbar from '../components/navbar'
 import axios from 'axios'
+import { Buffer } from "buffer";
 import Confirmation from '../components/confirmation'
 
 const NewItem = ({}) => {
 
-    const [newItem, setNewItem] = useState({picture: null, name: '', serial: null, quantity: null});
+  const [picture, setPicture] = useState();  
+  const [loading, setLoading] = useState(false);
+  const [newItem, setNewItem] = useState({picture: null, name: '', serial: null, quantity: null});
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
@@ -19,11 +22,18 @@ const NewItem = ({}) => {
     }, []);
   
     const handleAddItem = () => {
+      const formData = new FormData();
+      formData.append('image', newItem.picture);
+      formData.append('image', newItem.serial);
+      console.log("picture data is ",newItem.picture);
+
       axios
-      .post("http://localhost:3000/inventory", newItem, {
+      // .post("http://localhost:3000/inventory", newItem, {
+      // })
+      .post("http://localhost:3000/inventory/newitem", formData, {
         headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          "Content-Type": "multipart/form-data"
+        }
       })
       .then(() => {
           setLoading(false);
@@ -47,7 +57,10 @@ const NewItem = ({}) => {
         ...prevState,
         picture: e  // Replace with the new value for destination
       }));
+      console.log(e);
     };
+
+    
   
 
 
@@ -65,7 +78,7 @@ const NewItem = ({}) => {
                 type='file'
                 id='image'
                 accept='image/*'
-                value={newItem.picture}
+                // value={newItem.picture}
                 onChange={(e) => handleImageChange(e.target.files[0])}
             />
         </div>
