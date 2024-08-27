@@ -115,6 +115,7 @@ th {
   position: relative;
   width: 600px;   /* Increase width */
   max-width: 90%; /* Responsive width */
+  gap: 20px;
 }
 
 .modal-content form {
@@ -145,6 +146,7 @@ th {
 .submission-buttons {
   display: flex;
   gap: 20px;
+  margin-top: 20px;
 }
 
 .form-title {

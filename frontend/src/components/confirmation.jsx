@@ -1,11 +1,14 @@
 // src/components/Modal.jsx
-import React from 'react';
-import NewItemForm from './newItemForm';
+import React, { useRef } from 'react';
+import NewItemForm from './NewDeliveryForm';
 import NewPOForm from './newPOForm';
+import NewDeliveryForm from './NewDeliveryForm';
 
-const Confirmation = ({isOpen, onClose, onSubmit}) => {
+
+const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
   if (!isOpen) return null;
 
+  const newFormRef = useRef(null);
   // const handleSubmit = (e) => {
   //   e.preventDefault();
   //   const formData = new FormData(e.target);
@@ -17,8 +20,11 @@ const Confirmation = ({isOpen, onClose, onSubmit}) => {
   //   onSubmit(newItem);
   // };
 
-    const handleSubmit = (newRecord) => {
-      onSubmit(newRecord);
+    const handleSubmit = (newDelivery) => {
+      if (newFormRef.current) {
+        newFormRef.current.submit();
+      }
+      formSubmitParam(newDelivery);
     }
 
 
@@ -26,10 +32,10 @@ const Confirmation = ({isOpen, onClose, onSubmit}) => {
     <div className="modal-overlay">
       <div className="modal-content">
       <h2 className='form-title'>Confirm to Submit?</h2>
-        <div className='submission-buttons'>
-          <button className="submit-button" onClick={onSubmit} type="submit">Submit</button>
-          <button className="cancel-button" onClick={onClose}>Cancel</button>
-        </div>
+          <div className='submission-buttons'>
+            <button className="submit-button" onClick={onSubmit} type="submit">Submit</button>
+            <button className="cancel-button" onClick={onClose}>Cancel</button>
+          </div>
       </div>
     </div>
   );

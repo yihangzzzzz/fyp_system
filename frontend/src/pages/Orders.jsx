@@ -3,15 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { MdOutlineAddBox } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Navbar from "../components/navbar";
+import Confirmation from "../components/confirmation";
+import NewDeliveryForm from "../components/NewDeliveryForm";
+import Modal from "../components/modal";
 
 const Orders = () => {
+    const [formData, setFormData] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
-    
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
+    const [selectedRows, setSelectedRows] = useState([]); // State to track selected rows
+
     useEffect(() => {
         fetchInventory();
     }, []);
@@ -48,6 +55,29 @@ const Orders = () => {
         item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const handleRowSelect = (item) => {
+      if (selectedRows.includes(item)) {
+        setSelectedRows(selectedRows.filter(selected => selected !== item));
+      } else {
+        setSelectedRows([...selectedRows, item]);
+      }
+    };
+
+    const handleNewDelivery = async () => {
+      setIsModalOpen(false);
+
+      const itemsToUpdate = {date: formData.date, po: formData.po, pdf: formData.pdf, items: selectedRows}
+
+      await axios
+      .put('http://localhost:3000/orders/updatewarehouse', itemsToUpdate, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+
+      console.log('Acknowledged items:', itemsToUpdate);
+      // Your acknowledge logic here
+    };
 
 
   return (
@@ -71,6 +101,9 @@ const Orders = () => {
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
             </div>
+            <button onClick={() => setIsModalOpen(true)} disabled={selectedRows.length === 0} className='acknowledgeButton'>
+          Acknowledge
+        </button>
       {loading ? (
                 <p>Loading...</p>
             ) : (
@@ -78,6 +111,7 @@ const Orders = () => {
                   <table>
                       <thead>
                           <tr>
+                              <th style={{ fontWeight: 'bold' }}></th>
                               <th style={{ fontWeight: 'bold' }}>Name</th>
                               <th style={{ fontWeight: 'bold' }}>Order Date</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
@@ -95,12 +129,32 @@ const Orders = () => {
                                 const formattedDeliveryDate = `${String(deliveryDate.getDate()).padStart(2, '0')}/${String(deliveryDate.getMonth() + 1).padStart(2, '0')}/${deliveryDate.getFullYear()}`;
                                 return ((
                                     <tr key={index}>
+                                        <td>
+                                          <input
+                                            type="checkbox"
+                                            checked={selectedRows.includes(item)}
+                                            onChange={() => handleRowSelect(item)}
+                                          />
+                                        </td>
                                         <td>{item.itemName}</td>
                                         <td>{formattedOrderDate}</td>
                                         <td>{item.quantity}</td>
-                                        <td>{item.status}</td>
+                                        <td style={{
+                                          color: 
+                                            item.status === 'Pending'
+                                              ? '#FF922C'
+                                              : item.status === 'Fulfilled'
+                                              ? '#238823'
+                                              : item.status === 'Cancelled'
+                                              ? '#D2222D'
+                                              : 'black', // default color
+                                        }}>{item.status}</td>
                                         <td>{item.referenceNumber}</td>
-                                        <td>{item.poNumber}</td>
+                                        <td>
+                                          <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                            {item.poNumber}
+                                          </a>
+                                        </td>
                                         <td>{(item.deliveryDate === null) ? (item.deliveryDate) : (formattedDeliveryDate)}</td>
                                     </tr>
                                 ))
@@ -109,6 +163,15 @@ const Orders = () => {
                   </table>
                 </div>
             )}
+      {isModalOpen && (
+        <Modal
+          formData={formData}
+          setFormData={setFormData}
+          onSubmit={handleNewDelivery}
+          onClose={() => setIsModalOpen(false)}
+          FormComponent={NewDeliveryForm}
+        />
+      )}
     </div>
 
 )

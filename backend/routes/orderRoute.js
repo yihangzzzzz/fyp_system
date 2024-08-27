@@ -1,6 +1,12 @@
 import express from 'express';
 import sql from 'mssql';
 import { json } from 'express';
+import upload from '../functions/picture.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const sqlConfig = {
     server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
@@ -48,6 +54,20 @@ orderRouter.get('/', async (req, res) => {
         res.send({message : error.message});
     }
 })
+
+orderRouter.get('/pdf/:filename', (req, res) => {
+    const { filename } = req.params;
+    const options = {
+        root: path.join(__dirname, '../images'),
+    };
+  
+    res.sendFile(filename, options, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(404).send('File not found');
+      }
+    });
+  });
 
 // ADDING NEW RECORD
 orderRouter.post('/', async (req, res) => {
@@ -123,25 +143,39 @@ orderRouter.post('/', async (req, res) => {
 
 // })
 
-// // UPDATE ONE RECORD
-// orderRouter.put('/lowstock', async (req, res) => {
+// UPDATE ONE RECORD
+orderRouter.put('/updatewarehouse', upload.single('pdf'), async (req, res) => {
 
-//     const {name, newLowStock} = req.body;
+
+    const date = req.body.date;
+    const po = req.body.po;
+    const pdf = req.file.filename;
    
-//     try {
-//             sql.query(`UPDATE warehouse
-//                 SET lowStock = ${newLowStock}
-//                 WHERE itemName = '${name}'`);
+    try {
+
+        req.body.items.forEach( item => {
+            sql.query(`UPDATE orders
+                SET poNumber = '${po}',
+                    deliveryDate = '${date}',
+                    status = 'Fulfilled',
+                    poDocument = '${pdf}'
+                WHERE itemName = '${item.itemName}'`);
+
+            sql.query(`UPDATE warehouse
+                SET quantity = quantity + ${item.quantity}
+                WHERE itemName = '${item.itemName}'`);
+        })
 
 
-//         res.status(200).json({ message: 'Items updated successfully' });
 
-//     } catch (error) {
-//         console.log("error is " + error.message);
-//         res.send({message : error.message});
-//     }
+        res.status(200).json({ message: 'Items updated successfully' });
 
-// })
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+
+})
 
 
 export default orderRouter;

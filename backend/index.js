@@ -13,8 +13,8 @@ import poRouter from "./routes/poRoute.js";
 const sqlConfig = {
     user: "testuser",
     password: '1234',
-    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    // server: 'YIHANG\\SQLEXPRESS',
+    // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+    server: 'YIHANG\\SQLEXPRESS',
     database: 'inventory',
     driver: 'msnodesqlv8',
     options: {
@@ -75,6 +75,10 @@ app.use((req, res, next) => {
 app.use('/inventory', inventoryRouter);
 app.use('/transfers', transferRouter);
 app.use('/orders', orderRouter);
+
+app.use('/images', express.static('images'))
+
+
 connectDB();
 
 

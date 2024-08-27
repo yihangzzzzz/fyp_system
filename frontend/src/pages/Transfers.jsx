@@ -3,14 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { MdOutlineAddBox } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import Navbar from "../components/navbar";
+import Confirmation from '../components/confirmation'
+import { useNavigate } from 'react-router-dom';
 
 const Transfers = () => {
+    const navigate = useNavigate(); 
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
     
     useEffect(() => {
         fetchInventory();
@@ -44,8 +49,16 @@ const Transfers = () => {
         fetchInventory();
     }
 
+    const handleTransferStatusChange = async () => {
+        setIsConfirmationOpen(false);
+        await axios
+        .put("http://localhost:3000/transfers", statusChange);
+        setStautsChange({status: '', id: null, items: null});
+        fetchInventory();
+    }
+
     const filteredInventory = inventory.filter((item) =>
-        item.recipient.toLowerCase().includes(searchQuery.toLowerCase())
+        item.items.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
 
@@ -83,6 +96,7 @@ const Transfers = () => {
                               <th style={{ fontWeight: 'bold' }}>Date</th>
                               <th style={{ fontWeight: 'bold' }}>Recipient</th>
                               <th style={{ fontWeight: 'bold' }}>Email</th>
+                              <th style={{ fontWeight: 'bold' }}>Status</th>
                               <th style={{ fontWeight: 'bold' }}>Items</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
                           </tr>
@@ -106,11 +120,35 @@ const Transfers = () => {
                                                         <td rowSpan={rowSpan}>{formattedDate}</td>
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
                                                         <td rowSpan={rowSpan}>{item.email}</td>
+                                                        <td rowSpan={rowSpan}>
+                                                        <select
+                                                            value={item.status}
+                                                            onChange={(e) => {
+                                                                setStautsChange({status: e.target.value, id: item.transferID, items: itemsArray});
+                                                                setIsConfirmationOpen(true);
+                                                            }}
+                                                            style={{
+                                                                color: 
+                                                                  item.status === 'Pending'
+                                                                    ? '#FF922C'
+                                                                    : item.status === 'Acknowledged'
+                                                                    ? '#238823'
+                                                                    : item.status === 'Cancelled'
+                                                                    ? '#D2222D'
+                                                                    : 'black', // default color
+                                                              }}
+                                                            >
+                                                            <option style={{ color: 'black' }} value="Pending">Pending</option>
+                                                            <option style={{ color: 'black' }} value="Acknowledged">Acknowledged</option>
+                                                            <option style={{ color: 'black' }} value="Cancelled">Cancelled</option>
+                                                            </select>
+                                                        </td>
                                                     </>
                                                 )}
                                                 {/* Split itemDetail to separate itemName and quantity */}
                                                 <td>{itemDetail.split(':')[0]}</td>
                                                 <td>{itemDetail.split(':')[1]}</td>
+                                                
                                             </tr>
                                         ))}
                                     </>
@@ -131,6 +169,10 @@ const Transfers = () => {
                   </table>
                 </div>
             )}
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleTransferStatusChange}/>
     </div>
 
 )

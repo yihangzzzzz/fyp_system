@@ -54,11 +54,12 @@ transferRoute.get('/', async (req, res) => {
     t.date,
     t.recipient,
     t.email,
+    t.status,
     STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
     FROM transfers t
     JOIN transferItems ti
     ON t.transferID = ti.transferID
-    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email`);
+    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status`);
 
         // const data = sql.query(query);
         data.then((res1) => {
@@ -188,11 +189,6 @@ transferRoute.post('/:transferID', async (req, res) => {
 
         sql.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
             VALUES (${transferID}, '${item.name}', ${item.quantity})`);
-
-
-        sql.query(`UPDATE warehouse 
-            SET quantity = quantity - ${item.quantity}
-            WHERE itemName = '${item.name}'`);
     })
     
     res.status(200).json({ message: 'Items updated successfully' });
@@ -217,39 +213,28 @@ transferRoute.delete('/:itemName', async (req, res) => {
 
 
 // UPDATE ONE RECORD
-transferRoute.put('/order', async (req, res) => {
-
-    const orders = req.body;
+transferRoute.put('/', async (req, res) => {
    
     try {
-        
-        orders.forEach(order => {
 
-            const name = order.name;
-            const ordered = order.quantity;
-            sql.query(`UPDATE warehouse
-                SET ordered = ordered + ${ordered}
-                WHERE itemName = '${name}'`);
+        await sql.query(`UPDATE transfers
+            SET status = '${req.body.status}'
+            WHERE transferID = ${req.body.id}`);
+
+        if (req.body.status === 'Acknowledged') {
+
+            req.body.items.forEach (item => {
+                const [itemName, quantity] = item.split(':');
+                sql.query(`UPDATE warehouse 
+                    SET quantity = quantity - ${quantity}
+                    WHERE itemName = '${itemName}'`);
             })
+        }
 
-        res.status(200).json({ message: 'Items updated successfully' });
 
-    } catch (error) {
-        console.log("error is " + error.message);
-        res.send({message : error.message});
-    }
-
-})
-
-// UPDATE ONE RECORD
-transferRoute.put('/lowstock', async (req, res) => {
-
-    const {name, newLowStock} = req.body;
-   
-    try {
-            sql.query(`UPDATE warehouse
-                SET lowStock = ${newLowStock}
-                WHERE itemName = '${name}'`);
+        // await sql.query(`UPDATE transfers
+        //     SET status = 'Cancelled'
+        //     WHERE transferID = 3`);
 
 
         res.status(200).json({ message: 'Items updated successfully' });
@@ -260,6 +245,8 @@ transferRoute.put('/lowstock', async (req, res) => {
     }
 
 })
+
+
 
 
 export default transferRoute;

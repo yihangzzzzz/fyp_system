@@ -5,7 +5,7 @@ import { RxCross1 } from "react-icons/rx";
 import Actions from "../components/actions";
 import Modal from "../components/modal";
 import Navbar from '../components/navbar';
-import NewItemForm from "../components/newItemForm";
+import NewItemForm from "../components/NewDeliveryForm";
 
 const Inventory = () => {
     const [inventory, setInventory] = useState([]);
@@ -74,7 +74,7 @@ const Inventory = () => {
             <Navbar />
             <div className='topbar'>
                 <h1 className="title">Hardware Inventory</h1>
-                <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} />
+                {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
                 <input 
                     type="text"
                     placeholder="Search items..."
@@ -97,6 +97,7 @@ const Inventory = () => {
                   <table>
                       <thead>
                           <tr>
+                              <th style={{ fontWeight: 'bold' }}>Picture</th>
                               <th style={{ fontWeight: 'bold' }}>Item Name</th>
                               <th style={{ fontWeight: 'bold' }}>Serial Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
@@ -107,6 +108,7 @@ const Inventory = () => {
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
+                              <td> <img src={"http://localhost:3000/images/" + item.picture} /></td>
                               <td>{item.itemName}</td>
                               <td>{item.serialNumber}</td>
                               {item.quantity < item.lowStock ? (
@@ -130,12 +132,12 @@ const Inventory = () => {
                   </table>
                 </div>
             )}
-            <Modal
+            {/* <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={(newitem) => {handleAddItem(newitem);}}
         FormComponent={NewItemForm}
-      />
+      /> */}
       </div>
 
     );

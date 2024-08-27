@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import Navbar from '../components/navbar'
 import axios from 'axios'
-import { Buffer } from "buffer";
+// import { Buffer } from "buffer";
 import Confirmation from '../components/confirmation'
 
 const NewItem = ({}) => {
 
   const [picture, setPicture] = useState();  
   const [loading, setLoading] = useState(false);
-  const [newItem, setNewItem] = useState({picture: null, name: '', serial: null, quantity: null});
+  const [newItem, setNewItem] = useState({picture: '', name: '', serial: null, quantity: null});
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
@@ -21,10 +21,13 @@ const NewItem = ({}) => {
     useEffect(() => {
     }, []);
   
+
     const handleAddItem = () => {
       const formData = new FormData();
-      formData.append('image', newItem.picture);
-      formData.append('image', newItem.serial);
+      formData.append('picture', newItem.picture);
+      formData.append('name', newItem.name);
+      formData.append('serial', newItem.serial);
+      formData.append('quantity', newItem.quantity);
       console.log("picture data is ",newItem.picture);
 
       axios

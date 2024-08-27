@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { json } from 'express';
 import { log } from 'console';
+import upload from '../functions/picture.js';
 
 
 const sqlConfig = {
@@ -18,6 +19,19 @@ const sqlConfig = {
         trustedConnection: true
     }
 };
+
+// const storage = multer.diskStorage({
+//     destination: (req, fily, cb) => {
+//       cb(null, 'images');
+//     },
+//     filename: (req, file, cb) => {
+//       cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
+//     },
+//   });
+
+//   const upload = multer ({
+//     storage: storage
+//   })
 
 const inventoryRouter = express.Router();
 
@@ -58,13 +72,16 @@ inventoryRouter.get('/', async (req, res) => {
     }
 })
 
-inventoryRouter.post('/newitem', async (req, res) => {
+inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 
     try {
 
+        const {name, serial, quantity} = req.body;
+        const picture = req.file.filename;
 
-        const file = req.file;
-        res.send('Image uploaded and saved to database', file.filename);
+        // res.status(200).json({ message: 'Item added successfully', image: req.file });
+        // const file = req.file;
+        // res.send('Image uploaded and saved to database', file.filename);
         // Read the uploaded file data
         // const arrayBuffer = e.arrayBuffer();
         
@@ -76,8 +93,8 @@ inventoryRouter.post('/newitem', async (req, res) => {
         // await pool.request()
         //     .input('ImageData', sql.VarBinary(sql.MAX), imageData)
         //     .query('INSERT INTO Images (ImageData) VALUES (@ImageData)');
-        sql.query(`INSERT INTO imageTest (id, picture)
-                   VALUES (1, ${imageData})`);
+        sql.query(`INSERT INTO warehouse (itemName, quantity, serialNumber, picture)
+                   VALUES ('${name}', ${serial}, ${quantity}, '${picture}')`);
 
         res.send('Image uploaded and saved to database');
     } catch (err) {
