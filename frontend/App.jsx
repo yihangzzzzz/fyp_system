@@ -1,14 +1,14 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import './index.css'
-import Home from './pages/Home'
-import Inventory from './pages/Inventory'
-import Orders from './pages/Orders'
-import Transfers from './pages/Transfers'
-import NewOrder from './pages/NewOrder'
-import LowStock from './pages/LowStock'
-import NewTransfer from './pages/NewTransfer'
-import NewItem from './pages/NewItem'
+import Home from './src/pages/Home'
+import Inventory from './src/pages/Inventory'
+import Orders from './src/pages/Orders'
+import Transfers from './src/pages/Transfers'
+import NewOrder from './src/pages/NewOrder'
+import LowStock from './src/pages/LowStock'
+import NewTransfer from './src/pages/NewTransfer'
+import NewItem from './src/pages/NewItem'
 
 export const App = () => {
   return (
