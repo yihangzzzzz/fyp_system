@@ -20,13 +20,6 @@ const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
   //   onSubmit(newItem);
   // };
 
-    const handleSubmit = (newDelivery) => {
-      if (newFormRef.current) {
-        newFormRef.current.submit();
-      }
-      formSubmitParam(newDelivery);
-    }
-
 
   return (
     <div className="modal-overlay">

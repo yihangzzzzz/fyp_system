@@ -61,7 +61,26 @@ inventoryRouter.get('/', async (req, res) => {
         //     return res.json(res1)
 
         // })
-        const data = sql.query(query);
+        sql.query(query)
+        .then((res1) => {
+            return res.json(res1)
+        })
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+})
+
+// GET 1 RECORD
+inventoryRouter.get('/:itemName', async (req, res) => {
+
+    const { itemName } = req.params;
+
+    try {
+        const data = sql.query(`SELECT picture, serialNumber, itemName, quantity
+                                FROM warehouse
+                                WHERE itemName = '${itemName}'`);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -94,7 +113,7 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
         //     .input('ImageData', sql.VarBinary(sql.MAX), imageData)
         //     .query('INSERT INTO Images (ImageData) VALUES (@ImageData)');
         sql.query(`INSERT INTO warehouse (itemName, quantity, serialNumber, picture)
-                   VALUES ('${name}', ${serial}, ${quantity}, '${picture}')`);
+                   VALUES ('${name}', ${quantity}, ${serial}, '${picture}')`);
 
         res.send('Image uploaded and saved to database');
     } catch (err) {
@@ -141,7 +160,7 @@ inventoryRouter.delete('/:itemName', async (req, res) => {
     try {
         const { itemName } = req.params;
         // Replace this with your actual SQL query to delete the item
-        await sql.query(`DELETE FROM warehouse WHERE itemName = ${itemName}`);
+        await sql.query(`DELETE FROM warehouse WHERE itemName = '${itemName}'`);
         res.status(200).json({ message: 'Item deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -192,6 +211,38 @@ inventoryRouter.put('/lowstock', async (req, res) => {
         res.send({message : error.message});
     }
 
+})
+
+inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => {
+
+    const oldItemName = req.params.itemName;
+    // const picture = req.file ? req.file.filename : req.body.picture
+    const itemName = req.body.itemName;
+    const serialNumber = req.body.serialNumber;
+    const quantity = req.body.quantity
+
+    try {
+        sql.query(`UPDATE warehouse
+            SET itemName = '${itemName}',
+                serialNumber = ${serialNumber},
+                quantity = ${quantity},
+                picture = '${picture}'
+            WHERE itemName = '${oldItemName}'`);
+
+        sql.query(`UPDATE orders
+            SET itemName = '${itemName}'
+            WHERE itemName = '${oldItemName}'`);
+
+        sql.query(`UPDATE transferItems
+            SET itemName = '${itemName}'
+            WHERE itemName = '${oldItemName}'`);
+
+            res.send({message : "success"});
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
 })
 
 

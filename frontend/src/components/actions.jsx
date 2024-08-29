@@ -2,17 +2,27 @@
 import React, { useEffect, useState } from 'react';
 import { MdOutlineAddBox, MdModeEditOutline, MdDelete} from 'react-icons/md';
 import axios from 'axios';
+import Confirmation from './confirmation';
+import { useNavigate } from 'react-router-dom';
 
-const Actions = ({toDelete}) => {
+const Actions = ({toDelete, toEdit}) => {
+  const navigate = useNavigate();
   const [deleteItemName, setDeleteItemName] = useState(toDelete);
+  const [editItemName, setEditItemName] = useState(toEdit);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const handleDelete = () => {
       
       axios
-        .delete(`http://localhost:3000/inventory/'${encodeURIComponent(deleteItemName)}'`)
+        .delete(`http://localhost:3000/inventory/${encodeURIComponent(deleteItemName)}`)
         .catch((error) => {
           console.log("Error deleting item: " + error);
         });
+        navigate(`/inventory`)
+  }
+
+  const handleEdit = () => {
+    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}`)
   }
 
   return (
@@ -30,8 +40,14 @@ const Actions = ({toDelete}) => {
     // </select>
     <div className='inventory_actions'>
       <MdOutlineAddBox title='Add'/>
-      <MdModeEditOutline title='Edit'/>
-      <MdDelete onClick={handleDelete} title='Delete' />
+      <MdModeEditOutline 
+        title='Edit'
+        onClick={handleEdit}/>
+      <MdDelete onClick={() => setIsConfirmationOpen(true)} title='Delete' />
+      <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleDelete}/>
     </div>
 
   );

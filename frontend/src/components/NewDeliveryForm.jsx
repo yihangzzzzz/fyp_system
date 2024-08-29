@@ -1,6 +1,9 @@
 import React from 'react';
 
 const NewDeliveryForm = ({ formData, setFormData }) => {
+
+  formData.date = new Date().toISOString().split('T')[0];
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({

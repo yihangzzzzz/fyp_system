@@ -8,9 +8,9 @@ import Confirmation from '../components/confirmation'
 
 const NewItem = ({}) => {
 
-  const [picture, setPicture] = useState();  
-  const [loading, setLoading] = useState(false);
-  const [newItem, setNewItem] = useState({picture: '', name: '', serial: null, quantity: null});
+    const [picture, setPicture] = useState();  
+    const [loading, setLoading] = useState(false);
+    const [newItem, setNewItem] = useState({picture: '', name: '', serial: null, quantity: null});
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
@@ -46,6 +46,8 @@ const NewItem = ({}) => {
         console.log("Error adding item: " + error);
         setLoading(false);
       });
+
+      navigate('/inventory');
     };
 
     const handleNewItemChange = (e, info) => {
@@ -112,9 +114,13 @@ const NewItem = ({}) => {
                     style={{ outline: '2px solid black' }}
                   />
         </div>
-        <button className="submit-button" type="submit" onClick={handleAddItem}>Submit</button>
+        <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
         </div>
         </div>
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleAddItem}/>
       </div>
     );
   }

@@ -162,7 +162,8 @@ orderRouter.put('/updatewarehouse', upload.single('pdf'), async (req, res) => {
                 WHERE itemName = '${item.itemName}'`);
 
             sql.query(`UPDATE warehouse
-                SET quantity = quantity + ${item.quantity}
+                SET quantity = quantity + ${item.quantity},
+                    ordered = ordered - ${item.quantity}
                 WHERE itemName = '${item.itemName}'`);
         })
 

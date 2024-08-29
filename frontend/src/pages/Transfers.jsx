@@ -97,6 +97,7 @@ const Transfers = () => {
                               <th style={{ fontWeight: 'bold' }}>Recipient</th>
                               <th style={{ fontWeight: 'bold' }}>Email</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
+                              {/* <th style={{ fontWeight: 'bold' }}>Description</th> */}
                               <th style={{ fontWeight: 'bold' }}>Items</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
                           </tr>
@@ -120,8 +121,10 @@ const Transfers = () => {
                                                         <td rowSpan={rowSpan}>{formattedDate}</td>
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
                                                         <td rowSpan={rowSpan}>{item.email}</td>
+                                                        {/* <td rowSpan={rowSpan}>{item.description}</td> */}
                                                         <td rowSpan={rowSpan}>
                                                         <select
+                                                            disabled={item.status === "Acknowledged"} 
                                                             value={item.status}
                                                             onChange={(e) => {
                                                                 setStautsChange({status: e.target.value, id: item.transferID, items: itemsArray});

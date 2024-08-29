@@ -101,10 +101,12 @@ const Orders = () => {
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
             </div>
-            <button onClick={() => setIsModalOpen(true)} disabled={selectedRows.length === 0} className='acknowledgeButton'>
-          Acknowledge
-        </button>
-      {loading ? (
+            {selectedRows.length > 0 && (
+              <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+                Acknowledge
+              </button>
+            )}
+           {loading ? (
                 <p>Loading...</p>
             ) : (
                 <div className="inventory_table">
@@ -134,6 +136,7 @@ const Orders = () => {
                                             type="checkbox"
                                             checked={selectedRows.includes(item)}
                                             onChange={() => handleRowSelect(item)}
+                                            disabled={item.status === "Fulfilled"} 
                                           />
                                         </td>
                                         <td>{item.itemName}</td>

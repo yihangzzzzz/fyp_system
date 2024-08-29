@@ -6,6 +6,7 @@ import Actions from "../components/actions";
 import Modal from "../components/modal";
 import Navbar from '../components/navbar';
 import NewItemForm from "../components/NewDeliveryForm";
+import Confirmation from "../components/confirmation";
 
 const Inventory = () => {
     const [inventory, setInventory] = useState([]);
@@ -108,7 +109,7 @@ const Inventory = () => {
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td> <img src={"http://localhost:3000/images/" + item.picture} /></td>
+                              <td> <img width="100" height="100" src={"http://localhost:3000/images/" + item.picture} /></td>
                               <td>{item.itemName}</td>
                               <td>{item.serialNumber}</td>
                               {item.quantity < item.lowStock ? (
@@ -122,7 +123,8 @@ const Inventory = () => {
                               {editingOrderId === index ? ( <h1>pls</h1>
                                 ) : (
                                     <Actions
-                                    toDelete={item.itemName}/>
+                                    toDelete={item.itemName}
+                                    toEdit={item.itemName}/>
                                     // <Actions/>
                                 )}
                               </td>
@@ -132,12 +134,6 @@ const Inventory = () => {
                   </table>
                 </div>
             )}
-            {/* <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={(newitem) => {handleAddItem(newitem);}}
-        FormComponent={NewItemForm}
-      /> */}
       </div>
 
     );

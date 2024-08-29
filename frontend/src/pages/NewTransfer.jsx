@@ -178,7 +178,7 @@ const NewTransfer = ({}) => {
               <thead>
                 <tr>
                   <th>Item</th>
-                  <th>Quantity</th>
+                  <th>Quantity to Transfer</th>
                 </tr>
               </thead>
               <tbody>

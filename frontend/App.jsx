@@ -9,6 +9,8 @@ import NewOrder from './src/pages/NewOrder'
 import LowStock from './src/pages/LowStock'
 import NewTransfer from './src/pages/NewTransfer'
 import NewItem from './src/pages/NewItem'
+import EditItem from './src/pages/EditItem'
+import ViewPDF from './src/pages/ViewPDF'
 
 export const App = () => {
   return (
@@ -21,6 +23,8 @@ export const App = () => {
         <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
         <Route path = '/inventory/lowstock' element = {<LowStock/>} />
         <Route path = '/inventory/newitem' element = {<NewItem/>} />
+        <Route path = '/inventory/edititem/:itemName' element={<EditItem />} />
+        <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} />
       </Routes>
   );
 };
