@@ -99,8 +99,8 @@ export const EditItem = () => {
                     <h5>Quantity</h5>
                     <input
                         type="number"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(e.target.value, 'quantity')}
+                        value={item.cabinet}
+                        onChange={(e) => handleItemChange(e.target.value, 'cabinet')}
                         style={{ outline: '2px solid black' }}
                     />
                 </div>

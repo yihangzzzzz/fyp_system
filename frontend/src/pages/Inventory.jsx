@@ -101,7 +101,8 @@ const Inventory = () => {
                               <th style={{ fontWeight: 'bold' }}>Picture</th>
                               <th style={{ fontWeight: 'bold' }}>Item Name</th>
                               <th style={{ fontWeight: 'bold' }}>Serial Number</th>
-                              <th style={{ fontWeight: 'bold' }}>Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Cabinet</th>
+                              <th style={{ fontWeight: 'bold' }}>Counter</th>
                               <th style={{ fontWeight: 'bold' }}>Ordered</th>
                               <th style={{ fontWeight: 'bold' }}>Actions</th>
                           </tr>
@@ -112,12 +113,12 @@ const Inventory = () => {
                               <td> <img width="100" height="100" src={"http://localhost:3000/images/" + item.picture} /></td>
                               <td>{item.itemName}</td>
                               <td>{item.serialNumber}</td>
-                              {item.quantity < item.lowStock ? (
-                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.quantity}</td>
+                              {item.cabinet < item.lowStock ? (
+                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.cabinet}</td>
                               ) : (
-                                <td>{item.quantity}</td>
+                                <td>{item.cabinet}</td>
                               )}
-                              
+                              <td>{item.counter}</td>
                               <td>{item.ordered}</td>
                               <td>
                               {editingOrderId === index ? ( <h1>pls</h1>

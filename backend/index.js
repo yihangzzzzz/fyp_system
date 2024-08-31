@@ -5,17 +5,16 @@ import sql from "mssql";
 import { PORT } from './config.js';
 import inventoryRouter from './routes/inventoryRoute.js';
 import transferRouter from './routes/transferRoute.js';
-import itemRouter from "./routes/itemRoute.js";
 import orderRouter from './routes/orderRoute.js';
-import poRouter from "./routes/poRoute.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const sqlConfig = {
     user: "testuser",
     password: '1234',
-    // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    server: 'YIHANG\\SQLEXPRESS',
+    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+    // server: 'YIHANG\\SQLEXPRESS',
+    // server: 'MDPADMIN\\SQLEXPRESS',
     database: 'inventory',
     driver: 'msnodesqlv8',
     options: {
@@ -39,11 +38,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-app.use('/hardware', itemRouter);
-app.use('/po', poRouter);
-app.use('/order', orderRouter);
-
 
 let pool;
 

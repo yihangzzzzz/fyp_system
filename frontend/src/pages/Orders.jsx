@@ -69,7 +69,7 @@ const Orders = () => {
       const itemsToUpdate = {date: formData.date, po: formData.po, pdf: formData.pdf, items: selectedRows}
 
       await axios
-      .put('http://localhost:3000/orders/updatewarehouse', itemsToUpdate, {
+      .put('http://localhost:3000/orders/fulfillorder', itemsToUpdate, {
         headers: {
           "Content-Type": "multipart/form-data"
         }

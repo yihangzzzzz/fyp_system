@@ -8,18 +8,9 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sqlConfig = {
-    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    database: 'inventory',
-    driver: 'msnodesqlv8',
-    options: {
-        // encrypt: false,
-        // trustServerCertificate: true,
-        trustedConnection: true
-    }
-};
-
 const orderRouter = express.Router();
+
+// ========================== GET =============================================
 
 // GETTING ALL RECORDS
 orderRouter.get('/', async (req, res) => {
@@ -38,12 +29,6 @@ orderRouter.get('/', async (req, res) => {
     }
 
     try {
-        // const pool = req.pool;
-        // const data = pool.request().query(query)
-        // data.then((res1) => {
-        //     return res.json(res1)
-
-        // })
         const data = sql.query(query);
         data.then((res1) => {
             return res.json(res1)
@@ -54,6 +39,8 @@ orderRouter.get('/', async (req, res) => {
         res.send({message : error.message});
     }
 })
+
+// GET 1 PDF
 
 orderRouter.get('/pdf/:filename', (req, res) => {
     const { filename } = req.params;
@@ -69,13 +56,10 @@ orderRouter.get('/pdf/:filename', (req, res) => {
     });
   });
 
-// ADDING NEW RECORD
-orderRouter.post('/', async (req, res) => {
+// ================================ POST ==================================================
 
-    // const {name, date, quantity, refno} = req.body;
-    // const name = req.body.name;
-    // const serial = req.body.serial;
-    // const quantity = req.body.quantity;
+// ADDING NEW RECORD
+orderRouter.post('/neworder', async (req, res) => {
 
     const orders = req.body;
    
@@ -143,8 +127,10 @@ orderRouter.post('/', async (req, res) => {
 
 // })
 
+// =================================== PUT ================================================
+
 // UPDATE ONE RECORD
-orderRouter.put('/updatewarehouse', upload.single('pdf'), async (req, res) => {
+orderRouter.put('/fulfillorder', upload.single('pdf'), async (req, res) => {
 
 
     const date = req.body.date;
@@ -162,13 +148,10 @@ orderRouter.put('/updatewarehouse', upload.single('pdf'), async (req, res) => {
                 WHERE itemName = '${item.itemName}'`);
 
             sql.query(`UPDATE warehouse
-                SET quantity = quantity + ${item.quantity},
+                SET cabinet = cabinet + ${item.quantity},
                     ordered = ordered - ${item.quantity}
                 WHERE itemName = '${item.itemName}'`);
         })
-
-
-
         res.status(200).json({ message: 'Items updated successfully' });
 
     } catch (error) {

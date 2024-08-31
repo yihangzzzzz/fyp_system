@@ -93,71 +93,38 @@ transferRoute.get('/labs', async (req, res) => {
 })
 
 // ADDING NEW TRANSFER RECORD
-transferRoute.post('/', async (req, res) => {
+transferRoute.post('/newtransfer', async (req, res) => {
 
     const {info, items} = req.body;
-    // const {destination, date, recipient, email} = req.body;
+    let status = null;
 
-    // let transferID;
+    if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
+        status = "Acknowledged"
+    }
 
-    // sql.query(`INSERT INTO transfers (date, destination, recipient) 
-    //     VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
-    //     SELECT SCOPE_IDENTITY() AS transferID`)
-    //     .then((res1) => {
-    //         transferID = res1;
-    //     });
-
-    // res.status(200).json({ message: transferID });
-
-    // const transferID = result.recordset[0].transferID;
-
-    // // const name = req.body.name;
-    // // const serial = req.body.serial;
-    // // const quantity = req.body.quantity;
     try {
-    
-        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email) 
-        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}')
+        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email, status) 
+        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
         SELECT SCOPE_IDENTITY() AS transferID`)
 
-        sendEmail(info, items);
-
-
-// EMAIL PART ========================================================================================
-        // const mailOptions = {
-        //     from: 'fyp.inventory.system@gmail.com',
-        //     to: 'yihangzzzzz@gmail.com',
-        //     subject: 'Sending Email using Node.js',
-        //     text: 'That was easy!'
-        // };
-        
-        // req.transporter.sendMail(mailOptions, function(error, info){
-        //     if (error) {
-        //     console.log('Error:', error);
-        //     } else {
-        //     console.log('Email sent:', info.response);
-        //     }
-        // });
-// ===================================================================================================
+        // sendEmail(info, items);
 
         result.then((res1) => {
             return res.json(res1)
-    })
-    
-    // res.status(200).json({ message: 'Items updated successfully' });
-    
+        })
     } catch (error) {
         console.log("error is " + error.message);
         res.send({message : error.message});
     };
 })
 
+
 // ADDING NEW TRANSFER ITEMS RECORD
-transferRoute.post('/:transferID', async (req, res) => {
+transferRoute.post('/newtransfer/additems', async (req, res) => {
 
     // const {info, items} = req.body;
-
-    const transferID = parseInt(req.params.transferID);
+    const transferID = req.query.transferID;
+    // const transferID = parseInt(req.params.transferID);
     const items = req.body;
 
     // res.status(200).json({ message: transferID });
@@ -211,10 +178,13 @@ transferRoute.delete('/:itemName', async (req, res) => {
     }
 });
 
+// =========================== PUT =========================================
 
 // UPDATE ONE RECORD
 transferRoute.put('/', async (req, res) => {
-   
+
+    const type = req.query.type;
+
     try {
 
         await sql.query(`UPDATE transfers
@@ -226,7 +196,7 @@ transferRoute.put('/', async (req, res) => {
             req.body.items.forEach (item => {
                 const [itemName, quantity] = item.split(':');
                 sql.query(`UPDATE warehouse 
-                    SET quantity = quantity - ${quantity}
+                    SET cabinet = cabinet + ${quantity}
                     WHERE itemName = '${itemName}'`);
             })
         }
@@ -236,6 +206,46 @@ transferRoute.put('/', async (req, res) => {
         //     SET status = 'Cancelled'
         //     WHERE transferID = 3`);
 
+
+        res.status(200).json({ message: 'Items updated successfully' });
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+
+})
+
+transferRoute.put('/updateinventory', async (req, res) => {
+
+    const type = req.query.type;
+    // res.send({message : type});
+    
+    try {
+
+        if (type === "counter") {
+
+            req.body.forEach (item => {
+                sql.query(`UPDATE warehouse 
+                    SET cabinet = cabinet - ${item.quantity},
+                        counter = counter + ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            })
+        }
+        
+        else if (type === "cabinet") {
+
+            req.body.forEach (item => {
+                sql.query(`UPDATE warehouse 
+                    SET cabinet = cabinet + ${item.quantity},
+                        counter = counter - ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            })
+
+            await sql.query(`UPDATE transfers
+                SET status = 'Acknowledged'
+                WHERE transferID = ${req.body.id}`);
+        }
 
         res.status(200).json({ message: 'Items updated successfully' });
 

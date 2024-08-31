@@ -8,32 +8,9 @@ import { json } from 'express';
 import { log } from 'console';
 import upload from '../functions/picture.js';
 
-
-const sqlConfig = {
-    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    database: 'inventory',
-    driver: 'msnodesqlv8',
-    options: {
-        // encrypt: false,
-        // trustServerCertificate: true,
-        trustedConnection: true
-    }
-};
-
-// const storage = multer.diskStorage({
-//     destination: (req, fily, cb) => {
-//       cb(null, 'images');
-//     },
-//     filename: (req, file, cb) => {
-//       cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
-//     },
-//   });
-
-//   const upload = multer ({
-//     storage: storage
-//   })
-
 const inventoryRouter = express.Router();
+
+// ======================================= GET =============================================
 
 // GETTING ALL RECORDS
 inventoryRouter.get('/', async (req, res) => {
@@ -48,19 +25,13 @@ inventoryRouter.get('/', async (req, res) => {
             query = 'select * from warehouse order by serialNumber';
             break;
         case 'quantity':
-            query = 'select * from warehouse order by quantity';
+            query = 'select * from warehouse order by cabinet';
             break;
         default:
             query = 'select * from warehouse';
     }
 
     try {
-        // const pool = req.pool;
-        // const data = pool.request().query(query)
-        // data.then((res1) => {
-        //     return res.json(res1)
-
-        // })
         sql.query(query)
         .then((res1) => {
             return res.json(res1)
@@ -78,7 +49,7 @@ inventoryRouter.get('/:itemName', async (req, res) => {
     const { itemName } = req.params;
 
     try {
-        const data = sql.query(`SELECT picture, serialNumber, itemName, quantity
+        const data = sql.query(`SELECT picture, serialNumber, itemName, cabinet, counter
                                 FROM warehouse
                                 WHERE itemName = '${itemName}'`);
         data.then((res1) => {
@@ -91,6 +62,9 @@ inventoryRouter.get('/:itemName', async (req, res) => {
     }
 })
 
+// ========================= POST ======================================================================
+
+// ADD 1 ITEM
 inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 
     try {
@@ -98,21 +72,7 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
         const {name, serial, quantity} = req.body;
         const picture = req.file.filename;
 
-        // res.status(200).json({ message: 'Item added successfully', image: req.file });
-        // const file = req.file;
-        // res.send('Image uploaded and saved to database', file.filename);
-        // Read the uploaded file data
-        // const arrayBuffer = e.arrayBuffer();
-        
-
-        // Create a connection pool
-        // const pool = await sql.connect(config);
-
-        // Insert the binary data into the database
-        // await pool.request()
-        //     .input('ImageData', sql.VarBinary(sql.MAX), imageData)
-        //     .query('INSERT INTO Images (ImageData) VALUES (@ImageData)');
-        sql.query(`INSERT INTO warehouse (itemName, quantity, serialNumber, picture)
+        sql.query(`INSERT INTO warehouse (itemName, cabinet, serialNumber, picture)
                    VALUES ('${name}', ${quantity}, ${serial}, '${picture}')`);
 
         res.send('Image uploaded and saved to database');
@@ -124,42 +84,43 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 
 
 // ADDING NEW RECORD
-inventoryRouter.post('/', async (req, res) => {
+// inventoryRouter.post('/', async (req, res) => {
 
-    const name = req.body.name;
-    const serial = req.body.serial;
-    const quantity = req.body.quantity;
-    const picture = req.file.buffer;
-    // const name = req.body.name;
-    // const serial = req.body.serial;
-    // const quantity = req.body.quantity;
+//     const name = req.body.name;
+//     const serial = req.body.serial;
+//     const quantity = req.body.quantity;
+//     const picture = req.file.buffer;
+//     // const name = req.body.name;
+//     // const serial = req.body.serial;
+//     // const quantity = req.body.quantity;
 
-    try {
-        // const pool = req.pool;
-        // const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
-        //                VALUES (${name}, ${serial}, ${quantity})`;
-            const query = `INSERT INTO warehouse (picture, itemName, serialNumber, quantity) 
-                    VALUES (${picture}, '${name}', ${serial}, ${quantity})`;
-        // const request = pool.request()
-        // request.input('name', sql.NVarChar, name);
-        // request.input('serial', sql.NVarChar, serial);
-        // request.input('quantity', sql.Int, quantity);
+//     try {
+//         // const pool = req.pool;
+//         // const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
+//         //                VALUES (${name}, ${serial}, ${quantity})`;
+//             const query = `INSERT INTO warehouse (picture, itemName, serialNumber, cabinet) 
+//                     VALUES (${picture}, '${name}', ${serial}, ${quantity})`;
+//         // const request = pool.request()
+//         // request.input('name', sql.NVarChar, name);
+//         // request.input('serial', sql.NVarChar, serial);
+//         // request.input('quantity', sql.Int, quantity);
 
-        // request.query(query);
-        sql.query(query);
-        res.status(200).json({ message: 'Item added successfully' });
+//         // request.query(query);
+//         sql.query(query);
+//         res.status(200).json({ message: 'Item added successfully' });
 
-    } catch (error) {
-        console.log("error is " + error.message);
-        res.send({message : error.message});
-    }
-})
+//     } catch (error) {
+//         console.log("error is " + error.message);
+//         res.send({message : error.message});
+//     }
+// })
+
+// ================================= DELETE ====================================================
 
 // DELETE ONE RECORD
 inventoryRouter.delete('/:itemName', async (req, res) => {
     try {
         const { itemName } = req.params;
-        // Replace this with your actual SQL query to delete the item
         await sql.query(`DELETE FROM warehouse WHERE itemName = '${itemName}'`);
         res.status(200).json({ message: 'Item deleted successfully' });
     } catch (err) {
@@ -168,7 +129,9 @@ inventoryRouter.delete('/:itemName', async (req, res) => {
     }
 });
 
-// UPDATE ONE RECORD
+// ===================================== PUT ===================================================
+
+// UPDATE ORDERED QUANTITY
 inventoryRouter.put('/order', async (req, res) => {
 
     const orders = req.body;
@@ -193,7 +156,7 @@ inventoryRouter.put('/order', async (req, res) => {
 
 })
 
-// UPDATE ONE RECORD
+// UPDATE LOW STOCK
 inventoryRouter.put('/lowstock', async (req, res) => {
 
     const {name, newLowStock} = req.body;
@@ -213,19 +176,20 @@ inventoryRouter.put('/lowstock', async (req, res) => {
 
 })
 
+// UPDATE 1 ITEM DETAILS
 inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => {
 
     const oldItemName = req.params.itemName;
-    // const picture = req.file ? req.file.filename : req.body.picture
+    const picture = req.file ? req.file.filename : req.body.picture
     const itemName = req.body.itemName;
     const serialNumber = req.body.serialNumber;
-    const quantity = req.body.quantity
+    const quantity = req.body.cabinet
 
     try {
         sql.query(`UPDATE warehouse
             SET itemName = '${itemName}',
                 serialNumber = ${serialNumber},
-                quantity = ${quantity},
+                cabinet = ${quantity},
                 picture = '${picture}'
             WHERE itemName = '${oldItemName}'`);
 

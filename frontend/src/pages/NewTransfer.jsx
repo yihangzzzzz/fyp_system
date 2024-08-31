@@ -12,7 +12,7 @@ const NewTransfer = ({}) => {
     // const [transferID, setTransferID] = useState();
     // const [selectedItem, setSelectedItem] = useState('');
     const [orderItems, setOrderItems] = useState([]);
-    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '' });
+    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: null, email: null, status: null });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
@@ -60,27 +60,14 @@ const NewTransfer = ({}) => {
       setTransferInfo(prevState => ({
         ...prevState,
         [info]: e  // Replace with the new value for destination
-    }));
-    // console.log('New Destination:', transferInfo.destination);
-        // switch (info) {
-        //   case 'destination':
-        //     setTransferInfo
-            
-        // }
+      }));
     }
-  
-    // const handleAddToOrder = () => {
-    //   if (selectedItem) {
-    //     setOrderItems([...orderItems, { name: selectedItem, date: '', quantity: '' }]);
-    //     setSelectedItem(''); // Clear the selection after adding
-    //   }
-    // };
   
     const handleInputChange = (index, field, value) => {
       const updatedItems = [...orderItems];
       updatedItems[index][field] = value;
       setOrderItems(updatedItems);
-    };
+    }
 
     const handleDeleteOrderItem = (indexToRemove) => {
       const updatedItems = orderItems.filter((item, index) => index !== indexToRemove);
@@ -89,26 +76,45 @@ const NewTransfer = ({}) => {
 
     const handleSubmitTransfer = async () => {
       const newTransfer = {info: transferInfo, items: orderItems}
-      let transferID;
+      let transferID, transferType;
+
       try {
         await axios
-        .post('http://localhost:3000/transfers', newTransfer)
+        .post('http://localhost:3000/transfers/newtransfer', newTransfer)
         .then((res) => {
-          // setTransferID(res.data.recordset[0].transferID);
           transferID = res.data.recordset[0].transferID
         });
-
-        await axios
-        .post(`http://localhost:3000/transfers/${encodeURIComponent(transferID)}`, orderItems)
-
-
-
-        console.log("submit button pressed");
       } catch (error) {
         console.error('Error updating items:', error);
       }
+
+      try {
+        await axios
+        .post(`http://localhost:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, orderItems)
+      } catch (error) {
+        console.error('Error updating items:', error);
+      }
+
+      try {
+        if (transferInfo.destination.includes('Counter')) {
+          console.log("coutner got run");
+          console.log(orderItems);
+          await axios
+          .put(`http://localhost:3000/transfers/updateinventory?type=counter`, orderItems)
+        }
+        else if (transferInfo.destination.includes('Cabinet')) {
+          await axios
+          .put(`http://localhost:3000/transfers/updateinventory?type=cabinet`, orderItems)
+        }
+        
+      } catch (error) {
+        console.error('Error updating items:', error);
+      }
+
       navigate('/transfers');
-    };
+    }
+      
+  
 
     return (
       <div>
@@ -139,25 +145,28 @@ const NewTransfer = ({}) => {
                     onChange={(e) => handleTransferInfoChange(e.target.value, 'date')}
                   />
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Recipient</h5>
-                  <input
-                    type="text"
-                    value={transferInfo.recipient}
-                    onChange={(e) => handleTransferInfoChange(e.target.value, 'recipient')}
-                    style={{ outline: '2px solid black' }}
-                  />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Email</h5>
-                  <input
-                    type="text"
-                    value={transferInfo.email}
-                    onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
-                    style={{ outline: '2px solid black' }}
-                  />
-              </div>
-              
+              {!(transferInfo.destination.includes('Counter') || transferInfo.destination.includes('Cabinet')) && (
+                <div className='transfer_info'>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <h5>Recipient</h5>
+                    <input
+                      type="text"
+                      value={transferInfo.recipient}
+                      onChange={(e) => handleTransferInfoChange(e.target.value, 'recipient')}
+                      style={{ outline: '2px solid black' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <h5>Email</h5>
+                    <input
+                      type="text"
+                      value={transferInfo.email}
+                      onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
+                      style={{ outline: '2px solid black' }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
           {items.length > 0 && (
@@ -206,6 +215,7 @@ const NewTransfer = ({}) => {
         onSubmit={handleSubmitTransfer}/>
       </div>
     );
-  }
+}
+  
   
   export default NewTransfer;

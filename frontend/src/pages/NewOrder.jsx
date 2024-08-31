@@ -62,7 +62,7 @@ const NewOrder = ({}) => {
 
       try {
         await axios
-        .post('http://localhost:3000/orders', orderItems)
+        .post('http://localhost:3000/orders/neworder', orderItems)
         
       } catch (error) {
         console.error('Error updating items:', error);
