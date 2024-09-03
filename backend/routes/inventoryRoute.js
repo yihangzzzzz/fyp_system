@@ -182,15 +182,22 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
     const oldItemName = req.params.itemName;
     const picture = req.file ? req.file.filename : req.body.picture
     const itemName = req.body.itemName;
-    const serialNumber = req.body.serialNumber;
-    const quantity = req.body.cabinet
+    // const serialNumber = req.body.serialNumber;
+    const cabinet = req.body.cabinet;
+    const counter = req.body.counter;
+    const description = req.body.description;
+    const lostDamaged = req.body.lostDamaged;
+    const remarks = req.body.remarks;
 
     try {
         sql.query(`UPDATE warehouse
             SET itemName = '${itemName}',
-                serialNumber = ${serialNumber},
-                cabinet = ${quantity},
-                picture = '${picture}'
+                description = '${description}',
+                cabinet = ${cabinet},
+                counter = ${counter},
+                picture = '${picture}',
+                lostDamaged = ${lostDamaged},
+                remarks = '${remarks}'
             WHERE itemName = '${oldItemName}'`);
 
         sql.query(`UPDATE orders

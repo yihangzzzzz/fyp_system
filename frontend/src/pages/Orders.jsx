@@ -66,8 +66,8 @@ const Orders = () => {
     const handleNewDelivery = async () => {
       setIsModalOpen(false);
 
-      const itemsToUpdate = {date: formData.date, po: formData.po, pdf: formData.pdf, items: selectedRows}
-
+      const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
+      console.log(itemsToUpdate);
       await axios
       .put('http://localhost:3000/orders/fulfillorder', itemsToUpdate, {
         headers: {
@@ -115,20 +115,20 @@ const Orders = () => {
                           <tr>
                               <th style={{ fontWeight: 'bold' }}></th>
                               <th style={{ fontWeight: 'bold' }}>Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Order Date</th>
+                              <th style={{ fontWeight: 'bold' }}>PO Date</th>
+                              <th style={{ fontWeight: 'bold' }}>PO Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
-                              <th style={{ fontWeight: 'bold' }}>Reference No.</th>
-                              <th style={{ fontWeight: 'bold' }}>PO No.</th>
-                              <th style={{ fontWeight: 'bold' }}>Delivery Date</th>
+                              <th style={{ fontWeight: 'bold' }}>DO Date</th>
+                              <th style={{ fontWeight: 'bold' }}>DO Number</th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredInventory.map((item, index) => {
-                                const orderdate = new Date(item.orderDate);
-                                const formattedOrderDate = `${String(orderdate.getDate()).padStart(2, '0')}/${String(orderdate.getMonth() + 1).padStart(2, '0')}/${orderdate.getFullYear()}`;
-                                const deliveryDate = new Date(item.deliveryDate);
-                                const formattedDeliveryDate = `${String(deliveryDate.getDate()).padStart(2, '0')}/${String(deliveryDate.getMonth() + 1).padStart(2, '0')}/${deliveryDate.getFullYear()}`;
+                                const poDate = new Date(item.poDate);
+                                const formattedPoDate = `${String(poDate.getDate()).padStart(2, '0')}/${String(poDate.getMonth() + 1).padStart(2, '0')}/${poDate.getFullYear()}`;
+                                const doDate = new Date(item.doDate);
+                                const formattedDoDate = `${String(doDate.getDate()).padStart(2, '0')}/${String(doDate.getMonth() + 1).padStart(2, '0')}/${doDate.getFullYear()}`;
                                 return ((
                                     <tr key={index}>
                                         <td>
@@ -140,7 +140,12 @@ const Orders = () => {
                                           />
                                         </td>
                                         <td>{item.itemName}</td>
-                                        <td>{formattedOrderDate}</td>
+                                        <td>{formattedPoDate}</td>
+                                        <td>
+                                          <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                            {item.poNumber}
+                                          </a>
+                                        </td>
                                         <td>{item.quantity}</td>
                                         <td style={{
                                           color: 
@@ -152,13 +157,13 @@ const Orders = () => {
                                               ? '#D2222D'
                                               : 'black', // default color
                                         }}>{item.status}</td>
-                                        <td>{item.referenceNumber}</td>
+                                        <td>{(item.doDate === null) ? (item.doDate) : (formattedDoDate)}</td>
                                         <td>
-                                          <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
-                                            {item.poNumber}
+                                          <a href={`/orders/pdf/${item.doDocument}`} target="_blank" rel="noopener noreferrer">
+                                            {item.doNumber}
                                           </a>
                                         </td>
-                                        <td>{(item.deliveryDate === null) ? (item.deliveryDate) : (formattedDeliveryDate)}</td>
+                                        
                                     </tr>
                                 ))
                           })}

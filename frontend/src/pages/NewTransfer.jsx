@@ -9,10 +9,8 @@ const NewTransfer = ({}) => {
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     const [labs, setLabs] = useState([]);
-    // const [transferID, setTransferID] = useState();
-    // const [selectedItem, setSelectedItem] = useState('');
-    const [orderItems, setOrderItems] = useState([]);
-    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: null, email: null, status: null });
+    const [transferItems, setTransferItems] = useState([]);
+    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '' });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
@@ -45,15 +43,8 @@ const NewTransfer = ({}) => {
       }
     };
   
-    const handleAddItem = () => {
-      fetchItems();
-    };
-  
-    const handleSelectChange = (event) => {
-      // setSelectedItem(event.target.value);
-      const today = new Date().toISOString().split('T')[0];
-      setOrderItems([...orderItems, { name: event.target.value, quantity: 0 }]);
-      // setSelectedItem(''); // Clear the selection after adding
+    const handleAddTransferItem = (event) => {
+      setTransferItems([...transferItems, { name: event.target.value, quantity: 0 }]);
     };
 
     const handleTransferInfoChange = (e, info) => {
@@ -64,18 +55,18 @@ const NewTransfer = ({}) => {
     }
   
     const handleInputChange = (index, field, value) => {
-      const updatedItems = [...orderItems];
+      const updatedItems = [...transferItems];
       updatedItems[index][field] = value;
-      setOrderItems(updatedItems);
+      setTransferItems(updatedItems);
     }
 
     const handleDeleteOrderItem = (indexToRemove) => {
-      const updatedItems = orderItems.filter((item, index) => index !== indexToRemove);
-      setOrderItems(updatedItems);
+      const updatedItems = transferItems.filter((item, index) => index !== indexToRemove);
+      setTransferItems(updatedItems);
     } 
 
     const handleSubmitTransfer = async () => {
-      const newTransfer = {info: transferInfo, items: orderItems}
+      const newTransfer = {info: transferInfo, items: transferItems}
       let transferID, transferType;
 
       try {
@@ -90,21 +81,19 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`http://localhost:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, orderItems)
+        .post(`http://localhost:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
       } catch (error) {
         console.error('Error updating items:', error);
       }
 
       try {
         if (transferInfo.destination.includes('Counter')) {
-          console.log("coutner got run");
-          console.log(orderItems);
           await axios
-          .put(`http://localhost:3000/transfers/updateinventory?type=counter`, orderItems)
+          .put(`http://localhost:3000/transfers/updateinventory?type=counter`, transferItems)
         }
         else if (transferInfo.destination.includes('Cabinet')) {
           await axios
-          .put(`http://localhost:3000/transfers/updateinventory?type=cabinet`, orderItems)
+          .put(`http://localhost:3000/transfers/updateinventory?type=cabinet`, transferItems)
         }
         
       } catch (error) {
@@ -171,7 +160,7 @@ const NewTransfer = ({}) => {
           )}
           {items.length > 0 && (
             <div>
-              <select value={x} onChange={handleSelectChange}>
+              <select value={x} onChange={handleAddTransferItem}>
                 <option value="">Add Item...</option>
                 {items.map(item => (
                   <option key={item.id} value={item.itemName}>
@@ -182,7 +171,7 @@ const NewTransfer = ({}) => {
               {/* <button onClick={handleAddToOrder}>Add to Order</button> */}
             </div>
           )}
-          {orderItems.length > 0 && (
+          {transferItems.length > 0 && (
             <table>
               <thead>
                 <tr>
@@ -191,7 +180,7 @@ const NewTransfer = ({}) => {
                 </tr>
               </thead>
               <tbody>
-                {orderItems.map((orderItem, index) => (
+                {transferItems.map((orderItem, index) => (
                   <tr key={index}>
                     <td>{orderItem.name}</td>
                     <td>

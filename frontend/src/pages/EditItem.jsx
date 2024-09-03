@@ -87,20 +87,47 @@ export const EditItem = () => {
                     />
                 </div>
                 <div className='input-box'>
-                    <h5>Serial Number</h5>
-                    <input
-                        type="number"
-                        value={item.serialNumber}
-                        onChange={(e) => handleItemChange(e.target.value, 'serialNumber')}
+                    <h5>Description</h5>
+                    <textarea
+                        type="text"
+                        value={item.description}
+                        onChange={(e) => handleItemChange(e.target.value, 'description')}
                         style={{ outline: '2px solid black' }}
                     />
                 </div>
                 <div className='input-box'>
-                    <h5>Quantity</h5>
+                    <h5>Cabinet</h5>
                     <input
                         type="number"
                         value={item.cabinet}
                         onChange={(e) => handleItemChange(e.target.value, 'cabinet')}
+                        style={{ outline: '2px solid black' }}
+                    />
+                </div>
+                <div className='input-box'>
+                    <h5>Counter</h5>
+                    <input
+                        type="number"
+                        value={item.counter}
+                        onChange={(e) => handleItemChange(e.target.value, 'counter')}
+                        style={{ outline: '2px solid black' }}
+                    />
+                </div>
+                <div className='input-box'>
+                    <h5>Lost/Damaged</h5>
+                    <input
+                        type="number"
+                        value={item.lostDamaged}
+                        onChange={(e) => handleItemChange(e.target.value, 'lostDamaged')}
+                        style={{ outline: '2px solid black' }}
+                    />
+                </div>
+                <div className='input-box'>
+                    <h5>Remarks</h5>
+                    <textarea
+                        type="textarea"
+                        value={item.remarks}
+                        onChange={(e) => handleItemChange(e.target.value, 'remarks')}
                         style={{ outline: '2px solid black' }}
                     />
                 </div>

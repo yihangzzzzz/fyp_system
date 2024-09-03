@@ -59,16 +59,20 @@ orderRouter.get('/pdf/:filename', (req, res) => {
 // ================================ POST ==================================================
 
 // ADDING NEW RECORD
-orderRouter.post('/neworder', async (req, res) => {
+orderRouter.post('/neworder', upload.single('poDocument'), async (req, res) => {
 
-    const orders = req.body;
+    const info = req.body.info;
+    const orders = req.body.items;
+
+    const poDocument = req.file.filename;
+    const poDate = info.poDate;
+    const poNumber = info.poNumber;
    
     try {
         
         orders.forEach(order => {
 
             const name = order.name;
-            const date = order.date
             const quantity = order.quantity;
 
             sql.query(`UPDATE warehouse
@@ -76,8 +80,8 @@ orderRouter.post('/neworder', async (req, res) => {
                 WHERE itemName = '${name}'`);
 
             sql.query(`INSERT INTO orders 
-                (itemName, orderDate, quantity, deliveryDate)
-                VALUES ('${name}', '${date}', ${quantity}, null)`);
+                (itemName, poDate, quantity, doDate, poNumber, poDocument)
+                VALUES ('${name}', '${poDate}', ${quantity}, null, '${poNumber}', '${poDocument}')`);
 
             });
 
@@ -130,21 +134,21 @@ orderRouter.post('/neworder', async (req, res) => {
 // =================================== PUT ================================================
 
 // UPDATE ONE RECORD
-orderRouter.put('/fulfillorder', upload.single('pdf'), async (req, res) => {
+orderRouter.put('/fulfillorder', upload.single('doDocument'), async (req, res) => {
 
 
-    const date = req.body.date;
-    const po = req.body.po;
-    const pdf = req.file.filename;
+    const doDate = req.body.doDate;
+    const doNumber = req.body.doNumber;
+    const doDocument = req.file.filename;
    
     try {
 
         req.body.items.forEach( item => {
             sql.query(`UPDATE orders
-                SET poNumber = '${po}',
-                    deliveryDate = '${date}',
+                SET doNumber = '${doNumber}',
+                    doDate = '${doDate}',
                     status = 'Fulfilled',
-                    poDocument = '${pdf}'
+                    doDocument = '${doDocument}'
                 WHERE itemName = '${item.itemName}'`);
 
             sql.query(`UPDATE warehouse

@@ -15,7 +15,7 @@ const Transfers = () => {
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-    const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
+    const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
     
     useEffect(() => {
         fetchInventory();
@@ -84,7 +84,7 @@ const Transfers = () => {
                     <option value="destination">Destination</option>
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
-            </div>
+        </div>
       {loading ? (
                 <p>Loading...</p>
             ) : (

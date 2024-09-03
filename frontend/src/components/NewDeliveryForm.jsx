@@ -15,39 +15,39 @@ const NewDeliveryForm = ({ formData, setFormData }) => {
   const handlePDFInputChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      pdf: e.target.files[0],
+      doDocument: e.target.files[0],
     }));
   };
 
   return (
     <form style={{ display: 'flex', alignItems: 'left', gap: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <h5>PO Number</h5>
+        <h5>DO Number</h5>
           <input
           type="text"
-          name="po"
-          placeholder="Enter PO number"
-          value={formData.po || ''}
+          name="doNumber"
+          placeholder="Enter DO number"
+          // value={formData.doNumber || ''}
           onChange={handleInputChange}
           style={{ outline: '2px solid black' }}
           />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <h5>Delivery Date</h5>
+        <h5>DO Date</h5>
           <input
           type="date"
-          name="date"
-          placeholder="Enter delivery date"
-          value={formData.date || ''}
+          name="doDate"
+          placeholder="Enter DO date"
+          // value={formData.doDate || ''}
           onChange={handleInputChange}
           style={{ outline: '2px solid black' }}
           />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-        <h5>Upload PDF</h5>
+        <h5>Upload DO Documnet</h5>
         <input
           type="file"
-          name="pdf"
+          name="doDocument"
           accept=".pdf"
           onChange={handlePDFInputChange}
           style={{ outline: '2px solid black' }}

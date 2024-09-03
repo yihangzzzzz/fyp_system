@@ -7,9 +7,10 @@ import Confirmation from '../components/confirmation'
 
 const NewOrder = ({}) => {
     const navigate = useNavigate(); 
+    const [poDocument, setPoDocument] = useState();
     const [items, setItems] = useState([]);
-    // const [selectedItem, setSelectedItem] = useState('');
     const [orderItems, setOrderItems] = useState([]);
+    const [orderInfo, setOrderInfo] = useState({});
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
@@ -29,25 +30,18 @@ const NewOrder = ({}) => {
       }
     };
   
-    const handleAddItem = () => {
-      fetchItems();
+    const handleAddOrderInfo = (e, info) => {
+      setOrderInfo(prevState => ({
+        ...prevState,
+        [info]: e  // Replace with the new value for destination
+      }));
+    }
+
+    const handleAddOrderItem = (event) => {
+      setOrderItems([...orderItems, { name: event.target.value, date: new Date().toISOString().split('T')[0], quantity: 0 }]);
     };
   
-    const handleSelectChange = (event) => {
-      // setSelectedItem(event.target.value);
-      const today = new Date().toISOString().split('T')[0];
-      setOrderItems([...orderItems, { name: event.target.value, date: today, quantity: 0 }]);
-      // setSelectedItem(''); // Clear the selection after adding
-    };
-  
-    // const handleAddToOrder = () => {
-    //   if (selectedItem) {
-    //     setOrderItems([...orderItems, { name: selectedItem, date: '', quantity: '' }]);
-    //     setSelectedItem(''); // Clear the selection after adding
-    //   }
-    // };
-  
-    const handleInputChange = (index, field, value) => {
+    const handleEditOrderItem = (index, field, value) => {
       const updatedItems = [...orderItems];
       updatedItems[index][field] = value;
       setOrderItems(updatedItems);
@@ -60,9 +54,16 @@ const NewOrder = ({}) => {
 
     const handleSubmitOrder = async () => {
 
+      const newOrder = {poDocument: poDocument, info: orderInfo, items: orderItems}
+      console.log(newOrder);
+
       try {
         await axios
-        .post('http://localhost:3000/orders/neworder', orderItems)
+        .post('http://localhost:3000/orders/neworder', newOrder, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
         
       } catch (error) {
         console.error('Error updating items:', error);
@@ -79,10 +80,41 @@ const NewOrder = ({}) => {
           <h1 className="title">Order Form</h1>
         </div>
         <div className='order_table'>
+        <div className='transfer_info'>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
+            <h5>Upload PO Document</h5>
+            <input
+              type="file"
+              name='poDocument'
+              accept=".pdf"
+              // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
+              onChange={(e) => setPoDocument(e.target.files[0])}
+              style={{ outline: '2px solid black' }}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <h5>PO Number</h5>
+              <input
+              type="text"
+              name="poNumber"
+              onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
+              style={{ outline: '2px solid black' }}
+              />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <h5>PO Date</h5>
+              <input
+              type="date"
+              name="poDate"
+              onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
+              style={{ outline: '2px solid black' }}
+              />
+          </div>
+        </div>
           {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
           {items.length > 0 && (
             <div>
-              <select value={x} onChange={handleSelectChange}>
+              <select value={x} onChange={handleAddOrderItem}>
                 <option value="">Add Item...</option>
                 {items.map(item => (
                   <option key={item.id} value={item.itemName}>
@@ -110,14 +142,14 @@ const NewOrder = ({}) => {
                       <input
                         type="date"
                         value={orderItem.date}
-                        onChange={(e) => handleInputChange(index, 'date', e.target.value)}
+                        onChange={(e) => handleEditOrderItem(index, 'date', e.target.value)}
                       />
                     </td>
                     <td>
                       <input
                         type="number"
                         value={orderItem.quantity}
-                        onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
+                        onChange={(e) => handleEditOrderItem(index, 'quantity', Number(e.target.value))}
                       />
                     </td>
                     <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
