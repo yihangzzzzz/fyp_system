@@ -30,7 +30,7 @@ const Inventory = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://localhost:3000/inventory", {params: {sortBy: sortAtt}})
+        .get("http://www.iistesting.com:3000/inventory", {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);

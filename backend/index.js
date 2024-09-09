@@ -7,7 +7,7 @@ const inventoryRouter = require('./routes/inventoryRoute.js');
 const transferRouter = require('./routes/transferRoute.js');
 const orderRouter = require('./routes/orderRoute.js');
 const path = require('path');
-const PORT = 3500;
+const PORT = 3000;
 
 const sqlConfig = {
     user: "testuser",
