@@ -1,12 +1,15 @@
-import express from 'express';
-import sql from 'mssql';
-import { json } from 'express';
-import upload from '../functions/picture.js';
-import { fileURLToPath } from 'url';
-import path from 'path';
+const express = require('express');
+const sql = require('mssql');
+const multer = require('multer');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const path = require('path');
+const { json } = require('express');
+const { log } = require('console');
+const upload = require('../functions/picture.js');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.resolve();
 
 const orderRouter = express.Router();
 
@@ -166,4 +169,5 @@ orderRouter.put('/fulfillorder', upload.single('doDocument'), async (req, res) =
 })
 
 
-export default orderRouter;
+
+module.exports = orderRouter;

@@ -1,4 +1,4 @@
-import React from 'react';
+const React = require('react');
 
 const NewDeliveryForm = ({ formData, setFormData }) => {
 
@@ -58,5 +58,4 @@ const NewDeliveryForm = ({ formData, setFormData }) => {
     </form>
   );
 };
-
-export default NewDeliveryForm;
+module.exports = NewDeliveryForm;

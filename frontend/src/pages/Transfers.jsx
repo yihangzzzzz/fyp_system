@@ -1,10 +1,11 @@
-import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { MdOutlineAddBox } from "react-icons/md";
-import { RxCross1 } from "react-icons/rx";
-import Navbar from "../components/navbar";
-import Confirmation from '../components/confirmation'
-import { useNavigate } from 'react-router-dom';
+const axios = require('axios');
+const React = require('react');
+const { useEffect, useState } = React;
+const { MdOutlineAddBox } = require('react-icons/md');
+const { RxCross1 } = require('react-icons/rx');
+const Navbar = require('../components/navbar');
+const Confirmation = require('../components/confirmation');
+const { useNavigate } = require('react-router-dom');
 
 const Transfers = () => {
     const navigate = useNavigate(); 
@@ -183,4 +184,4 @@ const Transfers = () => {
    
   
 
-export default Transfers
+module.exports = Transfers

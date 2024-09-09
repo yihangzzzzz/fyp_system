@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import Navbar from '../components/navbar';
+const React = require('react');
+const { useEffect, useState } = React;
+const { Link } = require('react-router-dom');
+const Navbar = require('../components/navbar');
 
 const Home  = () => {
 
@@ -53,4 +54,4 @@ const Home  = () => {
 }
 
 
-export default Home 
+module.exports = Home 

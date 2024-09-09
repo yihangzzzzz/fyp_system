@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from '../components/navbar';
-import Confirmation from '../components/confirmation'
-import { useNavigate } from 'react-router-dom';
+const React = require('react');
+const { useEffect, useState } = React;
+const { useParams, useNavigate } = require('react-router-dom');
+const axios = require('axios');
+const Navbar = require('../components/navbar');
+const Confirmation = require('../components/confirmation');
 
-export const EditItem = () => {
+
+const EditItem = () => {
 
     const navigate = useNavigate();
     const { itemName } = useParams();
@@ -142,4 +143,4 @@ export const EditItem = () => {
     )
 }
 
-export default EditItem
+module.exports = EditItem;

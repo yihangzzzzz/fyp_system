@@ -1,5 +1,6 @@
 // src/components/StatusDropdown.js
-import React, { useState } from 'react';
+const React = require('react');
+const { useState } = React;
 
 const StatusDropdown = ({ currentStatus, onStatusChange, onClose }) => {
   const [status, setStatus] = useState(currentStatus);
@@ -28,5 +29,4 @@ const StatusDropdown = ({ currentStatus, onStatusChange, onClose }) => {
     </select>
   );
 };
-
-export default StatusDropdown;
+module.exports = StatusDropdown;

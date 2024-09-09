@@ -1,8 +1,12 @@
 // src/components/Modal.jsx
-import React, { useRef } from 'react';
-import NewItemForm from './NewDeliveryForm';
-import NewPOForm from './newPOForm';
-import NewDeliveryForm from './NewDeliveryForm';
+const React = require('react');
+const { useRef } = React;
+const NewItemForm = require('./NewDeliveryForm');
+const NewPOForm = require('./newPOForm');
+const NewDeliveryForm = require('./NewDeliveryForm'); // Removed the duplicate import
+
+// You can now use the imported components in your code
+
 
 
 const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
@@ -34,4 +38,4 @@ const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
   );
 };
 
-export default Confirmation;
+module.exports = Confirmation;

@@ -1,15 +1,14 @@
-import express from 'express';
-import PDFDocument from 'pdfkit';
-import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { send } from 'process';
+const express = require('express');
+const PDFDocument = require('pdfkit');
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
+const { fileURLToPath } = require('url');
+const { send } = require('process');
 
 function sendEmail(info, items) {
 
-    const __dirname = import.meta.dirname;
+    const __dirname = path.resolve();
 
     const doc = new PDFDocument();
     const filePath = path.join(__dirname, 'temp.pdf'); // Temp file path
@@ -59,5 +58,5 @@ function sendEmail(info, items) {
     });
 }
 
-export default sendEmail;
+module.exports = sendEmail;
 

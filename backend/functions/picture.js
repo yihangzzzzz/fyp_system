@@ -1,12 +1,12 @@
-import express from 'express';
-import PDFDocument from 'pdfkit';
-import nodemailer from 'nodemailer';
-import path from 'path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { send } from 'process';
-import multer from 'multer';
-import fs from 'fs';
+const express = require('express');
+const PDFDocument = require('pdfkit');
+const nodemailer = require('nodemailer');
+const path = require('path');
+const { dirname } = require('path');
+const { fileURLToPath } = require('url');
+const { send } = require('process');
+const multer = require('multer');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,6 +22,5 @@ const upload = multer ({
     })
 
 
-
-export default upload;
+module.exports = upload;
 

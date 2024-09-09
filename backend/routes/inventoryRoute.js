@@ -1,12 +1,12 @@
-import express from 'express';
-import sql from 'mssql';
-import multer from 'multer';
-import fs from 'fs';
-import bodyParser from 'body-parser';
-import path from 'path';
-import { json } from 'express';
-import { log } from 'console';
-import upload from '../functions/picture.js';
+const express = require('express');
+const sql = require('mssql');
+const multer = require('multer');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const path = require('path');
+const { json } = require('express');
+const { log } = require('console');
+const upload = require('../functions/picture.js');
 
 const inventoryRouter = express.Router();
 
@@ -217,4 +217,4 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
 })
 
 
-export default inventoryRouter;
+module.exports = inventoryRouter;

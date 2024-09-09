@@ -1,5 +1,6 @@
-import React from 'react';
-import NewDeliveryForm from './NewDeliveryForm';
+const React = require('react');
+const NewDeliveryForm = require('./NewDeliveryForm');
+
 
 const Modal = ({ onSubmit, onClose, formData, setFormData, FormComponent}) => {
 
@@ -17,4 +18,4 @@ const Modal = ({ onSubmit, onClose, formData, setFormData, FormComponent}) => {
   );
 };
 
-export default Modal;
+module.exports = Modal;

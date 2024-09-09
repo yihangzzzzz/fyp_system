@@ -1,7 +1,14 @@
-import express from 'express';
-import sql from 'mssql';
-import { json } from 'express';
-import sendEmail from '../functions/email.js';
+const express = require('express');
+const sql = require('mssql');
+const multer = require('multer');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const path = require('path');
+const { json } = require('express');
+const { log } = require('console');
+const upload = require('../functions/picture.js');
+const sendEmail = require('../functions/email.js');
+
 
 const sqlConfig = {
     server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
@@ -259,4 +266,5 @@ transferRoute.put('/updateinventory', async (req, res) => {
 
 
 
-export default transferRoute;
+
+module.exports = transferRoute;

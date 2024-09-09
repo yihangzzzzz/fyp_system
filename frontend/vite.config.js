@@ -1,9 +1,19 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+const { defineConfig } = require('vite');
+const react = require('@vitejs/plugin-react');
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react([
-    'src/main.js', 
-  ])],
-})
+// // https://vitejs.dev/config/
+// module.exports = defineConfig({
+//   plugins: [react([
+//     'src/main.js', 
+//   ])],
+// })
+module.exports = defineConfig({
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        format: 'iife', // This is important for non-module environments
+      },
+    },
+  },
+});

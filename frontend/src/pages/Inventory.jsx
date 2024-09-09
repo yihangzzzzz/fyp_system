@@ -1,12 +1,13 @@
-import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { MdOutlineAddBox } from "react-icons/md";
-import { RxCross1 } from "react-icons/rx";
-import Actions from "../components/actions";
-import Modal from "../components/modal";
-import Navbar from '../components/navbar';
-import NewItemForm from "../components/NewDeliveryForm";
-import Confirmation from "../components/confirmation";
+const axios = require('axios');
+const React = require('react');
+const { useEffect, useState } = React;
+const { MdOutlineAddBox } = require('react-icons/md');
+const { RxCross1 } = require('react-icons/rx');
+const Actions = require('../components/actions');
+const Modal = require('../components/modal');
+const Navbar = require('../components/navbar');
+const NewItemForm = require('../components/NewDeliveryForm');
+const Confirmation = require('../components/confirmation');
 
 const Inventory = () => {
     const [inventory, setInventory] = useState([]);
@@ -146,4 +147,4 @@ const Inventory = () => {
     );
 }
 
-export default Inventory
+module.exports = Inventory

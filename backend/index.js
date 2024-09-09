@@ -1,13 +1,13 @@
-import cors from 'cors';
-import express from "express";
-import sql from "mssql";
-// import 'dotenv/config';
-import { PORT } from './config.js';
-import inventoryRouter from './routes/inventoryRoute.js';
-import transferRouter from './routes/transferRoute.js';
-import orderRouter from './routes/orderRoute.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const cors = require('cors');
+const express = require('express');
+const sql = require('mssql');
+// require('dotenv').config(); // Uncomment if using dotenv for environment variables
+// const PORT = require('./config.js');
+const inventoryRouter = require('./routes/inventoryRoute.js');
+const transferRouter = require('./routes/transferRoute.js');
+const orderRouter = require('./routes/orderRoute.js');
+const path = require('path');
+const PORT = 3500;
 
 const sqlConfig = {
     user: "testuser",
@@ -30,21 +30,21 @@ const sqlConfig = {
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.resolve();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 let pool;
 
 async function connectDB() {
     try {
         pool = await new sql.connect(sqlConfig);
-        app.listen(PORT, () => {
+        app.listen(process.env.PORT || PORT, () => {
             console.log("app is running le");
         })
         console.log("connected le");

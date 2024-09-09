@@ -1,0 +1,11 @@
+error is  TypeError [ERR_INVALID_ARG_VALUE]: The argument 'options' must have the property "port" or "path". Received {
+  PORT: 3500,
+  mssqlURL: 'Server=localhost\\SQLEXPRESS;Database=master;Trusted_Connection=True'
+}
+    at Server.listen (node:net:2114:11)
+    at Function.listen (C:\VSC\fyp_system - Copy\backend\node_modules\express\lib\application.js:635:24)
+    at connectDB (C:\VSC\fyp_system - Copy\backend\index.js:46:13) {
+  code: 'ERR_INVALID_ARG_VALUE'
+}
+(node:24336) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

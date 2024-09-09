@@ -1,0 +1,7 @@
+Application has thrown an uncaught exception and is terminated:
+Error: listen EACCES: permission denied 0.0.0.0:3500
+    at Server.setupListenHandle [as _listen2] (node:net:1880:21)
+    at listenInCluster (node:net:1959:12)
+    at Server.listen (node:net:2061:7)
+    at Function.listen (C:\VSC\fyp_system - Copy\backend\node_modules\express\lib\application.js:635:24)
+    at connectDB (C:\VSC\fyp_system - Copy\backend\index.js:46:13)
