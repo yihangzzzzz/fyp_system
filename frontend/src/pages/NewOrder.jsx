@@ -21,7 +21,7 @@ const NewOrder = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get('http://localhost:3000/inventory')
+        .get('http://www.iistesting.com:3000/inventory')
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -59,7 +59,7 @@ const NewOrder = ({}) => {
 
       try {
         await axios
-        .post('http://localhost:3000/orders/neworder', newOrder, {
+        .post('http://www.iistesting.com:3000/orders/neworder', newOrder, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

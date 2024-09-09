@@ -9,7 +9,7 @@ const ViewPDF = () => {
     const { fileName } = useParams();
 
     useEffect(() => {
-      setPdfUrl(`http://localhost:3000/orders/pdf/${encodeURIComponent(fileName)}`);
+      setPdfUrl(`http://www.iistesting.com:3000/orders/pdf/${encodeURIComponent(fileName)}`);
     }, []);
 
     return (

@@ -33,7 +33,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://localhost:3000/orders", {params: {sortBy: sortAtt}})
+        .get("http://www.iistesting.com:3000/orders", {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -70,7 +70,7 @@ const Orders = () => {
       const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
       console.log(itemsToUpdate);
       await axios
-      .put('http://localhost:3000/orders/fulfillorder', itemsToUpdate, {
+      .put('http://www.iistesting.com:3000/orders/fulfillorder', itemsToUpdate, {
         headers: {
           "Content-Type": "multipart/form-data"
         }

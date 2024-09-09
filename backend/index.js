@@ -38,6 +38,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use('/inventory', inventoryRouter);
+app.use('/transfers', transferRouter);
+app.use('/orders', orderRouter);
+app.use('/images', express.static('images'))
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  });
 
 let pool;
 
@@ -59,11 +67,7 @@ app.use((req, res, next) => {
 })
 
 
-app.use('/inventory', inventoryRouter);
-app.use('/transfers', transferRouter);
-app.use('/orders', orderRouter);
 
-app.use('/images', express.static('images'))
 
 
 connectDB();

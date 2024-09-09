@@ -43,7 +43,7 @@ const Inventory = () => {
 
     const handleAddItem = (newItem) => {
       axios
-        .post("http://localhost:3000/inventory", newItem)
+        .post("http://www.iistesting.com:3000/inventory", newItem)
         .then(() => {
             setLoading(false);
             
@@ -114,7 +114,7 @@ const Inventory = () => {
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td> <img width="100" height="100" src={"http://localhost:3000/images/" + item.picture} /></td>
+                              <td> <img width="100" height="100" src={"http://www.iistesting.com:3000/images/" + item.picture} /></td>
                               <td>{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>

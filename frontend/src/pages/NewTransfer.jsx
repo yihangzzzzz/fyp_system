@@ -22,7 +22,7 @@ const NewTransfer = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get('http://localhost:3000/inventory')
+        .get('http://www.iistesting.com:3000/inventory')
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -34,7 +34,7 @@ const NewTransfer = ({}) => {
     const fetchLabs = async () => {
       try {
         await axios
-        .get('http://localhost:3000/transfers/labs')
+        .get('http://www.iistesting.com:3000/transfers/labs')
         .then((res) => {
             setLabs(res.data.recordset);
         })
@@ -71,7 +71,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post('http://localhost:3000/transfers/newtransfer', newTransfer)
+        .post('http://www.iistesting.com:3000/transfers/newtransfer', newTransfer)
         .then((res) => {
           transferID = res.data.recordset[0].transferID
         });
@@ -81,7 +81,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`http://localhost:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
+        .post(`http://www.iistesting.com:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
       } catch (error) {
         console.error('Error updating items:', error);
       }
@@ -89,11 +89,11 @@ const NewTransfer = ({}) => {
       try {
         if (transferInfo.destination.includes('Counter')) {
           await axios
-          .put(`http://localhost:3000/transfers/updateinventory?type=counter`, transferItems)
+          .put(`http://www.iistesting.com:3000/transfers/updateinventory?type=counter`, transferItems)
         }
         else if (transferInfo.destination.includes('Cabinet')) {
           await axios
-          .put(`http://localhost:3000/transfers/updateinventory?type=cabinet`, transferItems)
+          .put(`http://www.iistesting.com:3000/transfers/updateinventory?type=cabinet`, transferItems)
         }
         
       } catch (error) {

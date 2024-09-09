@@ -21,7 +21,7 @@ const EditItem = () => {
     const fetchItem = async () => {
         setLoading(true);
         await axios
-        .get(`http://localhost:3000/inventory/${encodeURIComponent(itemName)}`)
+        .get(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(itemName)}`)
         .then((res) => {
             setItem(res.data.recordset[0]);
             setLoading(false);
@@ -50,7 +50,7 @@ const EditItem = () => {
         console.log(item);
         try {
             await axios
-            .put(`http://localhost:3000/inventory/${encodeURIComponent(itemName)}`, item, {
+            .put(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(itemName)}`, item, {
                 headers: {
                   "Content-Type": "multipart/form-data"
                 }
@@ -76,7 +76,7 @@ const EditItem = () => {
                         accept='image/*'
                         onChange={(e) => handleImageChange(e.target.files[0])}
                     />
-                    <img width="100" height="100" src={"http://localhost:3000/images/" + item.picture} />
+                    <img width="100" height="100" src={"http://www.iistesting.com:3000/images/" + item.picture} />
                 </div>
                 <div className='input-box'>
                     <h5>Item Name</h5>

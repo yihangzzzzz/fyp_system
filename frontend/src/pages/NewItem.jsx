@@ -31,9 +31,9 @@ const NewItem = ({}) => {
       console.log("picture data is ",newItem.picture);
 
       axios
-      // .post("http://localhost:3000/inventory", newItem, {
+      // .post("http://www.iistesting.com:3000/inventory", newItem, {
       // })
-      .post("http://localhost:3000/inventory/newitem", formData, {
+      .post("http://www.iistesting.com:3000/inventory/newitem", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }

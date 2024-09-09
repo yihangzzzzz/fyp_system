@@ -49,7 +49,7 @@ inventoryRouter.get('/:itemName', async (req, res) => {
     const { itemName } = req.params;
 
     try {
-        const data = sql.query(`SELECT picture, serialNumber, itemName, cabinet, counter
+        const data = sql.query(`SELECT *
                                 FROM warehouse
                                 WHERE itemName = '${itemName}'`);
         data.then((res1) => {
@@ -189,16 +189,24 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
     const lostDamaged = req.body.lostDamaged;
     const remarks = req.body.remarks;
 
+
+
     try {
+
         sql.query(`UPDATE warehouse
             SET itemName = '${itemName}',
                 description = '${description}',
                 cabinet = ${cabinet},
                 counter = ${counter},
-                picture = '${picture}',
                 lostDamaged = ${lostDamaged},
-                remarks = '${remarks}'
+                remarks = '${remarks}',
+                picture = '${picture}'
             WHERE itemName = '${oldItemName}'`);
+        // if (req.file === true) {
+        //     sql.query(`UPDATE warehouse
+        //         SET picture = '${req.file.filename}'
+        //         WHERE itemName = '${oldItemName}'`);
+        // }
 
         sql.query(`UPDATE orders
             SET itemName = '${itemName}'

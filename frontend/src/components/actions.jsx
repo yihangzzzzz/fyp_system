@@ -15,7 +15,7 @@ const Actions = ({toDelete, toEdit}) => {
   const handleDelete = () => {
       
       axios
-        .delete(`http://localhost:3000/inventory/${encodeURIComponent(deleteItemName)}`)
+        .delete(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(deleteItemName)}`)
         .catch((error) => {
           console.log("Error deleting item: " + error);
         });

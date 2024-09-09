@@ -1,0 +1,14 @@
+(node:24484) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Application has thrown an uncaught exception and is terminated:
+RequestError: Invalid column name 'undefined'.
+    at handleError (C:\VSC\fyp_system\backend\node_modules\mssql\lib\tedious\request.js:384:15)
+    at Connection.emit (node:events:520:28)
+    at Connection.emit (C:\VSC\fyp_system\backend\node_modules\tedious\lib\connection.js:970:18)
+    at RequestTokenHandler.onErrorMessage (C:\VSC\fyp_system\backend\node_modules\tedious\lib\token\handler.js:284:21)
+    at Readable.<anonymous> (C:\VSC\fyp_system\backend\node_modules\tedious\lib\token\token-stream-parser.js:19:33)
+    at Readable.emit (node:events:520:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:536:3)
+    at Readable.push (node:internal/streams/readable:391:5)
+    at nextAsync (node:internal/streams/from:194:22)

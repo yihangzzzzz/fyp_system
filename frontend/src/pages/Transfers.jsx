@@ -31,7 +31,7 @@ const Transfers = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://localhost:3000/transfers", {params: {sortBy: sortAtt}})
+        .get("http://www.iistesting.com:3000/transfers", {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -53,7 +53,7 @@ const Transfers = () => {
     const handleTransferStatusChange = async () => {
         setIsConfirmationOpen(false);
         await axios
-        .put("http://localhost:3000/transfers", statusChange);
+        .put("http://www.iistesting.com:3000/transfers", statusChange);
         setStautsChange({status: '', id: null, items: null});
         fetchInventory();
     }
