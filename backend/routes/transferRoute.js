@@ -114,7 +114,7 @@ transferRoute.post('/newtransfer', async (req, res) => {
         VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
         SELECT SCOPE_IDENTITY() AS transferID`)
 
-        // sendEmail(info, items);
+        sendEmail(info, items);
 
         result.then((res1) => {
             return res.json(res1)

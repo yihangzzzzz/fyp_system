@@ -1,0 +1,6 @@
+connected le
+app is running le
+Email sent: 250 2.0.0 OK  1726196541 98e67ed59e1d1-2dbb9d93a3fsm474894a91.50 - gsmtp
+Email sent: 250 2.0.0 OK  1726196919 d2e1a72fcca58-719090d0b14sm5233111b3a.215 - gsmtp
+Email sent: 250 2.0.0 OK  1726197009 98e67ed59e1d1-2dbb9ca7a82sm496680a91.25 - gsmtp
+Email sent: 250 2.0.0 OK  1726197510 d2e1a72fcca58-719090923adsm5237884b3a.100 - gsmtp
