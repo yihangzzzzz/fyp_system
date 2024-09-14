@@ -1,0 +1,8 @@
+(node:44296) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Application has thrown an uncaught exception and is terminated:
+Error: ENOENT: no such file or directory, open 'C:\VSC\fyp_system\images\transfer.pdf'
+    at Object.openSync (node:fs:561:18)
+    at Object.writeFileSync (node:fs:2355:35)
+    at sendEmail (C:\VSC\fyp_system\backend\functions\email.js:64:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)

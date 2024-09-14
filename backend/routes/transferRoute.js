@@ -99,6 +99,24 @@ transferRoute.get('/labs', async (req, res) => {
     }
 })
 
+// GET 1 PDF
+
+transferRoute.get('/pdf/:filename', (req, res) => {
+    const { filename } = req.params;
+    const options = {
+        root: path.join(__dirname, '../images'),
+    };
+  
+    res.sendFile(filename, options, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(404).send('File not found');
+      }
+    });
+  });
+
+// ====================== POST ==================================
+
 // ADDING NEW TRANSFER RECORD
 transferRoute.post('/newtransfer', async (req, res) => {
 
@@ -110,11 +128,14 @@ transferRoute.post('/newtransfer', async (req, res) => {
     }
 
     try {
-        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email, status) 
-        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
+        // const transferDocument = sendEmail(info, items);
+        console.log("file name is", transferDocument);
+
+        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email, status, transferDocument) 
+        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${transferDocument}')
         SELECT SCOPE_IDENTITY() AS transferID`)
 
-        sendEmail(info, items);
+        
 
         result.then((res1) => {
             return res.json(res1)

@@ -60,7 +60,8 @@ async function sendEmail(info, items) {
     page.drawText('I agree to the terms and conditions.', { x: 80, y: 305, size: 12 });
   
     const pdfBytes = await pdfDoc.save();
-    const filePath = path.join(__dirname, '..', 'images', 'transfer.pdf');
+    // documentName = `transfer_${info.destination}_${info.date}.pdf`
+    const filePath = path.join(__dirname, '..', '/backend/images/hoho.pdf');
     fs.writeFileSync(filePath, pdfBytes);
 
     const transporter = nodemailer.createTransport({
@@ -87,13 +88,15 @@ async function sendEmail(info, items) {
         }
     };
     
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-        console.log('Error:', error);
-        } else {
-        console.log('Email sent:', info.response);
-        }
-    });
+    // transporter.sendMail(mailOptions, function(error, info){
+    //     if (error) {
+    //     console.log('Error:', error);
+    //     } else {
+    //     console.log('Email sent:', info.response);
+    //     }
+    // });
+
+    // return documentName;
 }
 
 // async function createPDFWithCheckbox() {

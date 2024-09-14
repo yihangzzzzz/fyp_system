@@ -97,6 +97,7 @@ const Transfers = () => {
                               <th style={{ fontWeight: 'bold' }}>Date</th>
                               <th style={{ fontWeight: 'bold' }}>Recipient</th>
                               <th style={{ fontWeight: 'bold' }}>Email</th>
+                              <th style={{ fontWeight: 'bold' }}>Transfer Document</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
                               {/* <th style={{ fontWeight: 'bold' }}>Description</th> */}
                               <th style={{ fontWeight: 'bold' }}>Items</th>
@@ -122,6 +123,11 @@ const Transfers = () => {
                                                         <td rowSpan={rowSpan}>{formattedDate}</td>
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
                                                         <td rowSpan={rowSpan}>{item.email}</td>
+                                                        <td rowSpan={rowSpan}>
+                                                            <a href={`/transfers/pdf/${item.transferDocument}`} target="_blank" rel="noopener noreferrer">
+                                                                VIew PDF
+                                                            </a>
+                                                        </td>
                                                         {/* <td rowSpan={rowSpan}>{item.description}</td> */}
                                                         <td rowSpan={rowSpan}>
                                                         <select
