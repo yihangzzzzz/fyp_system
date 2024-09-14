@@ -12,8 +12,8 @@ const PORT = 3000;
 const sqlConfig = {
     user: "testuser",
     password: '1234',
-    // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-    server: 'YIHANG\\SQLEXPRESS',
+    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+    // server: 'YIHANG\\SQLEXPRESS',
     // server: 'MDPADMIN\\SQLEXPRESS',
     database: 'inventory',
     driver: 'msnodesqlv8',
@@ -38,15 +38,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.use('/inventory', inventoryRouter);
-app.use('/transfers', transferRouter);
-app.use('/orders', orderRouter);
-app.use('/images', express.static('images'))
+app.use('/api/inventory', inventoryRouter);
+// app.use('/api/transfers', transferRouter);
+// app.use('/api/orders', orderRouter);
+// app.use('/api/images', express.static('images'))
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+//   });
+
+// Handle all other routes to serve the React app
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-  });
-
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html')); // Adjust 'dist' if necessary
+});
 let pool;
 
 async function connectDB() {

@@ -1,7 +1,6 @@
 const axios = require('axios');
 const React = require('react');
 const { useEffect, useState } = React;
-const { MdOutlineAddBox } = require('react-icons/md');
 const { RxCross1 } = require('react-icons/rx');
 const Actions = require('../components/actions');
 const Modal = require('../components/modal');
@@ -30,7 +29,7 @@ const Inventory = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -41,21 +40,21 @@ const Inventory = () => {
         });
     }
 
-    const handleAddItem = (newItem) => {
-      axios
-        .post("http://www.iistesting.com:3000/inventory", newItem)
-        .then(() => {
-            setLoading(false);
+    // const handleAddItem = (newItem) => {
+    //   axios
+    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`, newItem)
+    //     .then(() => {
+    //         setLoading(false);
             
-        })
-        .catch((error) => {
-          console.log("Error adding item: " + error);
-          setLoading(false);
-        });
-        setIsModalOpen(false);
-        fetchInventory();
+    //     })
+    //     .catch((error) => {
+    //       console.log("Error adding item: " + error);
+    //       setLoading(false);
+    //     });
+    //     setIsModalOpen(false);
+    //     fetchInventory();
 
-    };
+    // };
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value); // Update search query as the user types
@@ -114,7 +113,7 @@ const Inventory = () => {
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td> <img width="100" height="100" src={"http://www.iistesting.com:3000/images/" + item.picture} /></td>
+                              <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/images/` + item.picture} /></td>
                               <td>{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>

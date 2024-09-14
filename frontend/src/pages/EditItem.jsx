@@ -21,7 +21,7 @@ const EditItem = () => {
     const fetchItem = async () => {
         setLoading(true);
         await axios
-        .get(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(itemName)}`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory/${encodeURIComponent(itemName)}`)
         .then((res) => {
             setItem(res.data.recordset[0]);
             setLoading(false);
@@ -50,7 +50,7 @@ const EditItem = () => {
         console.log(item);
         try {
             await axios
-            .put(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(itemName)}`, item, {
+            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory/${encodeURIComponent(itemName)}`, item, {
                 headers: {
                   "Content-Type": "multipart/form-data"
                 }
@@ -58,7 +58,7 @@ const EditItem = () => {
         } catch (error) {
             console.error('Error updating items:', error);
           }
-        navigate('/inventory');
+        navigate('/api/inventory');
     }
 
     return (
@@ -76,7 +76,7 @@ const EditItem = () => {
                         accept='image/*'
                         onChange={(e) => handleImageChange(e.target.files[0])}
                     />
-                    <img width="100" height="100" src={"http://www.iistesting.com:3000/images/" + item.picture} />
+                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/images/` + item.picture} />
                 </div>
                 <div className='input-box'>
                     <h5>Item Name</h5>
@@ -133,7 +133,7 @@ const EditItem = () => {
                     />
                 </div>
                 <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Save</button>
-                <button className="cancel-button" type="submit" onClick={() => navigate(`/inventory`)}>Cancel</button>
+                <button className="cancel-button" type="submit" onClick={() => navigate(`/api/inventory`)}>Cancel</button>
             </div>
             <Confirmation
             isOpen={isConfirmationOpen}

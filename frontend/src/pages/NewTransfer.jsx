@@ -22,7 +22,7 @@ const NewTransfer = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get('http://www.iistesting.com:3000/inventory')
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -34,7 +34,7 @@ const NewTransfer = ({}) => {
     const fetchLabs = async () => {
       try {
         await axios
-        .get('http://www.iistesting.com:3000/transfers/labs')
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/labs`)
         .then((res) => {
             setLabs(res.data.recordset);
         })
@@ -71,7 +71,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post('http://www.iistesting.com:3000/transfers/newtransfer', newTransfer)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/newtransfer`, newTransfer)
         .then((res) => {
           transferID = res.data.recordset[0].transferID
         });
@@ -81,7 +81,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`http://www.iistesting.com:3000/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
       } catch (error) {
         console.error('Error updating items:', error);
       }
@@ -89,18 +89,18 @@ const NewTransfer = ({}) => {
       try {
         if (transferInfo.destination.includes('Counter')) {
           await axios
-          .put(`http://www.iistesting.com:3000/transfers/updateinventory?type=counter`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/updateinventory?type=counter`, transferItems)
         }
         else if (transferInfo.destination.includes('Cabinet')) {
           await axios
-          .put(`http://www.iistesting.com:3000/transfers/updateinventory?type=cabinet`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/updateinventory?type=cabinet`, transferItems)
         }
         
       } catch (error) {
         console.error('Error updating items:', error);
       }
 
-      navigate('/transfers');
+      navigate('/api/transfers');
     }
       
   

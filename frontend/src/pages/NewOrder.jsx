@@ -21,7 +21,7 @@ const NewOrder = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get('http://www.iistesting.com:3000/inventory')
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -59,7 +59,7 @@ const NewOrder = ({}) => {
 
       try {
         await axios
-        .post('http://www.iistesting.com:3000/orders/neworder', newOrder, {
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/neworder`, newOrder, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -68,7 +68,7 @@ const NewOrder = ({}) => {
       } catch (error) {
         console.error('Error updating items:', error);
       }
-      navigate('/orders');
+      navigate('/api/orders');
       
     };
 

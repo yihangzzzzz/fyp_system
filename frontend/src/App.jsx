@@ -12,7 +12,9 @@ const LowStock = require('./pages/LowStock');
 const NewTransfer = require('./pages/NewTransfer');
 const NewItem = require('./pages/NewItem');
 const EditItem = require('./pages/EditItem');
-const ViewPDF = require('./pages/ViewPDF');
+const AcceptTransfer = require('./pages/AcceptTransfer');
+
+// const ViewPDF = require('./pages/ViewPDF');
 
 const App = () => {
   return (
@@ -20,17 +22,18 @@ const App = () => {
             <Routes>
         <Route path = '/' element = {<Home/>} />
 
-        <Route path = '/inventory' element = {<Inventory/>} />
-        <Route path = '/inventory/lowstock' element = {<LowStock/>} />
-        <Route path = '/inventory/newitem' element = {<NewItem/>} />
-        <Route path = '/inventory/edititem/:itemName' element={<EditItem />} />
+        <Route path = '/api/inventory' element = {<Inventory/>} />
+        <Route path = '/api/inventory/lowstock' element = {<LowStock/>} />
+        <Route path = '/api/inventory/newitem' element = {<NewItem/>} />
+        <Route path = '/api/inventory/edititem/:itemName' element={<EditItem />} />
 
-        <Route path = '/orders' element = {<Orders/>} />
-        <Route path = '/orders/neworder' element = {<NewOrder/>} />
-        <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} />
+        <Route path = '/api/orders' element = {<Orders/>} />
+        <Route path = '/api/orders/neworder' element = {<NewOrder/>} />
+        {/* <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} /> */}
 
-        <Route path = '/transfers' element = {<Transfers/>} />
-        <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
+        <Route path = '/api/transfers' element = {<Transfers/>} />
+        <Route path = '/api/transfers/newtransfer' element = {<NewTransfer/>} />
+        <Route path = '/api/transfers/accepttransfer/' element = {<AcceptTransfer/>} />
 
         
       </Routes>

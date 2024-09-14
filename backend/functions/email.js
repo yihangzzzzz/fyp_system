@@ -7,7 +7,7 @@ const { fileURLToPath } = require('url');
 const { send } = require('process');
 const { file } = require('pdfkit');
 
-async function sendEmail(info, items) {
+async function sendEmail(info, items, transferID) {
 
     const __dirname = path.resolve();
 
@@ -60,8 +60,8 @@ async function sendEmail(info, items) {
     page.drawText('I agree to the terms and conditions.', { x: 80, y: 305, size: 12 });
   
     const pdfBytes = await pdfDoc.save();
-    // documentName = `transfer_${info.destination}_${info.date}.pdf`
-    const filePath = path.join(__dirname, '..', '/backend/images/hoho.pdf');
+    documentName = `transfer${transferID}_${info.destination}_${info.date}.pdf`
+    const filePath = path.join(__dirname, '..', '/backend/images/' , documentName);
     fs.writeFileSync(filePath, pdfBytes);
 
     const transporter = nodemailer.createTransport({
@@ -88,15 +88,15 @@ async function sendEmail(info, items) {
         }
     };
     
-    // transporter.sendMail(mailOptions, function(error, info){
-    //     if (error) {
-    //     console.log('Error:', error);
-    //     } else {
-    //     console.log('Email sent:', info.response);
-    //     }
-    // });
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+        console.log('Error:', error);
+        } else {
+        console.log('Email sent:', info.response);
+        }
+    });
 
-    // return documentName;
+    return documentName;
 }
 
 // async function createPDFWithCheckbox() {

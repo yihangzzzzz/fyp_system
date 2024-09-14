@@ -2,6 +2,9 @@
 const React = require('react');
 const { useState } = React;
 const { MdOutlineAddBox, MdModeEditOutline, MdDelete } = require('react-icons/md');
+// const MdOutlineAddBox = require('react-icons/md/MdOutlineAddBox');
+// const MdModeEditOutline = require('react-icons/md/MdModeEditOutline');
+// const MdDelete = require('react-icons/md/MdDelete');
 const axios = require('axios');
 const Confirmation = require('./confirmation');
 const { useNavigate } = require('react-router-dom');
@@ -15,15 +18,15 @@ const Actions = ({toDelete, toEdit}) => {
   const handleDelete = () => {
       
       axios
-        .delete(`http://www.iistesting.com:3000/inventory/${encodeURIComponent(deleteItemName)}`)
+        .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory/${encodeURIComponent(deleteItemName)}`)
         .catch((error) => {
           console.log("Error deleting item: " + error);
         });
-        navigate(`/inventory`)
+        navigate(`/api/inventory`)
   }
 
   const handleEdit = () => {
-    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}`)
+    navigate(`/api/inventory/edititem/${encodeURIComponent(editItemName)}`)
   }
 
   return (

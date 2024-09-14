@@ -62,11 +62,12 @@ transferRoute.get('/', async (req, res) => {
     t.recipient,
     t.email,
     t.status,
+    t.transferDocument,
     STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
     FROM transfers t
     JOIN transferItems ti
     ON t.transferID = ti.transferID
-    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status`);
+    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument`);
 
         // const data = sql.query(query);
         data.then((res1) => {
@@ -121,25 +122,29 @@ transferRoute.get('/pdf/:filename', (req, res) => {
 transferRoute.post('/newtransfer', async (req, res) => {
 
     const {info, items} = req.body;
-    let status = null;
+    let status = "Pending";
 
     if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
-        status = "Acknowledged"
+        status = "Acknowledged";
     }
 
     try {
-        // const transferDocument = sendEmail(info, items);
-        console.log("file name is", transferDocument);
-
-        const result = sql.query(`INSERT INTO transfers (date, destination, recipient, email, status, transferDocument) 
-        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${transferDocument}')
-        SELECT SCOPE_IDENTITY() AS transferID`)
-
         
+        const result = await sql.query(`INSERT INTO transfers (date, destination, recipient, email, status) 
+        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
+        SELECT SCOPE_IDENTITY() AS transferID`)
+        
+        const transferID = result.recordset[0].transferID;
+        const transferDocument = await sendEmail(info, items, transferID);
 
-        result.then((res1) => {
-            return res.json(res1)
-        })
+        sql.query(`UPDATE transfers
+            SET transferDocument =  '${transferDocument}'
+            WHERE transferID = ${transferID}`)
+
+        return res.json(result)
+        // result.then((res1) => {
+        //     return res.json(res1)
+        // })
     } catch (error) {
         console.log("error is " + error.message);
         res.send({message : error.message});
@@ -284,6 +289,26 @@ transferRoute.put('/updateinventory', async (req, res) => {
 
 })
 
+transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
+
+    const { transferID } = req.params;
+    
+    try {
+
+        sql.query(`
+            UPDATE transfer
+            SET status = 'Acknowledged'
+            WHERE transferID = ${transferID}
+        `)
+
+        res.status(200).json({ message: 'Transfer status accepted successfully' });
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+
+})
 
 
 

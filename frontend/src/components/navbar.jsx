@@ -76,25 +76,25 @@ const Navbar = () => {
             <div className="dropdown">
                 <button className="dropbtn">Inventory</button>
                 <ul className="dropdown-content">
-                    <li><Link to="/inventory">Items</Link></li>
-                    <li><Link to="/inventory/lowstock">Low Stock</Link></li>
-                    <li><Link to="/inventory/newitem">New Item</Link></li>
+                    <li><Link to="/api/inventory">Items</Link></li>
+                    <li><Link to="/api/inventory/lowstock">Low Stock</Link></li>
+                    <li><Link to="/api/inventory/newitem">New Item</Link></li>
                 </ul>
             </div>
 
             <div className="dropdown">
                 <button className="dropbtn">Orders</button>
                 <ul className="dropdown-content">
-                    <li><Link to="/orders">Current Orders</Link></li>
-                    <li><Link to="/orders/neworder">New Order</Link></li>
+                    <li><Link to="/api/orders">Current Orders</Link></li>
+                    <li><Link to="/api/orders/neworder">New Order</Link></li>
                 </ul>
             </div>
 
             <div className="dropdown">
                 <button className="dropbtn">Transfers</button>
                 <ul className="dropdown-content">
-                    <li><Link to="/transfers">All Transfers</Link></li>
-                    <li><Link to="/transfers/newtransfer">New Transfer</Link></li>
+                    <li><Link to="/api/transfers">All Transfers</Link></li>
+                    <li><Link to="/api/transfers/newtransfer">New Transfer</Link></li>
                 </ul>
             </div>
         </div>

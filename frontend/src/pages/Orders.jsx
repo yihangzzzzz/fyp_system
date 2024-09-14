@@ -1,7 +1,6 @@
 const axios = require('axios');
 const React = require('react');
 const { useEffect, useState } = React;
-const { MdOutlineAddBox } = require('react-icons/md');
 const { RxCross1 } = require('react-icons/rx');
 const Navbar = require('../components/navbar');
 const Confirmation = require('../components/confirmation');
@@ -33,7 +32,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://www.iistesting.com:3000/orders", {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -70,7 +69,7 @@ const Orders = () => {
       const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
       console.log(itemsToUpdate);
       await axios
-      .put('http://www.iistesting.com:3000/orders/fulfillorder', itemsToUpdate, {
+      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/fulfillorder`, itemsToUpdate, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -143,7 +142,7 @@ const Orders = () => {
                                         <td>{item.itemName}</td>
                                         <td>{formattedPoDate}</td>
                                         <td>
-                                          <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                          <a href={`/api/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
                                             {item.poNumber}
                                           </a>
                                         </td>
@@ -160,7 +159,7 @@ const Orders = () => {
                                         }}>{item.status}</td>
                                         <td>{(item.doDate === null) ? (item.doDate) : (formattedDoDate)}</td>
                                         <td>
-                                          <a href={`/orders/pdf/${item.doDocument}`} target="_blank" rel="noopener noreferrer">
+                                          <a href={`/api/pdf/${item.doDocument}`} target="_blank" rel="noopener noreferrer">
                                             {item.doNumber}
                                           </a>
                                         </td>

@@ -1,7 +1,6 @@
 const axios = require('axios');
 const React = require('react');
 const { useEffect, useState } = React;
-const { MdOutlineAddBox } = require('react-icons/md');
 const { RxCross1 } = require('react-icons/rx');
 const Navbar = require('../components/navbar');
 const Confirmation = require('../components/confirmation');
@@ -31,7 +30,7 @@ const Transfers = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get("http://www.iistesting.com:3000/transfers", {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -53,7 +52,7 @@ const Transfers = () => {
     const handleTransferStatusChange = async () => {
         setIsConfirmationOpen(false);
         await axios
-        .put("http://www.iistesting.com:3000/transfers", statusChange);
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers`, statusChange);
         setStautsChange({status: '', id: null, items: null});
         fetchInventory();
     }
@@ -124,7 +123,7 @@ const Transfers = () => {
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
                                                         <td rowSpan={rowSpan}>{item.email}</td>
                                                         <td rowSpan={rowSpan}>
-                                                            <a href={`/transfers/pdf/${item.transferDocument}`} target="_blank" rel="noopener noreferrer">
+                                                            <a href={`/api/transfers/pdf/${item.transferDocument}`} target="_blank" rel="noopener noreferrer">
                                                                 VIew PDF
                                                             </a>
                                                         </td>
