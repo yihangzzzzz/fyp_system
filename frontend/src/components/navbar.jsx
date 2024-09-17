@@ -71,7 +71,7 @@ const Navbar = () => {
       
       <div className='navbar'>
             <div className="dropdown">
-              <Link to="/" style={{fontSize: '16px', padding: '10px'}}>Home</Link>
+              <Link to="/api" style={{fontSize: '16px', padding: '10px'}}>Home</Link>
             </div>
             <div className="dropdown">
                 <button className="dropbtn">Inventory</button>

@@ -118,6 +118,7 @@ const Orders = () => {
                               <th style={{ fontWeight: 'bold' }}>PO Date</th>
                               <th style={{ fontWeight: 'bold' }}>PO Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Sub-Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
                               <th style={{ fontWeight: 'bold' }}>DO Date</th>
                               <th style={{ fontWeight: 'bold' }}>DO Number</th>
@@ -147,6 +148,7 @@ const Orders = () => {
                                           </a>
                                         </td>
                                         <td>{item.quantity}</td>
+                                        <td>{item.subQuantity}</td>
                                         <td style={{
                                           color: 
                                             item.status === 'Pending'
@@ -175,6 +177,7 @@ const Orders = () => {
         <Modal
           formData={formData}
           setFormData={setFormData}
+          deliveredItems={selectedRows}
           onSubmit={handleNewDelivery}
           onClose={() => setIsModalOpen(false)}
           FormComponent={NewDeliveryForm}

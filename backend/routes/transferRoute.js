@@ -7,7 +7,8 @@ const path = require('path');
 const { json } = require('express');
 const { log } = require('console');
 const upload = require('../functions/picture.js');
-const sendEmail = require('../functions/email.js');
+const { sendEmail, updateTransferDocument } = require('../functions/email.js');
+// const updateTransferDocument = require('../functions/email.js');
 
 
 const sqlConfig = {
@@ -296,10 +297,13 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
     try {
 
         sql.query(`
-            UPDATE transfer
+            UPDATE transfers
             SET status = 'Acknowledged'
             WHERE transferID = ${transferID}
         `)
+        
+        updateTransferDocument(transferID);
+
 
         res.status(200).json({ message: 'Transfer status accepted successfully' });
 

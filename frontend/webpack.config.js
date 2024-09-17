@@ -1,5 +1,5 @@
 const path = require('path');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -50,8 +50,8 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 3500,
-  },
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true
+ }
 };

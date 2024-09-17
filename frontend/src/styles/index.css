@@ -335,3 +335,74 @@ th {
   height: 100%;
   border: none;
 }
+
+.login-body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Center child-1 vertically */
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+.login-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: table;
+  margin: 0 auto;
+}
+
+.login-form-div {
+  margin-bottom: 15px;
+}
+
+.login-form-label {
+  display: table-cell;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+
+.login-form-input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.login-form-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-form-button:hover {
+  background-color: #45a049;
+}
+
+/* Error message bubble */
+.login-form-error-message {
+  color: white;
+  background-color: red;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* When the error message is active */
+.login-form-error-message.active {
+  opacity: 1;
+  transform: scale(1);
+}

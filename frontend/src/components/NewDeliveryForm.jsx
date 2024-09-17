@@ -1,6 +1,6 @@
 const React = require('react');
 
-const NewDeliveryForm = ({ formData, setFormData }) => {
+const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
 
   formData.date = new Date().toISOString().split('T')[0];
   
@@ -53,6 +53,19 @@ const NewDeliveryForm = ({ formData, setFormData }) => {
           style={{ outline: '2px solid black' }}
         />
       </div>
+      {/* {deliveredItems.map((item, index) => {
+        return(
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
+          <h5>Item</h5>
+          <input
+            type="number"
+            name={item.itemName}
+            onChange={handleInputChange}
+            style={{ outline: '2px solid black' }}
+          />
+        </div>
+        )
+      })} */}
 
       {/* Add more inputs as needed */}
     </form>

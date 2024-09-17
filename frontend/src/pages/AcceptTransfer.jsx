@@ -5,22 +5,18 @@ const axios = require('axios');
 
 const AcceptTransfer = () => {
 
-    // const { transferID } = useParams();
+    const { transferID } = useParams();
 
-    // useEffect(() => {
-    //     axios
-    //     .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/accepttransfer/${transferID}`)
-    // }, []);
+    useEffect(() => {
+        axios
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/accepttransfer/${transferID}`)
+    }, []);
 
     return (
-        // <div>
-        //     <div className='topbar'>
-        //         <h1 className="title">Transfer Accepted!!!</h1>
-        //     </div>
-        // </div>
-
         <div>
-            <h1>PLEASE</h1>
+            <div className='topbar'>
+                <h1 className="title">Transfer Accepted!!!</h1>
+            </div>
         </div>
     )
 }
