@@ -3,17 +3,19 @@ const { Route, Routes } = require('react-router-dom');
 require('./styles/index.css'); // CSS imports typically handled by build tools
 
 // Import components
-const Home = require('./src/pages/Home');
-const Inventory = require('./src/pages/Inventory');
-const Orders = require('./src/pages/Orders');
-const Transfers = require('./src/pages/Transfers');
-const NewOrder = require('./src/pages/NewOrder');
-const LowStock = require('./src/pages/LowStock');
-const NewTransfer = require('./src/pages/NewTransfer');
-const NewItem = require('./src/pages/NewItem');
-const EditItem = require('./src/pages/EditItem');
-const AcceptTransfer = require('./src/pages/AcceptTransfer');
-const Login = require('./src/pages/Login');
+const Home = require('./pages/Home');
+const Inventory = require('./pages/Inventory');
+const Orders = require('./pages/Orders');
+const Transfers = require('./pages/Transfers');
+const NewOrder = require('./pages/NewOrder');
+const LowStock = require('./pages/LowStock');
+const NewTransfer = require('./pages/NewTransfer');
+const NewItem = require('./pages/NewItem');
+const EditItem = require('./pages/EditItem');
+const AcceptTransfer = require('./pages/AcceptTransfer');
+const Login = require('./pages/Login');
+const NewDelivery = require('./pages/NewDelivery');
+
 
 // const ViewPDF = require('./pages/ViewPDF');
 
@@ -33,6 +35,7 @@ const App = () => {
 
         <Route path = '/api/orders' element = {<Orders/>} />
         <Route path = '/api/orders/neworder' element = {<NewOrder/>} />
+        <Route path = '/api/orders/newdelivery' element = {<NewDelivery/>} />
         {/* <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} /> */}
 
         <Route path = '/api/transfers' element = {<Transfers/>} />

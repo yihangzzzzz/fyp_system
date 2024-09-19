@@ -295,17 +295,41 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
     const { transferID } = req.params;
     
     try {
-
-        sql.query(`
-            UPDATE transfers
-            SET status = 'Acknowledged'
+        
+        const status = await sql.query(`
+            SELECT status
+            FROM transfers
             WHERE transferID = ${transferID}
         `)
-        
-        updateTransferDocument(transferID);
+
+        if (status.recordset[0].status === "Pending") {
+            updateTransferDocument(transferID);
+
+            const result = await sql.query(`
+                SELECT *
+                FROM transferItems
+                WHERE transferID = ${transferID}
+            `)
+            
+            result.recordset.forEach(item => {
+                sql.query(`
+                    UPDATE warehouse
+                    SET cabinet = cabinet - ${item.quantity}
+                    WHERE itemName = '${item.itemName}'
+                `)
+            })
+
+            sql.query(`
+                UPDATE transfers
+                SET status = 'Acknowledged'
+                WHERE transferID = ${transferID}
+            `)
+        }
+
+        res.status(200).json({ message: 'Items updated successfully' });
 
 
-        res.status(200).json({ message: 'Transfer status accepted successfully' });
+
 
     } catch (error) {
         console.log("error is " + error.message);

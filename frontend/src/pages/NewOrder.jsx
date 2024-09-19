@@ -29,6 +29,33 @@ const NewOrder = ({}) => {
         console.error('Error fetching items:', error);
       }
     };
+
+    const handleAddPODocument = async (e) => {
+      const pdftosend = {poDocument: e};
+      try {
+        await axios
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/scanDocument`, 
+          pdftosend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        .then((res) => {
+          setOrderInfo({poNumber: res.data.message.poNumber, poDate: res.data.message.poDate})
+          setPoDocument(res.data.message.orderDocument)
+          setOrderItems({})
+          res.data.message.items.forEach(item => {
+            setOrderItems(prevOrderItems => [
+              ...prevOrderItems,
+              { name: item[0], date: new Date().toISOString().split('T')[0], quantity: item[1] }
+            ]);
+          });
+        })
+      } catch (error) {
+        console.error('Error updating items:', error);
+      }
+    }
   
     const handleAddOrderInfo = (e, info) => {
       setOrderInfo(prevState => ({
@@ -55,15 +82,10 @@ const NewOrder = ({}) => {
     const handleSubmitOrder = async () => {
 
       const newOrder = {poDocument: poDocument, info: orderInfo, items: orderItems}
-      console.log(newOrder);
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/neworder`, newOrder, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/neworder`, newOrder)
         
       } catch (error) {
         console.error('Error updating items:', error);
@@ -88,7 +110,8 @@ const NewOrder = ({}) => {
               name='poDocument'
               accept=".pdf"
               // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
-              onChange={(e) => setPoDocument(e.target.files[0])}
+              // onChange={(e) => setPoDocument(e.target.files[0])}
+              onChange={(e) => handleAddPODocument(e.target.files[0])}
               style={{ outline: '2px solid black' }}
             />
           </div>
@@ -97,6 +120,7 @@ const NewOrder = ({}) => {
               <input
               type="text"
               name="poNumber"
+              value={orderInfo.poNumber}
               onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
               style={{ outline: '2px solid black' }}
               />
@@ -106,6 +130,7 @@ const NewOrder = ({}) => {
               <input
               type="date"
               name="poDate"
+              value={orderInfo.poDate}
               onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
               style={{ outline: '2px solid black' }}
               />

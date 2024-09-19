@@ -4,6 +4,8 @@ const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
 
   formData.date = new Date().toISOString().split('T')[0];
   
+  console.log(deliveredItems);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -53,10 +55,11 @@ const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
           style={{ outline: '2px solid black' }}
         />
       </div>
-      {/* {deliveredItems.map((item, index) => {
+      <div><h5>thetrhrth</h5></div>
+      {deliveredItems.map((item, index) => {
         return(
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-          <h5>Item</h5>
+          <h5>{item.itemName}</h5>
           <input
             type="number"
             name={item.itemName}
@@ -65,7 +68,7 @@ const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
           />
         </div>
         )
-      })} */}
+      })}
 
       {/* Add more inputs as needed */}
     </form>

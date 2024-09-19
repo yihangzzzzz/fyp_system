@@ -6,8 +6,11 @@ const Navbar = require('../components/navbar');
 const Confirmation = require('../components/confirmation');
 const NewDeliveryForm = require('../components/NewDeliveryForm');
 const Modal = require('../components/modal');
+const { useNavigate, useHistory } = require('react-router-dom');
 
 const Orders = () => {
+    const navigate = useNavigate();
+    // const history = useHistory();
     const [formData, setFormData] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -79,6 +82,12 @@ const Orders = () => {
       // Your acknowledge logic here
     };
 
+    const ackNewDelivery = async () => {
+      navigate('/api/orders/newdelivery', { state: { name: selectedRows } });
+    }
+
+
+
 
   return (
     <div>
@@ -102,7 +111,8 @@ const Orders = () => {
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
             </div>
             {selectedRows.length > 0 && (
-              <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+              // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+              <button onClick={() => ackNewDelivery()} className='acknowledgeButton'>
                 Acknowledge
               </button>
             )}

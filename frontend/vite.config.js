@@ -10,7 +10,7 @@ const react = require('@vitejs/plugin-react');
 // })
 module.exports = defineConfig({
   plugins: [react([
-
+    './src/main.jsx', 
   ])],
   build: {
     rollupOptions: {

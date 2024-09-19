@@ -7,6 +7,7 @@ const path = require('path');
 const { json } = require('express');
 const { log } = require('console');
 const upload = require('../functions/picture.js');
+const { spawn } = require('child_process');
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.resolve();
@@ -59,15 +60,45 @@ orderRouter.get('/pdf/:filename', (req, res) => {
     });
   });
 
+// GET INFO FROM PO DOCUMENT
+
+orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) => {
+
+    const pythonScript = path.join(__dirname, '../functions', 'readDocument.py');
+    const pdfFilePath = path.join(__dirname, '../', req.file.path);
+    const pythonProcess = spawn('python', [pythonScript, pdfFilePath]);
+
+    let result = '';
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+   
+
+    pythonProcess.on('close', (code) => {
+        if (code === 0) {
+            const parsedResult = JSON.parse(result);
+            parsedResult['orderDocument'] = req.file.filename;
+            res.json({ message: parsedResult });
+        // console.log("result is ", result);
+        } else {
+        //   res.status(500).send('Python script failed');
+        console.log("failed sia sian");
+        }
+      });
+
+
+
+});
+
 // ================================ POST ==================================================
 
 // ADDING NEW RECORD
-orderRouter.post('/neworder', upload.single('poDocument'), async (req, res) => {
+orderRouter.post('/neworder', async (req, res) => {
 
     const info = req.body.info;
     const orders = req.body.items;
 
-    const poDocument = req.file.filename;
+    const poDocument = req.body.poDocument;
     const poDate = info.poDate;
     const poNumber = info.poNumber;
    
