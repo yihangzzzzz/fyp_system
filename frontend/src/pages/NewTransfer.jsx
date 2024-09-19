@@ -1,9 +1,15 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const axios = require('axios');
-const Navbar = require('../components/navbar');
-const Confirmation = require('../components/confirmation');
-const { useNavigate } = require('react-router-dom');
+// const React = require('react');
+// const { useState, useEffect } = React;
+// const axios = require('axios');
+// const Navbar = require('../components/navbar');
+// const Confirmation = require('../components/confirmation');
+// const { useNavigate } = require('react-router-dom');
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Navbar from '../components/navbar.jsx';
+import Confirmation from '../components/confirmation.jsx';
+
 
 const NewTransfer = ({}) => {
     const navigate = useNavigate(); 
@@ -207,4 +213,5 @@ const NewTransfer = ({}) => {
 }
   
   
-module.exports = NewTransfer;
+// module.exports = NewTransfer;
+export default NewTransfer;

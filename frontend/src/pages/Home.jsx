@@ -1,7 +1,12 @@
-const React = require('react');
-const { useEffect, useState } = React;
-const { Link } = require('react-router-dom');
-const Navbar = require('../components/navbar');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { Link } = require('react-router-dom');
+// const Navbar = require('../components/navbar');
+
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/navbar.jsx';
+
 
 const Home  = () => {
 
@@ -54,4 +59,5 @@ const Home  = () => {
 }
 
 
-module.exports = Home 
+// module.exports = Home 
+export default Home;

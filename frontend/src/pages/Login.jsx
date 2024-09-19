@@ -1,7 +1,12 @@
-const axios = require('axios');
-const React = require('react');
-const { useEffect, useState } = React;
-const { useNavigate } = require('react-router-dom');
+// const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { useNavigate } = require('react-router-dom');
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -64,4 +69,5 @@ const Login = () => {
     )
 }
 
-module.exports = Login
+// module.exports = Login
+export default Login

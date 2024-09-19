@@ -1,13 +1,21 @@
 // src/components/StatusDropdown.js
-const React = require('react');
-const { useState } = React;
-const { MdOutlineAddBox, MdModeEditOutline, MdDelete } = require('react-icons/md');
 // const MdOutlineAddBox = require('react-icons/md/MdOutlineAddBox');
 // const MdModeEditOutline = require('react-icons/md/MdModeEditOutline');
 // const MdDelete = require('react-icons/md/MdDelete');
-const axios = require('axios');
-const Confirmation = require('./confirmation');
-const { useNavigate } = require('react-router-dom');
+
+// const React = require('react');
+// const { useState } = React;
+// const { MdOutlineAddBox, MdModeEditOutline, MdDelete } = require('react-icons/md');
+// const axios = require('axios');
+// const Confirmation = require('./confirmation');
+// const { useNavigate } = require('react-router-dom');
+
+import React, { useState } from 'react';
+import { MdOutlineAddBox, MdModeEditOutline, MdDelete } from 'react-icons/md';
+import axios from 'axios';
+import Confirmation from './confirmation';
+import { useNavigate } from 'react-router-dom';
+
 
 const Actions = ({toDelete, toEdit}) => {
   const navigate = useNavigate();
@@ -57,4 +65,5 @@ const Actions = ({toDelete, toEdit}) => {
   );
 }
 
-module.exports = Actions;
+// module.exports = Actions;
+export default Actions;

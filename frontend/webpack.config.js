@@ -1,8 +1,19 @@
-const path = require('path');
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const path = require('path');
+// // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+
+// module.exports
+export default {
   entry: './src/main.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -31,8 +42,8 @@ module.exports = {
                 options: {
                   postcssOptions: {
                     plugins: [
-                      require('tailwindcss'), // Include Tailwind
-                      require('autoprefixer'), // Include Autoprefixer
+                      // require('tailwindcss'), // Include Tailwind
+                      // require('autoprefixer'), // Include Autoprefixer
                     ],
                   },
                 },

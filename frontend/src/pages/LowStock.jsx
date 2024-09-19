@@ -1,8 +1,14 @@
-const axios = require('axios');
-const React = require('react');
-const { useEffect, useState } = React;
-const { RxCross1 } = require('react-icons/rx');
-const Navbar = require('../components/navbar');
+// const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { RxCross1 } = require('react-icons/rx');
+// const Navbar = require('../components/navbar');
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { RxCross1 } from 'react-icons/rx';
+import Navbar from '../components/navbar.jsx';
+
 
 
 const LowStock = () => {
@@ -104,4 +110,5 @@ const LowStock = () => {
   )
 }
 
-module.exports = LowStock;
+// module.exports = LowStock;
+export default LowStock;

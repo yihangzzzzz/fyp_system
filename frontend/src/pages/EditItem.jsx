@@ -1,9 +1,15 @@
-const React = require('react');
-const { useEffect, useState } = React;
-const { useParams, useNavigate } = require('react-router-dom');
-const axios = require('axios');
-const Navbar = require('../components/navbar');
-const Confirmation = require('../components/confirmation');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { useParams, useNavigate } = require('react-router-dom');
+// const axios = require('axios');
+// const Navbar = require('../components/navbar');
+// const Confirmation = require('../components/confirmation');
+
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Navbar from '../components/navbar.jsx';
+import Confirmation from '../components/confirmation.jsx';
 
 
 const EditItem = () => {
@@ -143,4 +149,5 @@ const EditItem = () => {
     )
 }
 
-module.exports = EditItem;
+// module.exports = EditItem;
+export default EditItem;

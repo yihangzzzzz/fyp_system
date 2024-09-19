@@ -1,10 +1,18 @@
-const axios = require('axios');
-const React = require('react');
-const { useEffect, useState } = React;
-const { RxCross1 } = require('react-icons/rx');
-const Navbar = require('../components/navbar');
-const Confirmation = require('../components/confirmation');
-const { useNavigate } = require('react-router-dom');
+// const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { RxCross1 } = require('react-icons/rx');
+// const Navbar = require('../components/navbar');
+// const Confirmation = require('../components/confirmation');
+// const { useNavigate } = require('react-router-dom');
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { RxCross1 } from 'react-icons/rx';
+import Navbar from '../components/navbar.jsx';
+import Confirmation from '../components/confirmation.jsx';
+import { useNavigate } from 'react-router-dom';
+
 
 const Transfers = () => {
     const navigate = useNavigate(); 
@@ -189,4 +197,5 @@ const Transfers = () => {
    
   
 
-module.exports = Transfers
+// module.exports = Transfers
+export default Transfers;

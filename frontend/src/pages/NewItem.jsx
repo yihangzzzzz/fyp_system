@@ -1,10 +1,18 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const { useNavigate } = require('react-router-dom');
-const Navbar = require('../components/navbar');
-const axios = require('axios');
-// const { Buffer } = require('buffer'); // Uncomment if needed
-const Confirmation = require('../components/confirmation');
+// const React = require('react');
+// const { useState, useEffect } = React;
+// const { useNavigate } = require('react-router-dom');
+// const Navbar = require('../components/navbar');
+// const axios = require('axios');
+// // const { Buffer } = require('buffer'); // Uncomment if needed
+// const Confirmation = require('../components/confirmation');
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/navbar.jsx';
+import axios from 'axios';
+// import { Buffer } from 'buffer'; // Uncomment if needed
+import Confirmation from '../components/confirmation.jsx';
+
 
 const NewItem = ({}) => {
 
@@ -125,4 +133,5 @@ const NewItem = ({}) => {
     );
   }
   
-module.exports = NewItem;
+// module.exports = NewItem;
+export default NewItem;

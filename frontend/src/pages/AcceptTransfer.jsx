@@ -1,7 +1,12 @@
-const React = require('react');
-const { useEffect, useState } = React;
-const { useParams } = require('react-router-dom');
-const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { useParams } = require('react-router-dom');
+// const axios = require('axios');
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
 
 const AcceptTransfer = () => {
 
@@ -21,4 +26,5 @@ const AcceptTransfer = () => {
     )
 }
 
-module.exports = AcceptTransfer;
+// module.exports = AcceptTransfer;
+export default AcceptTransfer;

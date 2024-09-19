@@ -1,12 +1,22 @@
-const axios = require('axios');
-const React = require('react');
-const { useEffect, useState } = React;
-const { RxCross1 } = require('react-icons/rx');
-const Navbar = require('../components/navbar');
-const Confirmation = require('../components/confirmation');
-const NewDeliveryForm = require('../components/NewDeliveryForm');
-const Modal = require('../components/modal');
-const { useNavigate, useHistory } = require('react-router-dom');
+// const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { RxCross1 } = require('react-icons/rx');
+// const Navbar = require('../components/navbar');
+// const Confirmation = require('../components/confirmation');
+// const NewDeliveryForm = require('../components/NewDeliveryForm');
+// const Modal = require('../components/modal');
+// const { useNavigate, useHistory } = require('react-router-dom');
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { RxCross1 } from 'react-icons/rx';
+import Navbar from '../components/navbar.jsx';
+import Confirmation from '../components/confirmation.jsx';
+import NewDeliveryForm from '../components/NewDeliveryForm.jsx';
+import Modal from '../components/modal.jsx';
+import { useNavigate, useHistory } from 'react-router-dom';
+
 
 const Orders = () => {
     const navigate = useNavigate();
@@ -200,4 +210,5 @@ const Orders = () => {
    
   
 
-module.exports = Orders
+// module.exports = Orders
+export default Orders;

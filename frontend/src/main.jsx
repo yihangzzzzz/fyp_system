@@ -1,8 +1,15 @@
-const React = require('react');
-const ReactDOM = require('react-dom/client');
-const App = require('./App'); // Ensure default export
-require('./styles/index.css'); // No direct `require` for CSS in CommonJS; this will need to be handled by your build tool
-const { BrowserRouter } = require('react-router-dom');
+// const React = require('react');
+// const ReactDOM = require('react-dom/client');
+// const App = require('./App'); // Ensure default export
+// require('./styles/index.css'); // No direct `require` for CSS in CommonJS; this will need to be handled by your build tool
+// const { BrowserRouter } = require('react-router-dom');
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx'; // Ensure default export
+import './styles/index.css'; // No direct `require` for CSS in ES6; handled by build tools
+import { BrowserRouter } from 'react-router-dom';
+
 
 // This code needs to be executed in a browser environment with proper build tools
 // ReactDOM.createRoot(document.getElementById('root')).render(

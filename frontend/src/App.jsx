@@ -1,20 +1,39 @@
-const React = require('react');
-const { Route, Routes } = require('react-router-dom');
-require('./styles/index.css'); // CSS imports typically handled by build tools
+// const React = require('react');
+// const { Route, Routes } = require('react-router-dom');
+// require('./styles/index.css'); // CSS imports typically handled by build tools
+
+// // Import components
+// const Home = require('./pages/Home');
+// const Inventory = require('./pages/Inventory');
+// const Orders = require('./pages/Orders');
+// const Transfers = require('./pages/Transfers');
+// const NewOrder = require('./pages/NewOrder');
+// const LowStock = require('./pages/LowStock');
+// const NewTransfer = require('./pages/NewTransfer');
+// const NewItem = require('./pages/NewItem');
+// const EditItem = require('./pages/EditItem');
+// const AcceptTransfer = require('./pages/AcceptTransfer');
+// const Login = require('./pages/Login');
+// const NewDelivery = require('./pages/NewDelivery');
+
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import './styles/index.css'; // CSS imports typically handled by build tools
 
 // Import components
-const Home = require('./pages/Home');
-const Inventory = require('./pages/Inventory');
-const Orders = require('./pages/Orders');
-const Transfers = require('./pages/Transfers');
-const NewOrder = require('./pages/NewOrder');
-const LowStock = require('./pages/LowStock');
-const NewTransfer = require('./pages/NewTransfer');
-const NewItem = require('./pages/NewItem');
-const EditItem = require('./pages/EditItem');
-const AcceptTransfer = require('./pages/AcceptTransfer');
-const Login = require('./pages/Login');
-const NewDelivery = require('./pages/NewDelivery');
+import Home from './pages/Home.jsx';
+import Inventory from './pages/Inventory.jsx';
+import Orders from './pages/Orders.jsx';
+import Transfers from './pages/Transfers.jsx';
+import NewOrder from './pages/NewOrder.jsx';
+import LowStock from './pages/LowStock.jsx';
+import NewTransfer from './pages/NewTransfer.jsx';
+import NewItem from './pages/NewItem.jsx';
+import EditItem from './pages/EditItem.jsx';
+import AcceptTransfer from './pages/AcceptTransfer.jsx';
+import Login from './pages/Login.jsx';
+import NewDelivery from './pages/NewDelivery.jsx';
+
 
 
 // const ViewPDF = require('./pages/ViewPDF');
@@ -57,4 +76,5 @@ const App = () => {
 //   );
 // };
 
-module.exports = App;
+// module.exports = App;
+export default App;

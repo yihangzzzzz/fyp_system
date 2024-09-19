@@ -1,7 +1,11 @@
 
-const React = require('react');
-const { useEffect, useState } = React;
-const { useParams } = require('react-router-dom');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { useParams } = require('react-router-dom');
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 
 const ViewPDF = () => {
 
@@ -26,4 +30,5 @@ const ViewPDF = () => {
       );
 }
 
-module.exports = ViewPDF
+// module.exports = ViewPDF
+export default ViewPDF;

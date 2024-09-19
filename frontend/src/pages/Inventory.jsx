@@ -1,12 +1,22 @@
-const axios = require('axios');
-const React = require('react');
-const { useEffect, useState } = React;
-const { RxCross1 } = require('react-icons/rx');
-const Actions = require('../components/actions');
-const Modal = require('../components/modal');
-const Navbar = require('../components/navbar');
-const NewItemForm = require('../components/NewDeliveryForm');
-const Confirmation = require('../components/confirmation');
+// const axios = require('axios');
+// const React = require('react');
+// const { useEffect, useState } = React;
+// const { RxCross1 } = require('react-icons/rx');
+// const Actions = require('../components/actions');
+// const Modal = require('../components/modal');
+// const Navbar = require('../components/navbar');
+// const NewItemForm = require('../components/NewDeliveryForm');
+// const Confirmation = require('../components/confirmation');
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { RxCross1 } from 'react-icons/rx';
+import Actions from '../components/actions.jsx';
+import Modal from '../components/modal.jsx';
+import Navbar from '../components/navbar.jsx';
+import NewItemForm from '../components/NewDeliveryForm.jsx';
+import Confirmation from '../components/confirmation.jsx';
+
 
 const Inventory = () => {
     const [inventory, setInventory] = useState([]);
@@ -30,9 +40,11 @@ const Inventory = () => {
     const fetchInventory = async (sortAtt) => {
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`, {params: {sortBy: sortAtt}})
+        // .get(`http://localhost:3000/api/inventory`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
+            console.log(inventory);
         })
         .catch((error) => {
             console.log("le error is " + error);
@@ -146,4 +158,5 @@ const Inventory = () => {
     );
 }
 
-module.exports = Inventory
+// module.exports = Inventory
+export default Inventory;

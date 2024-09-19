@@ -1,4 +1,6 @@
-const React = require('react');
+// const React = require('react');
+import React, { useState } from 'react';
+
 
 const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
 
@@ -72,6 +74,8 @@ const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
 
       {/* Add more inputs as needed */}
     </form>
-  );
+  )
 };
-module.exports = NewDeliveryForm;
+
+// module.exports = NewDeliveryForm;
+export default NewDeliveryForm;
