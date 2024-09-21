@@ -51,13 +51,16 @@ const NewOrder = ({}) => {
         .then((res) => {
           setOrderInfo({poNumber: res.data.message.poNumber, poDate: res.data.message.poDate})
           setPoDocument(res.data.message.orderDocument)
-          setOrderItems({})
-          res.data.message.items.forEach(item => {
-            setOrderItems(prevOrderItems => [
-              ...prevOrderItems,
-              { name: item[0], date: new Date().toISOString().split('T')[0], quantity: item[1] }
-            ]);
-          });
+          // setOrderItems({})
+          if (res.data.message.items.length > 0) {
+            res.data.message.items.forEach(item => {
+              setOrderItems(prevOrderItems => [
+                ...prevOrderItems,
+                { name: item[0], date: new Date().toISOString().split('T')[0], quantity: item[1] }
+              ]);
+            });
+          }
+
         })
       } catch (error) {
         console.error('Error updating items:', error);

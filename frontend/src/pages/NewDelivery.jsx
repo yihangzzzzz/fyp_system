@@ -15,12 +15,62 @@ import Confirmation from '../components/confirmation.jsx';
 const NewDelivery = () => {
 
     const location = useLocation();
+    const navigate = useNavigate();
     // const { data } = props.location.state;
     const items = location.state || {};
+    const [deliveryItems, setDeliveryItems] = useState([]);
+    const [deliveryInfo, setDeliveryInfo] = useState({});
+    const [doDocument, setDoDocument] = useState();
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+
 
     useEffect(() => {
         console.log(items);
+        setDeliveryItems(items.name)
     }, []);
+
+    const handleDODocumentChange = (e) => {
+      setDoDocument(e.target.files[0])
+    };
+
+    const handleAddDeliveryInfo = (e, info) => {
+      setDeliveryInfo(prevState => ({
+        ...prevState,
+        [info]: e  // Replace with the new value for destination
+      }));
+    };
+
+    const handleAddDeliveryItem = (e, orderID) => {
+      setDeliveryItems(prevItems =>
+        prevItems.map(item =>
+          item.orderID === orderID
+            ? { ...item, subQuantity: e} // Add quantity if itemName matches
+            : item // Leave unchanged if no match
+        )
+      );
+    };
+
+    const handleSubmitDelivery = async () => {
+
+      const newDelivery = {doDocument: doDocument, info: deliveryInfo, items: deliveryItems}
+      console.log(newDelivery)
+
+      try {
+        await axios
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/newdelivery`, newDelivery, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+      } catch (error) {
+        console.error('Error updating items:', error);
+      }
+
+
+
+
+      navigate('/api/orders');
+    }
 
   return (
     <div>
@@ -38,7 +88,7 @@ const NewDelivery = () => {
                 accept=".pdf"
                 // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
                 // onChange={(e) => setPoDocument(e.target.files[0])}
-              //   onChange={(e) => handleAddPODocument(e.target.files[0])}
+                onChange={(e) => handleDODocumentChange(e)}
                 style={{ outline: '2px solid black' }}
               />
             </div>
@@ -48,7 +98,7 @@ const NewDelivery = () => {
                 type="text"
                 name="doNumber"
               //   value={orderInfo.poNumber}
-              //   onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
+                onChange={(e) => handleAddDeliveryInfo(e.target.value, "doNumber")}
                 style={{ outline: '2px solid black' }}
                 />
             </div>
@@ -58,17 +108,35 @@ const NewDelivery = () => {
                 type="date"
                 name="doDate"
               //   value={orderInfo.poDate}
-              //   onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
+                onChange={(e) => handleAddDeliveryInfo(e.target.value, "doDate")}
                 style={{ outline: '2px solid black' }}
                 />
             </div>
+            <div>
+              <h4>Enter Quantity Delivered</h4>
+              {items.name.map((item, index) => {
+                  return(
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                      <h5>{item.itemName}</h5>
+                        <input
+                        type="number"
+                        name="subQuantity"
+                      //   value={orderInfo.poNumber}
+                        onChange={(e) => handleAddDeliveryItem(e.target.value, item.orderID)}
+                        style={{ outline: '2px solid black' }}
+                        />
+                    </div>
+                  )
+              })}
+            </div>
           </div>
-        <div>
-            {items.name.map((item, index) => {
-                return(<h1>{item.itemName}</h1>)
-            })}
+          <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
         </div>
-        </div>
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleSubmitDelivery}/>
+        
     </div>
   )
 }

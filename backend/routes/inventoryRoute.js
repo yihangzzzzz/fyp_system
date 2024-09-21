@@ -186,6 +186,7 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
     const cabinet = req.body.cabinet;
     const counter = req.body.counter;
     const description = req.body.description;
+    const ordered = req.body.ordered;
     const lostDamaged = req.body.lostDamaged;
     const remarks = req.body.remarks;
 
@@ -199,6 +200,7 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
                 cabinet = ${cabinet},
                 counter = ${counter},
                 lostDamaged = ${lostDamaged},
+                ordered = ${ordered},
                 remarks = '${remarks}',
                 picture = '${picture}'
             WHERE itemName = '${oldItemName}'`);

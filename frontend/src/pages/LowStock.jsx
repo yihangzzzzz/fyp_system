@@ -82,7 +82,6 @@ const LowStock = () => {
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Item Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Serial Number</th>
                               <th style={{ fontWeight: 'bold' }}>Currrent Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>Low Stock Limit</th>
                           </tr>
@@ -91,8 +90,7 @@ const LowStock = () => {
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
                               <td>{item.itemName}</td>
-                              <td>{item.serialNumber}</td>
-                              <td>{item.quantity}</td>
+                              <td>{item.cabinet}</td>
                               <td>
                               <input
                                     type="number"

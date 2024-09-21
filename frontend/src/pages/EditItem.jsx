@@ -121,6 +121,15 @@ const EditItem = () => {
                     />
                 </div>
                 <div className='input-box'>
+                    <h5>Ordered</h5>
+                    <input
+                        type="number"
+                        value={item.ordered}
+                        onChange={(e) => handleItemChange(e.target.value, 'ordered')}
+                        style={{ outline: '2px solid black' }}
+                    />
+                </div>
+                <div className='input-box'>
                     <h5>Lost/Damaged</h5>
                     <input
                         type="number"

@@ -93,7 +93,12 @@ const Orders = () => {
     };
 
     const ackNewDelivery = async () => {
-      navigate('/api/orders/newdelivery', { state: { name: selectedRows } });
+      navigate('/api/orders/newdelivery', { state: { name: selectedRows.map(item => ({
+        orderID: item.orderID,
+        itemName: item.itemName,
+        totalQuantity: item.quantity,
+        deliveredQuantity: item.deliveredQuantity
+      })) } });
     }
 
 
@@ -138,56 +143,77 @@ const Orders = () => {
                               <th style={{ fontWeight: 'bold' }}>PO Date</th>
                               <th style={{ fontWeight: 'bold' }}>PO Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Sub-Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
+                              <th style={{ fontWeight: 'bold' }}>Sub-Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>DO Date</th>
                               <th style={{ fontWeight: 'bold' }}>DO Number</th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredInventory.map((item, index) => {
+
+                                const itemsArray = item.items.split(', ');
+                                const rowSpan = itemsArray.length;
+
                                 const poDate = new Date(item.poDate);
                                 const formattedPoDate = `${String(poDate.getDate()).padStart(2, '0')}/${String(poDate.getMonth() + 1).padStart(2, '0')}/${poDate.getFullYear()}`;
-                                const doDate = new Date(item.doDate);
-                                const formattedDoDate = `${String(doDate.getDate()).padStart(2, '0')}/${String(doDate.getMonth() + 1).padStart(2, '0')}/${doDate.getFullYear()}`;
-                                return ((
-                                    <tr key={index}>
-                                        <td>
-                                          <input
-                                            type="checkbox"
-                                            checked={selectedRows.includes(item)}
-                                            onChange={() => handleRowSelect(item)}
-                                            disabled={item.status === "Fulfilled"} 
-                                          />
-                                        </td>
-                                        <td>{item.itemName}</td>
-                                        <td>{formattedPoDate}</td>
-                                        <td>
-                                          <a href={`/api/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
-                                            {item.poNumber}
-                                          </a>
-                                        </td>
-                                        <td>{item.quantity}</td>
-                                        <td>{item.subQuantity}</td>
-                                        <td style={{
-                                          color: 
-                                            item.status === 'Pending'
-                                              ? '#FF922C'
-                                              : item.status === 'Fulfilled'
-                                              ? '#238823'
-                                              : item.status === 'Cancelled'
-                                              ? '#D2222D'
-                                              : 'black', // default color
-                                        }}>{item.status}</td>
-                                        <td>{(item.doDate === null) ? (item.doDate) : (formattedDoDate)}</td>
-                                        <td>
-                                          <a href={`/api/pdf/${item.doDocument}`} target="_blank" rel="noopener noreferrer">
-                                            {item.doNumber}
-                                          </a>
-                                        </td>
-                                        
-                                    </tr>
-                                ))
+                                
+                                return (
+                                  <>
+                                  {itemsArray.map((itemDetail, idx) => {
+
+                                    const doDate = new Date(itemDetail.split(':')[2]);
+                                    const formattedDoDate = `${String(doDate.getDate()).padStart(2, '0')}/${String(doDate.getMonth() + 1).padStart(2, '0')}/${doDate.getFullYear()}`;
+
+                                    return (
+                                    <tr key={`${index}-${idx}`}>
+                                      {idx === 0 && (
+                                        <>
+                                    <td rowSpan={rowSpan}>
+                                      <input
+                                        type="checkbox"
+                                        checked={selectedRows.includes(item)}
+                                        onChange={() => handleRowSelect(item)}
+                                        disabled={item.status === "Fulfilled"} 
+                                      />
+                                    </td>
+                                    <td rowSpan={rowSpan}>{item.itemName}</td>
+                                    <td rowSpan={rowSpan}>{formattedPoDate}</td>
+                                    <td rowSpan={rowSpan}>
+                                      <a href={`/api/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                        {item.poNumber}
+                                      </a>
+                                    </td>
+                                    <td rowSpan={rowSpan}>{item.quantity}</td>
+                                    <td rowSpan={rowSpan} style={{
+                                      color: 
+                                        item.status === 'Pending'
+                                          ? '#FF922C'
+                                          : item.status === 'Fulfilled'
+                                          ? '#238823'
+                                          : item.status === 'Cancelled'
+                                          ? '#D2222D'
+                                          : 'black', // default color
+                                    }}>{item.status}</td>
+                                    </>
+                                      )}
+                                    <td>{itemDetail.split(':')[0]}</td>
+                                    {/* <td>{(itemDetail.split(':')[2] === null) ? ('') : (formattedDoDate)}</td> */}
+                                    <td>{!itemDetail.split(':')[2] ? '' : formattedDoDate}</td>
+                                    <td>
+                                      <a href={`/api/orders/pdf/${itemDetail.split(':')[3]}`} target="_blank" rel="noopener noreferrer">
+                                      {itemDetail.split(':')[1]}
+                                      </a>
+                                    </td>
+                                    
+                                </tr>
+                          )})}
+
+                                  </>
+
+                                  
+                                    
+                                )
                           })}
                       </tbody>
                   </table>

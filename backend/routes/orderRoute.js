@@ -33,7 +33,27 @@ orderRouter.get('/', async (req, res) => {
     }
 
     try {
-        const data = sql.query(query);
+        // const data = sql.query(query);
+        const data = sql.query(`SELECT
+            o.orderID,
+			o.poNumber,
+			o.poDate,
+			o.itemName,
+			o.status,
+            o.quantity,
+            o.poDocument,
+            SUM(dd.subQuantity) AS deliveredQuantity,
+            STRING_AGG(CONCAT(dd.subQuantity, ':', dd.doNumber, ':', dd.doDate, ':', dd.doDocument), ', ') AS items
+            FROM orders o
+            LEFT JOIN doDetails dd
+            ON o.orderID = dd.orderID
+            GROUP BY o.orderID,
+			o.poNumber,
+			o.poDate,
+			o.itemName,
+			o.status,
+            o.quantity,
+            o.poDocument`);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -114,12 +134,63 @@ orderRouter.post('/neworder', async (req, res) => {
                 WHERE itemName = '${name}'`);
 
             sql.query(`INSERT INTO orders 
-                (itemName, poDate, quantity, doDate, poNumber, poDocument)
-                VALUES ('${name}', '${poDate}', ${quantity}, null, '${poNumber}', '${poDocument}')`);
+                (itemName, poDate, quantity, poNumber, poDocument)
+                VALUES ('${name}', '${poDate}', ${quantity}, '${poNumber}', '${poDocument}')`);
 
             });
 
         res.status(200).json({ message: 'Items updated successfully' });
+
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+})
+
+orderRouter.post('/newdelivery', upload.single('doDocument'), async (req, res) => {
+
+    const info = req.body.info;
+    const deliveryItems = req.body.items;
+    console.log(deliveryItems);
+    // const doDocument = req.file.filename;
+    const doDocument = req.file.filename;
+    const doDate = info.doDate;
+    const doNumber = info.doNumber;
+   
+    try {
+        
+        deliveryItems.forEach(item => {
+
+            const orderID = item.orderID;
+            const subQuantity = item.subQuantity;
+            const itemName = item.itemName;
+
+            console.log("total is ", +item.totalQuantity, " and deliveted is ",(+item.deliveredQuantity + +subQuantity))
+            
+            if (+item.totalQuantity === (+item.deliveredQuantity + +subQuantity)) {
+                console.log("done liao");
+                
+                sql.query(`
+                    UPDATE orders
+                    SET status = 'Fulfilled'
+                    WHERE orderID = ${orderID}
+                    `)
+            }
+
+            sql.query(`UPDATE warehouse
+                SET cabinet = cabinet + ${subQuantity},
+                    ordered = ordered - ${subQuantity}
+                WHERE itemName = '${itemName}'`);
+
+            sql.query(`
+                INSERT INTO doDetails (orderID, doNumber, doDate, doDocument, subQuantity)
+                VALUES (${orderID}, '${doNumber}', '${doDate}', '${doDocument}', ${subQuantity})
+            `);
+
+        });
+
+        res.status(200).json({ message: 'Items updated successfully' });
+        
 
     } catch (error) {
         console.log("error is " + error.message);
