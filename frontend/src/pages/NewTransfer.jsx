@@ -29,7 +29,7 @@ const NewTransfer = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -41,7 +41,7 @@ const NewTransfer = ({}) => {
     const fetchLabs = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/labs`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/labs`)
         .then((res) => {
             setLabs(res.data.recordset);
         })
@@ -78,7 +78,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/newtransfer`, newTransfer)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/newtransfer`, newTransfer)
         .then((res) => {
           transferID = res.data.recordset[0].transferID
         });
@@ -88,7 +88,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
       } catch (error) {
         console.error('Error updating items:', error);
       }
@@ -96,18 +96,18 @@ const NewTransfer = ({}) => {
       try {
         if (transferInfo.destination.includes('Counter')) {
           await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/updateinventory?type=counter`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/updateinventory?type=counter`, transferItems)
         }
         else if (transferInfo.destination.includes('Cabinet')) {
           await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/updateinventory?type=cabinet`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/updateinventory?type=cabinet`, transferItems)
         }
         
       } catch (error) {
         console.error('Error updating items:', error);
       }
 
-      navigate('/api/transfers');
+      navigate('/transfers');
     }
       
   

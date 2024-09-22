@@ -19,7 +19,7 @@ const Login = () => {
       e.preventDefault();
   
       try {
-        const response = await axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/login`, {
+        const response = await axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login`, {
           user,
           password,
         });
@@ -27,7 +27,7 @@ const Login = () => {
         if (response.data.success) {
           // Handle successful login (e.g., redirect to dashboard)
         //   alert('Login Successful!');
-          navigate('/api');
+          navigate('/home');
           setUser('');
           setPassword('');
 

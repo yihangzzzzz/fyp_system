@@ -41,7 +41,7 @@ const NewItem = ({}) => {
       axios
       // .post("http://www.iistesting.com:3000/inventory", newItem, {
       // })
-      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory/newitem`, formData, {
+      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/newitem`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -55,7 +55,7 @@ const NewItem = ({}) => {
         setLoading(false);
       });
 
-      navigate('/api/inventory');
+      navigate('/inventory');
     };
 
     const handleNewItemChange = (e, info) => {

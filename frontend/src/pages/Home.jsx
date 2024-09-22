@@ -20,13 +20,13 @@ const Home  = () => {
                     <h2>Inventory</h2>
                     <ul>
                       <li>
-                          <Link to="/api/inventory">Warehouse Items</Link>
+                          <Link to="/inventory">Warehouse Items</Link>
                       </li>
                       <li>
-                          <Link to="/api/inventory/lowstock">Set Low Stock Limit</Link>
+                          <Link to="/inventory/lowstock">Set Low Stock Limit</Link>
                       </li>
                       <li>
-                          <Link to="/api/inventory/newitem">Add New Item</Link>
+                          <Link to="/inventory/newitem">Add New Item</Link>
                       </li>
                     </ul>
                 </div>
@@ -34,10 +34,10 @@ const Home  = () => {
                     <h2>Orders</h2>
                     <ul>
                       <li>
-                            <Link to="/api/orders">All Orders</Link>
+                            <Link to="/orders">All Orders</Link>
                       </li>
                       <li>
-                            <Link to="/api/orders/neworder">New Order</Link>
+                            <Link to="/orders/neworder">New Order</Link>
                       </li>
                     </ul>
                 </div>
@@ -45,10 +45,10 @@ const Home  = () => {
                     <h2>Transfers</h2>
                     <ul>
                       <li>
-                            <Link to="/api/transfers">All Transfers</Link>
+                            <Link to="/transfers">All Transfers</Link>
                       </li>
                       <li>
-                            <Link to="/api/transfers/newtransfer">New Transfer</Link>
+                            <Link to="/transfers/newtransfer">New Transfer</Link>
                       </li>
                     </ul>
                 </div>

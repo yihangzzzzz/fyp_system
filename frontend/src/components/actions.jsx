@@ -26,15 +26,15 @@ const Actions = ({toDelete, toEdit}) => {
   const handleDelete = () => {
       
       axios
-        .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory/${encodeURIComponent(deleteItemName)}`)
+        .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(deleteItemName)}`)
         .catch((error) => {
           console.log("Error deleting item: " + error);
         });
-        navigate(`/api/inventory`)
+        navigate(`/inventory`)
   }
 
   const handleEdit = () => {
-    navigate(`/api/inventory/edititem/${encodeURIComponent(editItemName)}`)
+    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}`)
   }
 
   return (

@@ -14,7 +14,7 @@ const AcceptTransfer = () => {
 
     useEffect(() => {
         axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/transfers/accepttransfer/${transferID}`)
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers/accepttransfer/${transferID}`)
     }, []);
 
     return (

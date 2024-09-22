@@ -13,7 +13,7 @@ const ViewPDF = () => {
     const { fileName } = useParams();
 
     useEffect(() => {
-      setPdfUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/pdf/${encodeURIComponent(fileName)}`);
+      setPdfUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/pdf/${encodeURIComponent(fileName)}`);
     }, []);
 
     return (

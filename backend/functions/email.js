@@ -54,7 +54,7 @@ async function sendEmail(info, items, transferID) {
             <li>Recipient: ${info.recipient}</li>
           </ul>
           <p>Please click on the link below to acknowledge:</p>
-          <a href="http://localhost:3000/api/transfers/accepttransfer/${transferID}">Acknowledge Transfer</a>`
+          <a href="http://localhost:3000/transfers/accepttransfer/${transferID}">Acknowledge Transfer</a>`
           ,
         attachments: {
             filename: 'sample.pdf',

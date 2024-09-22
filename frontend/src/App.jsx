@@ -33,6 +33,7 @@ import EditItem from './pages/EditItem.jsx';
 import AcceptTransfer from './pages/AcceptTransfer.jsx';
 import Login from './pages/Login.jsx';
 import NewDelivery from './pages/NewDelivery.jsx';
+import ProtectedPage from './pages/ProtectedPage.jsx';
 
 
 
@@ -44,22 +45,23 @@ const App = () => {
             <Routes>
         {/* <DefaultRoute element={<Home/>}/> */}
         {/* <Route path = '/' element = {<Login/>} /> */}
-        <Route path = '/' element = {<Login/>} />
-        <Route path = '/api' element = {<Home/>} />
+        <Route path = '/login' element = {<Login/>} />
+        <Route path = '/home' element = {<Home/>} />
+        <Route path = '/protected-page' element = {<ProtectedPage/>} />
 
-        <Route path = '/api/inventory' element = {<Inventory/>} />
-        <Route path = '/api/inventory/lowstock' element = {<LowStock/>} />
-        <Route path = '/api/inventory/newitem' element = {<NewItem/>} />
-        <Route path = '/api/inventory/edititem/:itemName' element={<EditItem />} />
+        <Route path = '/inventory' element = {<Inventory/>} />
+        <Route path = '/inventory/lowstock' element = {<LowStock/>} />
+        <Route path = '/inventory/newitem' element = {<NewItem/>} />
+        <Route path = '/inventory/edititem/:itemName' element={<EditItem />} />
 
-        <Route path = '/api/orders' element = {<Orders/>} />
-        <Route path = '/api/orders/neworder' element = {<NewOrder/>} />
-        <Route path = '/api/orders/newdelivery' element = {<NewDelivery/>} />
+        <Route path = '/orders' element = {<Orders/>} />
+        <Route path = '/orders/neworder' element = {<NewOrder/>} />
+        <Route path = '/orders/newdelivery' element = {<NewDelivery/>} />
         {/* <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} /> */}
 
-        <Route path = '/api/transfers' element = {<Transfers/>} />
-        <Route path = '/api/transfers/newtransfer' element = {<NewTransfer/>} />
-        <Route path = '/api/transfers/accepttransfer/:transferID' element = {<AcceptTransfer/>} />
+        <Route path = '/transfers' element = {<Transfers/>} />
+        <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
+        <Route path = '/transfers/accepttransfer/:transferID' element = {<AcceptTransfer/>} />
 
         
       </Routes>

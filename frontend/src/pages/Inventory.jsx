@@ -39,8 +39,8 @@ const Inventory = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`, {params: {sortBy: sortAtt}})
-        // .get(`http://localhost:3000/api/inventory`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`, {params: {sortBy: sortAtt}})
+        // .get(`http://localhost:3000/inventory`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -54,7 +54,7 @@ const Inventory = () => {
 
     // const handleAddItem = (newItem) => {
     //   axios
-    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/inventory`, newItem)
+    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`, newItem)
     //     .then(() => {
     //         setLoading(false);
             
@@ -125,7 +125,7 @@ const Inventory = () => {
                       <tbody>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/images/` + item.picture} /></td>
+                              <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture} /></td>
                               <td>{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>

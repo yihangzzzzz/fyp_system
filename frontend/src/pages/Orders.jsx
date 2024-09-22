@@ -45,7 +45,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -82,7 +82,7 @@ const Orders = () => {
       const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
       console.log(itemsToUpdate);
       await axios
-      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/orders/fulfillorder`, itemsToUpdate, {
+      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/fulfillorder`, itemsToUpdate, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -93,7 +93,7 @@ const Orders = () => {
     };
 
     const ackNewDelivery = async () => {
-      navigate('/api/orders/newdelivery', { state: { name: selectedRows.map(item => ({
+      navigate('/orders/newdelivery', { state: { name: selectedRows.map(item => ({
         orderID: item.orderID,
         itemName: item.itemName,
         totalQuantity: item.quantity,
@@ -180,7 +180,7 @@ const Orders = () => {
                                     <td rowSpan={rowSpan}>{item.itemName}</td>
                                     <td rowSpan={rowSpan}>{formattedPoDate}</td>
                                     <td rowSpan={rowSpan}>
-                                      <a href={`/api/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
                                         {item.poNumber}
                                       </a>
                                     </td>
@@ -201,7 +201,7 @@ const Orders = () => {
                                     {/* <td>{(itemDetail.split(':')[2] === null) ? ('') : (formattedDoDate)}</td> */}
                                     <td>{!itemDetail.split(':')[2] ? '' : formattedDoDate}</td>
                                     <td>
-                                      <a href={`/api/orders/pdf/${itemDetail.split(':')[3]}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`/orders/pdf/${itemDetail.split(':')[3]}`} target="_blank" rel="noopener noreferrer">
                                       {itemDetail.split(':')[1]}
                                       </a>
                                     </td>
