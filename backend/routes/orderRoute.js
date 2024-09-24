@@ -93,17 +93,17 @@ orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) 
         result += data.toString();
     });
    
-
+    const parsedResult = {};
     pythonProcess.on('close', (code) => {
         if (code === 0) {
-            const parsedResult = JSON.parse(result);
-            parsedResult['orderDocument'] = req.file.filename;
-            res.json({ message: parsedResult });
+            parsedResult = JSON.parse(result);
         // console.log("result is ", result);
         } else {
         //   res.status(500).send('Python script failed');
         console.log("failed sia sian");
         }
+        parsedResult['orderDocument'] = req.file.filename;
+        res.json({ message: parsedResult });
       });
 
 

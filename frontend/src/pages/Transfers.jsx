@@ -12,6 +12,7 @@ import { RxCross1 } from 'react-icons/rx';
 import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
+import { DownloadTable } from '../components/downloadTable.jsx';
 
 
 const Transfers = () => {
@@ -24,6 +25,8 @@ const Transfers = () => {
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
+    const [filterQuery, setFilterQuery] = useState({});
+    
     
     useEffect(() => {
         fetchInventory();
@@ -65,9 +68,37 @@ const Transfers = () => {
         fetchInventory();
     }
 
-    const filteredInventory = inventory.filter((item) =>
-        item.items.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSetFilters = (field, value) => {
+        setFilterQuery((prevFilters) => ({
+          ...prevFilters, // Spread the previous state
+          [field]: value, // Add new key or update existing key
+        })); // Update search query as the user types
+        console.log("filters are", filterQuery)
+      }
+
+    const filteredInventory = inventory
+    .filter((item) => {
+        return (
+        //   (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
+          // Check if filterQuery.itemName is present, if so, filter based on itemName
+          (!filterQuery.destination || item.destination.toLowerCase().includes(filterQuery.destination.toLowerCase())) &&
+          
+          // Check if filterQuery.poDate is present, if so, filter based on poDate
+          (!filterQuery.transferStartDate || new Date(item.date) > new Date(filterQuery.transferStartDate)) &&
+  
+          (!filterQuery.transferEndDate || new Date(item.date) < new Date(filterQuery.transferEndDate)) &&
+          
+          // Check if filterQuery.poNumber is present, if so, filter based on poNumber
+          (!filterQuery.recipient || item.recipient.toLowerCase().includes(filterQuery.recipient.toLowerCase())) && 
+  
+          (!filterQuery.status || item.status.includes(filterQuery.status)) && 
+
+          (!filterQuery.itemName || item.items.split(',').some((itemDetail) => {
+            const itemName = itemDetail.split(':')[0]; // Extract the item name from the 'itemName:quantity' string
+            return itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
+          }))
+        );
+      })
 
 
 
@@ -77,13 +108,13 @@ const Transfers = () => {
       <div className='topbar'>
                 <h1 className="title">Transfer Records</h1>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
-                <input 
+                {/* <input 
                     type="text"
                     placeholder="Search items..."
                     value={searchQuery}
                     onChange={handleSearch}
                     className='searchBar'
-                />
+                /> */}
                 <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
@@ -91,13 +122,96 @@ const Transfers = () => {
                     <option value="date">Date</option>
                     <option value="destination">Destination</option>
                 </select>
-                <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
+                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
+                <button onClick={() => {DownloadTable('table-to-print', 'Transfer Records Report')}}>Print Table as PDF</button>
         </div>
       {loading ? (
                 <p>Loading...</p>
             ) : (
                 <div className="inventory_table">
-                  <table>
+                <div className='filter-table'>
+                    <div className="filter-header">                    
+                        <h4>Filters</h4>
+                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                    </div>
+
+                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className="input-field">
+                      <h5>Item</h5>
+                      <input
+                        type="text"
+                        name='itemName'
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                    <div className="input-field">
+                      <h5>Destination</h5>
+                      <input
+                        type="text"
+                        name='destination'
+                        value={filterQuery.destination || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                   <div className="input-field">
+                      <h5>Transfer Date</h5>
+                      <input
+                        type="date"
+                        name='transferStartDate'
+                        value={filterQuery.transferStartDate || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                                            <input
+                        type="date"
+                        name='transferEndDate'
+                        value={filterQuery.transferEndDate || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                      <h5>Recipient</h5>
+                      <input
+                        type="text"
+                        name='recipient'
+                        value={filterQuery.recipient || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                    <h5>Status</h5>
+                    <select
+                      name="status"
+                      value={filterQuery.status|| ''}
+                      onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                      // onChange={(e) => setPoDocument(e.target.value)}
+                      style={{ outline: '2px solid black' }}
+                    >
+                      <option value="">Select Status</option> {/* Default option */}
+                      <option value="Pending">Pending</option>
+                      <option value="Acknowledged">Acknowledged</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+
+                  </div>
+                  <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Destination</th>

@@ -18,6 +18,7 @@ import Modal from '../components/modal.jsx';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import FilterModal from '../components/filterModal.jsx';
+import { DownloadTable } from '../components/downloadTable.jsx';
 
 
 
@@ -29,7 +30,7 @@ const Orders = () => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sortQuery, setSortQuery] = useState(''); // State for search input
-    const [filterQuery, setFilterQuery] = useState({itemName: null, poDate: null, poNumber: null});
+    const [filterQuery, setFilterQuery] = useState({});
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
@@ -40,15 +41,6 @@ const Orders = () => {
 
     useEffect(() => {
         fetchInventory();
-        console.log("seacrh query is", searchQuery);
-        console.log("inventory is ", filteredInventory);
-
-        if(searchQuery) {
-          console.log("got something");
-        }
-        else {
-          console.log("got nothing");
-        }
     }, []);
     // const refreshData = () => {
     //     fetchInventory(setInventory, setLoading);
@@ -72,12 +64,8 @@ const Orders = () => {
         });
     }
     const handleSearch = (e) => {
-      setSearchQuery(e.target.value); 
+      // setSearchQuery(e.target.value); 
 
-      //   setFilterQuery((prevFilters) => ({
-      //     ...prevFilters, // Spread the previous state
-      //     [itemName]: e, // Add new key or update existing key
-      // })); // Update search query as the user types
     };
 
     const handleReset = () => {
@@ -85,25 +73,30 @@ const Orders = () => {
         fetchInventory();
     }
 
-    const handleSetFilters = () => {
-
+    const handleSetFilters = (field, value) => {
+      setFilterQuery((prevFilters) => ({
+        ...prevFilters, // Spread the previous state
+        [field]: value, // Add new key or update existing key
+      })); // Update search query as the user types
+      console.log("filters are", filterQuery)
     }
 
     const filteredInventory = inventory
     .filter((item) => {
-      if (searchQuery) {
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase());
-      }
-      return true;
-      // if (filterQuery.itemName) {
-      //   item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
-      // }
-      // if (filterQuery.poDate) {
-      //   item.poDate.includes(filterQuery.poDate);
-      // }
-      // if (filterQuery.poNumber) {
-      //   item.poNumber.includes(filterQuery.poNumber);
-      // }
+      return (
+        // Check if filterQuery.itemName is present, if so, filter based on itemName
+        (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
+        
+        // Check if filterQuery.poDate is present, if so, filter based on poDate
+        (!filterQuery.poStartDate || new Date(item.poDate) > new Date(filterQuery.poStartDate)) &&
+
+        (!filterQuery.poEndDate || new Date(item.poDate) < new Date(filterQuery.poEndDate)) &&
+        
+        // Check if filterQuery.poNumber is present, if so, filter based on poNumber
+        (!filterQuery.poNumber || item.poNumber.includes(filterQuery.poNumber)) && 
+
+        (!filterQuery.status || item.status.includes(filterQuery.status)) 
+      );
     })
     .sort((a, b) => {
       if (sortQuery === 'name') {
@@ -164,26 +157,21 @@ const Orders = () => {
       <div className='topbar'>
                 <h1 className="title">Order Records</h1>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
-                <input 
+                {/* <input 
                     type="text"
                     placeholder="Search items..."
                     value={searchQuery}
                     onChange={handleSearch}
                     className='searchBar'
-                />
+                /> */}
                 <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
                     <option value="po">PO Date</option>
                     <option value="do">DO Date</option>
                 </select>
-                <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
-                <FaMagnifyingGlass  
-                // title="Filter" 
-                // className="searchIcon" 
-                onClick={() => setIsFilterModalOpen(true)} 
-                style={{ cursor: 'pointer' }} 
-            />
+                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
+                <button onClick={() => {DownloadTable('table-to-print', 'PO & DO Records Report')}}>Print Table as PDF</button>
             </div>
             {selectedRows.length > 0 && (
               // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
@@ -195,7 +183,76 @@ const Orders = () => {
                 <p>Loading...</p>
             ) : (
                 <div className="inventory_table">
-                  <table>
+                  <div className='filter-table'>
+                    <div className="filter-header">                    
+                        <h4>Filters</h4>
+                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                    </div>
+                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className="input-field">
+                      <h5>Item</h5>
+                      <input
+                        type="text"
+                        name='itemName'
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                   <div className="input-field">
+                      <h5>PO Date</h5>
+                      <input
+                        type="date"
+                        name='poStartDate'
+                        value={filterQuery.poStartDate || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                                            <input
+                        type="date"
+                        name='poEndDate'
+                        value={filterQuery.poEndDate || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                      <h5>PO Number</h5>
+                      <input
+                        type="text"
+                        name='poNumber'
+                        value={filterQuery.poNumber || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                    <h5>Status</h5>
+                    <select
+                      name="status"
+                      value={filterQuery.status|| ''}
+                      onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                      // onChange={(e) => setPoDocument(e.target.value)}
+                      style={{ outline: '2px solid black' }}
+                    >
+                      <option value="">Select Status</option> {/* Default option */}
+                      <option value="Pending">Pending</option>
+                      <option value="Fulfilled">Fulfilled</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+
+                  </div>
+                  <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}></th>
@@ -209,7 +266,7 @@ const Orders = () => {
                               <th style={{ fontWeight: 'bold' }}>DO Number</th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => {
 
                                 const itemsArray = item.items.split(', ');

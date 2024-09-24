@@ -16,6 +16,7 @@ import Modal from '../components/modal.jsx';
 import Navbar from '../components/navbar.jsx';
 import NewItemForm from '../components/NewDeliveryForm.jsx';
 import Confirmation from '../components/confirmation.jsx';
+import { DownloadTable } from '../components/downloadTable.jsx';
 
 
 const Inventory = () => {
@@ -26,6 +27,8 @@ const Inventory = () => {
     const [sortQuery, setSortQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
+    const [filterQuery, setFilterQuery] = useState({});
+    
     
     useEffect(() => {
         fetchInventory();
@@ -79,10 +82,23 @@ const Inventory = () => {
         fetchInventory();
     }
 
+    const handleSetFilters = (field, value) => {
+        setFilterQuery((prevFilters) => ({
+          ...prevFilters, // Spread the previous state
+          [field]: value, // Add new key or update existing key
+        })); // Update search query as the user types
+      }
+
     const filteredInventory = inventory
-        .filter((item) =>
-            item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        .filter((item) => {
+            return (
+            //   (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
+            // Check if filterQuery.itemName is present, if so, filter based on itemName
+            (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
+            // Check if filterQuery.poNumber is present, if so, filter based on poNumber
+            (!filterQuery.lowStock || item.cabinet < item.lowStock)
+            );
+        })
         // .sort()
         .sort((a, b) => {
             if (sortQuery === 'name') {
@@ -95,6 +111,10 @@ const Inventory = () => {
             // Add more sort options as needed
         });
 
+    const printTableToPDF = () => {
+        DownloadTable('table-to-print', 'Inventory Report');
+    }
+
     return (
 
         <div>
@@ -102,26 +122,57 @@ const Inventory = () => {
             <div className='topbar'>
                 <h1 className="title">Hardware Inventory</h1>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
-                <input 
+                {/* <input 
                     type="text"
                     placeholder="Search items..."
                     value={searchQuery}
                     onChange={handleSearch}
                     className='searchBar'
-                />
+                /> */}
                 <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
                     {/* <option value="serial">Serial Number</option> */}
                     <option value="cabinet">Quantity</option>
                 </select>
-                <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
+                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
+                <button onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
             </div>
             {loading ? (
                 <p>Loading...</p>
             ) : (
                 <div className="inventory_table">
-                  <table>
+                    <div className='filter-table'>
+                    <div className="filter-header">                    
+                        <h4>Filters</h4>
+                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                    </div>
+                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className="input-field">
+                      <h5>Item</h5>
+                      <input
+                        type="text"
+                        name='itemName'
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                      <h5>Low Stock</h5>
+                      <input
+                        type="checkbox"
+                        name="lowStock" // Updated the name for clarity
+                        checked={filterQuery.lowStock || false} // Set checked state based on filterQuery
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.checked)} // Handle checkbox state
+                        style={{ outline: '2px solid black' }}
+                    />
+                   </div>
+
+                  </div>
+                  <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>
                               <th style={{ fontWeight: 'bold' }}>Picture</th>
