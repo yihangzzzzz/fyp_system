@@ -100,6 +100,7 @@ const NewDelivery = () => {
               //   value={orderInfo.poNumber}
                 onChange={(e) => handleAddDeliveryInfo(e.target.value, "doNumber")}
                 style={{ outline: '2px solid black' }}
+                required
                 />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -110,10 +111,44 @@ const NewDelivery = () => {
               //   value={orderInfo.poDate}
                 onChange={(e) => handleAddDeliveryInfo(e.target.value, "doDate")}
                 style={{ outline: '2px solid black' }}
+                required
                 />
             </div>
             <div>
-              <h4>Enter Quantity Delivered</h4>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Total Ordered</th>
+                  <th>Delivered</th>
+                  <th>Enter Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.name.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.itemName}</td>
+                    <td>{item.totalQuantity}</td>
+                    <td>{item.deliveredQuantity}</td>
+                    <td>
+                      <input
+                        type="number"
+                        // value={item.quantity}
+                        onChange={(e) => handleAddDeliveryItem(e.target.value, item.orderID)}
+                        required
+                      />
+                    </td>
+                    {/* <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td> */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+
+
+
+              {/* <h4>Enter Quantity Delivered</h4>
               {items.name.map((item, index) => {
                   return(
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -127,7 +162,7 @@ const NewDelivery = () => {
                         />
                     </div>
                   )
-              })}
+              })} */}
             </div>
           </div>
           <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>

@@ -119,6 +119,8 @@ th {
   width: 600px;   /* Increase width */
   max-width: 90%; /* Responsive width */
   gap: 20px;
+  margin: 20px;
+  
 }
 
 .modal-content form {

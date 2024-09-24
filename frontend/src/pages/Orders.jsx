@@ -16,6 +16,9 @@ import Confirmation from '../components/confirmation.jsx';
 import NewDeliveryForm from '../components/NewDeliveryForm.jsx';
 import Modal from '../components/modal.jsx';
 import { useNavigate, useHistory } from 'react-router-dom';
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import FilterModal from '../components/filterModal.jsx';
+
 
 
 const Orders = () => {
@@ -25,15 +28,27 @@ const Orders = () => {
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [sortQuery, setSortQuery] = useState(''); // State for search input
+    const [filterQuery, setFilterQuery] = useState({itemName: null, poDate: null, poNumber: null});
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
     const [selectedRows, setSelectedRows] = useState([]); // State to track selected rows
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
     useEffect(() => {
         fetchInventory();
+        console.log("seacrh query is", searchQuery);
+        console.log("inventory is ", filteredInventory);
+
+        if(searchQuery) {
+          console.log("got something");
+        }
+        else {
+          console.log("got nothing");
+        }
     }, []);
     // const refreshData = () => {
     //     fetchInventory(setInventory, setLoading);
@@ -48,6 +63,7 @@ const Orders = () => {
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
+            console.log("orders are ", res.data.recordset);
             setLoading(false);
         })
         .catch((error) => {
@@ -56,7 +72,12 @@ const Orders = () => {
         });
     }
     const handleSearch = (e) => {
-        setSearchQuery(e.target.value); // Update search query as the user types
+      setSearchQuery(e.target.value); 
+
+      //   setFilterQuery((prevFilters) => ({
+      //     ...prevFilters, // Spread the previous state
+      //     [itemName]: e, // Add new key or update existing key
+      // })); // Update search query as the user types
     };
 
     const handleReset = () => {
@@ -64,9 +85,36 @@ const Orders = () => {
         fetchInventory();
     }
 
-    const filteredInventory = inventory.filter((item) =>
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSetFilters = () => {
+
+    }
+
+    const filteredInventory = inventory
+    .filter((item) => {
+      if (searchQuery) {
+        item.itemName.toLowerCase().includes(searchQuery.toLowerCase());
+      }
+      return true;
+      // if (filterQuery.itemName) {
+      //   item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
+      // }
+      // if (filterQuery.poDate) {
+      //   item.poDate.includes(filterQuery.poDate);
+      // }
+      // if (filterQuery.poNumber) {
+      //   item.poNumber.includes(filterQuery.poNumber);
+      // }
+    })
+    .sort((a, b) => {
+      if (sortQuery === 'name') {
+          return a.itemName.localeCompare(b.itemName);
+      } else if (sortQuery === 'po') {
+          return a.poDate - b.poDate;
+      } else if (sortQuery === 'do') {
+        return a.items.split(':')[2] - b.items.split(':')[2];
+    } 
+      // Add more sort options as needed
+  });;
 
     const handleRowSelect = (item) => {
       if (selectedRows.includes(item)) {
@@ -76,32 +124,38 @@ const Orders = () => {
       }
     };
 
-    const handleNewDelivery = async () => {
-      setIsModalOpen(false);
+    // const handleNewDelivery = async () => {
+    //   setIsModalOpen(false);
 
-      const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
-      console.log(itemsToUpdate);
-      await axios
-      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/fulfillorder`, itemsToUpdate, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      })
+    //   const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
+    //   console.log(itemsToUpdate);
+    //   await axios
+    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/fulfillorder`, itemsToUpdate, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data"
+    //     }
+    //   })
 
-      console.log('Acknowledged items:', itemsToUpdate);
-      // Your acknowledge logic here
-    };
+    //   console.log('Acknowledged items:', itemsToUpdate);
+    //   // Your acknowledge logic here
+    // };
 
     const ackNewDelivery = async () => {
       navigate('/orders/newdelivery', { state: { name: selectedRows.map(item => ({
         orderID: item.orderID,
         itemName: item.itemName,
         totalQuantity: item.quantity,
-        deliveredQuantity: item.deliveredQuantity
+        deliveredQuantity: item.deliveredQuantity || 0
       })) } });
-    }
+    };
 
+    // const openFilterModal = () => {
+    //     setIsFilterModalOpen(true); // Open the modal
+    // };
 
+    // const closeFilterModal = () => {
+    //     setIsFilterModalOpen(false); // Close the modal
+    // };
 
 
   return (
@@ -117,13 +171,19 @@ const Orders = () => {
                     onChange={handleSearch}
                     className='searchBar'
                 />
-                <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
+                <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
-                    <option value="quantity">Quantity</option>
-                    <option value="date">Date</option>
+                    <option value="po">PO Date</option>
+                    <option value="do">DO Date</option>
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
+                <FaMagnifyingGlass  
+                // title="Filter" 
+                // className="searchIcon" 
+                onClick={() => setIsFilterModalOpen(true)} 
+                style={{ cursor: 'pointer' }} 
+            />
             </div>
             {selectedRows.length > 0 && (
               // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
@@ -219,16 +279,12 @@ const Orders = () => {
                   </table>
                 </div>
             )}
-      {isModalOpen && (
-        <Modal
-          formData={formData}
-          setFormData={setFormData}
-          deliveredItems={selectedRows}
-          onSubmit={handleNewDelivery}
-          onClose={() => setIsModalOpen(false)}
-          FormComponent={NewDeliveryForm}
+      {/* {isFilterModalOpen && (
+        <FilterModal
+          onSubmit={(filters) => setFilterQuery(filters)}
+          onClose={() => setIsFilterModalOpen(false)}
         />
-      )}
+      )} */}
     </div>
 
 )

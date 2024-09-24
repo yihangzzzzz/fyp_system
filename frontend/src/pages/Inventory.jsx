@@ -22,7 +22,8 @@ const Inventory = () => {
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(''); // State for search input
+    const [searchQuery, setSearchQuery] = useState(''); 
+    const [sortQuery, setSortQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     
@@ -74,12 +75,25 @@ const Inventory = () => {
 
     const handleReset = () => {
         setSearchQuery("");
+        setSortQuery('');
         fetchInventory();
     }
 
-    const filteredInventory = inventory.filter((item) =>
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredInventory = inventory
+        .filter((item) =>
+            item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        // .sort()
+        .sort((a, b) => {
+            if (sortQuery === 'name') {
+                return a.itemName.localeCompare(b.itemName);
+            } else if (sortQuery === 'cabinet') {
+                console.log("cabinet sort runs");
+                return a.cabinet - b.cabinet;
+            }
+            else return
+            // Add more sort options as needed
+        });
 
     return (
 
@@ -95,11 +109,11 @@ const Inventory = () => {
                     onChange={handleSearch}
                     className='searchBar'
                 />
-                <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
+                <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
-                    <option value="serial">Serial Number</option>
-                    <option value="quantity">Quantity</option>
+                    {/* <option value="serial">Serial Number</option> */}
+                    <option value="cabinet">Quantity</option>
                 </select>
                 <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
             </div>

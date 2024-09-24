@@ -151,9 +151,9 @@ orderRouter.post('/newdelivery', upload.single('doDocument'), async (req, res) =
 
     const info = req.body.info;
     const deliveryItems = req.body.items;
-    console.log(deliveryItems);
+    // console.log(deliveryItems);
     // const doDocument = req.file.filename;
-    const doDocument = req.file.filename;
+    const doDocument = req.file ? req.file.filename : ''
     const doDate = info.doDate;
     const doNumber = info.doNumber;
    
@@ -165,10 +165,10 @@ orderRouter.post('/newdelivery', upload.single('doDocument'), async (req, res) =
             const subQuantity = item.subQuantity;
             const itemName = item.itemName;
 
-            console.log("total is ", +item.totalQuantity, " and deliveted is ",(+item.deliveredQuantity + +subQuantity))
+            // console.log("total is ", +item.totalQuantity, " and deliveted is ",(+item.deliveredQuantity + +subQuantity))
             
             if (+item.totalQuantity === (+item.deliveredQuantity + +subQuantity)) {
-                console.log("done liao");
+                // console.log("done liao");
                 
                 sql.query(`
                     UPDATE orders

@@ -23,14 +23,13 @@ app.use(session({
     cookie: { secure: false } // set to true if using HTTPS
   }));
 
-  const isAuthenticated = (req, res, next) => {
-    if (req.session.loggedIn) {
-        return next();
-    } else {
-        res.redirect('/login'); // Redirect to login page if not authenticated
-    }
+const isAuthenticated = (req, res, next) => {
+  if (req.session.loggedIn) {
+      return next();
+  } else {
+      res.redirect('/login'); // Redirect to login page if not authenticated
+  }
 };
-
 app.get('/protected-page', isAuthenticated, (req, res) => {
     res.send('This is a protected page');
     // res.redirect('/');
@@ -46,9 +45,6 @@ app.use('/images', express.static('images'))
 app.listen(process.env.PORT || PORT, () => {
     console.log("app is running le");
 })
-
-
-
 app.post('/login', async (req, res) => {
   
     const sqlConfig = {
@@ -56,8 +52,8 @@ app.post('/login', async (req, res) => {
         password: req.body.password, //1234
         // user: 'testuser', //testuser
         // password: '1234', //1234
-        server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-        // server: 'YIHANG\\SQLEXPRESS',
+        // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+        server: 'YIHANG\\SQLEXPRESS',
         // server: 'MDPADMIN\\SQLEXPRESS',
         database: 'inventory',
         driver: 'msnodesqlv8',
@@ -91,8 +87,8 @@ app.post('/login', async (req, res) => {
 // const sqlConfig = {
 //   user: 'testuser', //testuser
 //   password: '1234', //1234
-//   server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-// //   server: 'YIHANG\\SQLEXPRESS',
+//   // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+//   server: 'YIHANG\\SQLEXPRESS',
 //   // server: 'MDPADMIN\\SQLEXPRESS',
 //   database: 'inventory',
 //   driver: 'msnodesqlv8',
