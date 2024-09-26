@@ -57,7 +57,7 @@ async function sendEmail(info, items, transferID) {
           <a href="http://localhost:3000/transfers/accepttransfer/${transferID}">Acknowledge Transfer</a>`
           ,
         attachments: {
-            filename: 'sample.pdf',
+            filename: 'transferDocument.pdf',
             path: filePath
         }
     };

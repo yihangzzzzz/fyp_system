@@ -99,7 +99,7 @@ const EditItem = () => {
                         type="text"
                         value={item.description}
                         onChange={(e) => handleItemChange(e.target.value, 'description')}
-                        style={{ outline: '2px solid black' }}
+                        style={{ outline: '2px solid black', width: '500px' }} 
                     />
                 </div>
                 <div className='input-box'>
@@ -144,7 +144,7 @@ const EditItem = () => {
                         type="textarea"
                         value={item.remarks}
                         onChange={(e) => handleItemChange(e.target.value, 'remarks')}
-                        style={{ outline: '2px solid black' }}
+                        style={{ outline: '2px solid black', width: '500px' }} 
                     />
                 </div>
                 <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Save</button>

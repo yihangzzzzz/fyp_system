@@ -12,6 +12,7 @@ import Navbar from '../components/navbar.jsx';
 import axios from 'axios';
 // import { Buffer } from 'buffer'; // Uncomment if needed
 import Confirmation from '../components/confirmation.jsx';
+import { ResizeImage } from '../functions/resizeImage.jsx';
 
 
 const NewItem = ({}) => {
@@ -25,18 +26,19 @@ const NewItem = ({}) => {
     const [orderItems, setOrderItems] = useState([]);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
+    const formData = new FormData();
   
     useEffect(() => {
     }, []);
   
 
     const handleAddItem = () => {
-      const formData = new FormData();
+      
       formData.append('picture', newItem.picture);
       formData.append('name', newItem.name);
-      formData.append('serial', newItem.serial);
+      // formData.append('serial', newItem.serial);
       formData.append('quantity', newItem.quantity);
-      console.log("picture data is ",newItem.picture);
+      console.log("formdata is ",newItem);
 
       axios
       // .post("http://www.iistesting.com:3000/inventory", newItem, {
@@ -65,13 +67,77 @@ const NewItem = ({}) => {
       }));
     }
 
-    const handleImageChange = (e) => {
-      setNewItem(prevState => ({
-        ...prevState,
-        picture: e  // Replace with the new value for destination
-      }));
-      console.log(e);
+  //   const handleImageChange = (e) => {
+  //     console.log("original file is",e);
+  //     Resizer.imageFileResizer(
+  //       e,
+  //       100, // new width
+  //       100, // new height
+  //       'JPEG', // output format
+  //       100, // quality (1-100)
+  //       0, // rotation (0, 90, 180, 270)
+  //       (uri) => {
+  //           // This is where you get the resized image as a Data URL
+  //           // setResizedImage(uri);
+  //           fetch(uri)
+  //           .then(res => res.blob())
+  //           .then(blob => {
+  //             const file = new File([blob], e.name, { type: blob.type });
+  //             setNewItem(prevState => ({
+  //               ...prevState,
+  //               picture: file  // Replace with the new value for destination
+  //             }));
+  //             console.log("resized file is", file);
+  //       });
+
+  //   });
+  // };
+  
+  const handleImageChange = (e) => {
+    setNewItem(prevState => ({
+      ...prevState,
+      picture: ResizeImage(e)  // Replace with the new value for destination
+    }));
+
+  
+    const file = e; // The file is the image file from input
+    // Create a FileReader to read the file
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = () => {
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set the canvas size to 100x100
+            canvas.width = 100;
+            canvas.height = 100;
+
+            // Draw the image onto the canvas with forced dimensions (no aspect ratio preservation)
+            ctx.drawImage(img, 0, 0, 100, 100);
+
+            // Convert canvas to a Blob (file-like object)
+            canvas.toBlob((blob) => {
+              const resizedFile = new File([blob], file.name, { type: blob.type });
+              setNewItem(prevState => ({
+                ...prevState,
+                picture: resizedFile  // Replace with the new value for destination
+              }));
+
+                // You can now use `resizedFile` to upload via Axios or any other metho
+
+
+            }, file.type, 1); // Set quality to 1 (100%)
+        };
     };
+    // Read the image file as Data URL
+    reader.readAsDataURL(file);
+};
+
+
 
     
   
@@ -104,7 +170,7 @@ const NewItem = ({}) => {
                     style={{ outline: '2px solid black' }}
                   />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <h5>Serial Number</h5>
                   <input
                     type="number"
@@ -112,7 +178,7 @@ const NewItem = ({}) => {
                     onChange={(e) => handleNewItemChange(e.target.value, 'serial')}
                     style={{ outline: '2px solid black' }}
                   />
-        </div>
+        </div> */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <h5>Quantity</h5>
                   <input

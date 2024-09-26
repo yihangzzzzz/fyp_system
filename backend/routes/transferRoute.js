@@ -230,7 +230,7 @@ transferRoute.put('/', async (req, res) => {
             req.body.items.forEach (item => {
                 const [itemName, quantity] = item.split(':');
                 sql.query(`UPDATE warehouse 
-                    SET cabinet = cabinet + ${quantity}
+                    SET cabinet = cabinet - ${quantity}
                     WHERE itemName = '${itemName}'`);
             })
         }

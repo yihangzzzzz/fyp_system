@@ -52,10 +52,10 @@ app.post('/login', async (req, res) => {
         password: req.body.password, //1234
         // user: 'testuser', //testuser
         // password: '1234', //1234
-        server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-        // server: 'YIHANG\\SQLEXPRESS',
+        // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+        server: 'YIHANG\\SQLEXPRESS',
         // server: 'MDPADMIN\\SQLEXPRESS',
-        database: 'inventory',
+        database: req.body.user === 'sw' ? 'software_inventory' : "hardware_inventory",
         driver: 'msnodesqlv8',
         options: {
             trustedConnection: false,

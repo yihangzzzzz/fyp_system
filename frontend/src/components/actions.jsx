@@ -30,7 +30,8 @@ const Actions = ({toDelete, toEdit}) => {
         .catch((error) => {
           console.log("Error deleting item: " + error);
         });
-        navigate(`/inventory`)
+        setIsConfirmationOpen(false);
+        navigate(`/inventory`);
   }
 
   const handleEdit = () => {

@@ -93,7 +93,7 @@ orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) 
         result += data.toString();
     });
    
-    const parsedResult = {};
+    let parsedResult = {};
     pythonProcess.on('close', (code) => {
         if (code === 0) {
             parsedResult = JSON.parse(result);

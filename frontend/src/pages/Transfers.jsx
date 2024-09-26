@@ -12,7 +12,7 @@ import { RxCross1 } from 'react-icons/rx';
 import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
-import { DownloadTable } from '../components/downloadTable.jsx';
+import { DownloadTable } from '../functions/downloadTable.jsx';
 
 
 const Transfers = () => {
@@ -84,9 +84,9 @@ const Transfers = () => {
           (!filterQuery.destination || item.destination.toLowerCase().includes(filterQuery.destination.toLowerCase())) &&
           
           // Check if filterQuery.poDate is present, if so, filter based on poDate
-          (!filterQuery.transferStartDate || new Date(item.date) > new Date(filterQuery.transferStartDate)) &&
+          (!filterQuery.transferStartDate || new Date(item.date) >= new Date(filterQuery.transferStartDate)) &&
   
-          (!filterQuery.transferEndDate || new Date(item.date) < new Date(filterQuery.transferEndDate)) &&
+          (!filterQuery.transferEndDate || new Date(item.date) <= new Date(filterQuery.transferEndDate)) &&
           
           // Check if filterQuery.poNumber is present, if so, filter based on poNumber
           (!filterQuery.recipient || item.recipient.toLowerCase().includes(filterQuery.recipient.toLowerCase())) && 
@@ -123,7 +123,7 @@ const Transfers = () => {
                     <option value="destination">Destination</option>
                 </select>
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
-                <button onClick={() => {DownloadTable('table-to-print', 'Transfer Records Report')}}>Print Table as PDF</button>
+                <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Transfer Records Report')}}>Print Table as PDF</button>
         </div>
       {loading ? (
                 <p>Loading...</p>
@@ -136,6 +136,7 @@ const Transfers = () => {
                     </div>
 
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className='inputs'>
                     <div className="input-field">
                       <h5>Item</h5>
                       <input
@@ -209,6 +210,8 @@ const Transfers = () => {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
+                    </div>
+                    
 
                   </div>
                   <table className='inventory-table' id='table-to-print'>

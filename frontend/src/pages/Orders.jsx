@@ -18,7 +18,7 @@ import Modal from '../components/modal.jsx';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import FilterModal from '../components/filterModal.jsx';
-import { DownloadTable } from '../components/downloadTable.jsx';
+import { DownloadTable } from '../functions/downloadTable.jsx';
 
 
 
@@ -88,9 +88,9 @@ const Orders = () => {
         (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
         
         // Check if filterQuery.poDate is present, if so, filter based on poDate
-        (!filterQuery.poStartDate || new Date(item.poDate) > new Date(filterQuery.poStartDate)) &&
+        (!filterQuery.poStartDate || new Date(item.poDate) >= new Date(filterQuery.poStartDate)) &&
 
-        (!filterQuery.poEndDate || new Date(item.poDate) < new Date(filterQuery.poEndDate)) &&
+        (!filterQuery.poEndDate || new Date(item.poDate) <= new Date(filterQuery.poEndDate)) &&
         
         // Check if filterQuery.poNumber is present, if so, filter based on poNumber
         (!filterQuery.poNumber || item.poNumber.includes(filterQuery.poNumber)) && 
@@ -171,14 +171,8 @@ const Orders = () => {
                     <option value="do">DO Date</option>
                 </select>
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
-                <button onClick={() => {DownloadTable('table-to-print', 'PO & DO Records Report')}}>Print Table as PDF</button>
+                <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'PO & DO Records Report')}}>Print Table as PDF</button>
             </div>
-            {selectedRows.length > 0 && (
-              // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
-              <button onClick={() => ackNewDelivery()} className='acknowledgeButton'>
-                Acknowledge
-              </button>
-            )}
            {loading ? (
                 <p>Loading...</p>
             ) : (
@@ -189,6 +183,7 @@ const Orders = () => {
                         <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className='inputs'>
                     <div className="input-field">
                       <h5>Item</h5>
                       <input
@@ -223,6 +218,7 @@ const Orders = () => {
                         style={{ outline: '2px solid black' }}
                       />
                    </div>
+                   <div className='inputs'>
                    <div className="input-field">
                       <h5>PO Number</h5>
                       <input
@@ -250,8 +246,17 @@ const Orders = () => {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
+                    </div>
+
+                   </div>
 
                   </div>
+                  {selectedRows.length > 0 && (
+                    // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+                    <button onClick={() => ackNewDelivery()} className='acknowledgeButton'>
+                      Acknowledge
+                    </button>
+                  )}
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>

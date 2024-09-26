@@ -66,13 +66,13 @@ const LowStock = () => {
                     onChange={handleSearch}
                     className='searchBar'
                 />
-                <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
+                {/* <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
                     <option value="serial">Serial Number</option>
                     <option value="quantity">Quantity</option>
                 </select>
-                <RxCross1 title='Reset' className='addButton' onClick={handleReset} />
+                <RxCross1 title='Reset' className='addButton' onClick={handleReset} /> */}
             </div>
             {loading ? (
                 <p>Loading...</p>

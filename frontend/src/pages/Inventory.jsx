@@ -16,7 +16,7 @@ import Modal from '../components/modal.jsx';
 import Navbar from '../components/navbar.jsx';
 import NewItemForm from '../components/NewDeliveryForm.jsx';
 import Confirmation from '../components/confirmation.jsx';
-import { DownloadTable } from '../components/downloadTable.jsx';
+import { DownloadTable } from '../functions/downloadTable.jsx';
 
 
 const Inventory = () => {
@@ -120,7 +120,7 @@ const Inventory = () => {
         <div>
             <Navbar />
             <div className='topbar'>
-                <h1 className="title">Hardware Inventory</h1>
+                <h1 className="title">Inventory</h1>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
                 {/* <input 
                     type="text"
@@ -136,7 +136,7 @@ const Inventory = () => {
                     <option value="cabinet">Quantity</option>
                 </select>
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
-                <button onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
+                <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
             </div>
             {loading ? (
                 <p>Loading...</p>
@@ -148,6 +148,7 @@ const Inventory = () => {
                         <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className='inputs'>
                     <div className="input-field">
                       <h5>Item</h5>
                       <input
@@ -170,6 +171,8 @@ const Inventory = () => {
                         style={{ outline: '2px solid black' }}
                     />
                    </div>
+                    </div>
+                    
 
                   </div>
                   <table className='inventory-table' id='table-to-print'>
