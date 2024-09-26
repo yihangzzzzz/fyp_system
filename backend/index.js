@@ -8,6 +8,7 @@ const session = require('express-session');
 const inventoryRouter = require('./routes/inventoryRoute.js');
 const transferRouter = require('./routes/transferRoute.js');
 const orderRouter = require('./routes/orderRoute.js');
+const loginRouter = require('./routes/loginRoute.js');
 const path = require('path');
 const PORT = 3000;
 
@@ -23,39 +24,41 @@ app.use(session({
     cookie: { secure: false } // set to true if using HTTPS
   }));
 
-const isAuthenticated = (req, res, next) => {
-  if (req.session.loggedIn) {
-      return next();
-  } else {
-      res.redirect('/login'); // Redirect to login page if not authenticated
-  }
-};
-app.get('/protected-page', isAuthenticated, (req, res) => {
-    res.send('This is a protected page');
-    // res.redirect('/');
-});
+// const isAuthenticated = (req, res, next) => {
+//   if (req.session.loggedIn) {
+//       return next();
+//   } else {
+//       res.redirect('/login'); // Redirect to login page if not authenticated
+//   }
+// };
+// app.get('/protected-page', isAuthenticated, (req, res) => {
+//     res.send('This is a protected page');
+//     // res.redirect('/');
+// });
 
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.use('/inventory', isAuthenticated, inventoryRouter);
-app.use('/transfers', isAuthenticated, transferRouter);
-app.use('/orders', isAuthenticated, orderRouter);
+app.use('/login', loginRouter);
+app.use('/inventory', inventoryRouter);
+app.use('/transfers', transferRouter);
+app.use('/orders', orderRouter);
 app.use('/images', express.static('images'))
 
 
 app.listen(process.env.PORT || PORT, () => {
     console.log("app is running le");
 })
-app.post('/login', async (req, res) => {
-  
+app.post('/login/:lab', async (req, res) => {
+    console.log(req.params.lab )
     const sqlConfig = {
-        user: req.body.user, //testuser
-        password: req.body.password, //1234
-        // user: 'testuser', //testuser
-        // password: '1234', //1234
-        // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-        server: 'YIHANG\\SQLEXPRESS',
+      
+        // user: req.body.user, //testuser
+        // password: req.body.password, //1234
+        user: 'testuser', //testuser
+        password: '1234', //1234
+        server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+        // server: 'YIHANG\\SQLEXPRESS',
         // server: 'MDPADMIN\\SQLEXPRESS',
-        database: req.body.user === 'sw' ? 'software_inventory' : "hardware_inventory",
+        database: req.params.lab === 'sw' ? 'inventory' : "hardware_inventory",
         driver: 'msnodesqlv8',
         options: {
             trustedConnection: false,

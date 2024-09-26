@@ -42,6 +42,7 @@ const Inventory = () => {
     //   }, []);
 
     const fetchInventory = async (sortAtt) => {
+        console.log("fetch got run")
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`, {params: {sortBy: sortAtt}})
         // .get(`http://localhost:3000/inventory`, {params: {sortBy: sortAtt}})

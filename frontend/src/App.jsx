@@ -34,6 +34,7 @@ import AcceptTransfer from './pages/AcceptTransfer.jsx';
 import Login from './pages/Login.jsx';
 import NewDelivery from './pages/NewDelivery.jsx';
 import ProtectedPage from './pages/ProtectedPage.jsx';
+import Users from './pages/Users.jsx';
 
 
 
@@ -45,7 +46,7 @@ const App = () => {
             <Routes>
         {/* <DefaultRoute element={<Home/>}/> */}
         {/* <Route path = '/' element = {<Login/>} /> */}
-        <Route path = '/login' element = {<Login/>} />
+        <Route path = '/login/:lab' element = {<Login/>} />
         <Route path = '/home' element = {<Home/>} />
         <Route path = '/protected-page' element = {<ProtectedPage/>} />
 
@@ -62,6 +63,8 @@ const App = () => {
         <Route path = '/transfers' element = {<Transfers/>} />
         <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
         <Route path = '/transfers/accepttransfer/:transferID' element = {<AcceptTransfer/>} />
+
+        <Route path = '/users' element = {<Users/>} />
 
         
       </Routes>

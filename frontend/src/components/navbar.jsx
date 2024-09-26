@@ -101,6 +101,9 @@ const Navbar = () => {
                     <li><Link to="/transfers/newtransfer">New Transfer</Link></li>
                 </ul>
             </div>
+            <div className="dropdown">
+              <Link to="/users" style={{fontSize: '16px', padding: '10px'}}>Users</Link>
+            </div>
         </div>
     );
 };

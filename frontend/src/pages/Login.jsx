@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
@@ -14,7 +14,12 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [errorVisible, setErrorVisible] = useState(false);
+    const { lab } = useParams();
   
+    useEffect(() => {
+      axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login/${lab}`);
+    }, []);
+
     const handleSubmit = async (e) => {
       e.preventDefault();
   
@@ -23,6 +28,11 @@ const Login = () => {
           user,
           password,
         });
+
+        // const response = await axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login`, {
+        //   user,
+        //   password,
+        // });
   
         if (response.data.success) {
           // Handle successful login (e.g., redirect to dashboard)
@@ -32,20 +42,26 @@ const Login = () => {
           setPassword('');
 
         }
+
       } catch (error) {
         setErrorVisible(true);
-        setErrorMessage('Invalid username or password');
+        // setErrorMessage('Invalid username or password');
+        setErrorMessage(error.response.data.message);
       }
     };
   
     return (
       <div className='login-body'>
+        
+        {lab === 'sw' ? (<h1 className="home-title">Software Project Lab Inventory Management System</h1>) : (<h1 className="home-title">Hardware Project Lab Inventory Management System</h1>)}
+        
         <form className='login-form' onSubmit={handleSubmit}>
           <div className='login-form-div'>
             <label className='login-form-label'>Username:</label>
             <input className='login-form-input'
               type="text"
               value={user}
+              // value={'hi'}
               onChange={(e) => setUser(e.target.value)}
               required
             />
@@ -55,6 +71,7 @@ const Login = () => {
             <input className='login-form-input'
               type="password"
               value={password}
+              // value={'hi'}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
