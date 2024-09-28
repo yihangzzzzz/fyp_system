@@ -82,6 +82,8 @@ const Transfers = () => {
         //   (!filterQuery.itemName || item.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) &&
           // Check if filterQuery.itemName is present, if so, filter based on itemName
           (!filterQuery.destination || item.destination.toLowerCase().includes(filterQuery.destination.toLowerCase())) &&
+
+          (!filterQuery.type || item.type.includes(filterQuery.type)) &&
           
           // Check if filterQuery.poDate is present, if so, filter based on poDate
           (!filterQuery.transferStartDate || new Date(item.date) >= new Date(filterQuery.transferStartDate)) &&
@@ -149,6 +151,20 @@ const Transfers = () => {
                         style={{ outline: '2px solid black' }}
                       />
                    </div>
+                   <div className="input-field">
+                    <h5>Type</h5>
+                    <select
+                      name="type"
+                      value={filterQuery.type|| ''}
+                      onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                      // onChange={(e) => setPoDocument(e.target.value)}
+                      style={{ outline: '2px solid black' }}
+                    >
+                      <option value="">Select Type</option> {/* Default option */}
+                      <option value="Transfer">Transfer</option>
+                      <option value="Loan">Loan</option>
+                    </select>
+                  </div>
                     <div className="input-field">
                       <h5>Destination</h5>
                       <input
@@ -208,6 +224,8 @@ const Transfers = () => {
                       <option value="Pending">Pending</option>
                       <option value="Acknowledged">Acknowledged</option>
                       <option value="Cancelled">Cancelled</option>
+                      <option value="On Loan">On Loan</option>
+                      <option value="Returned">Returned</option>
                     </select>
                   </div>
                     </div>
@@ -217,6 +235,7 @@ const Transfers = () => {
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>
+                              {/* <th style={{ fontWeight: 'bold' }}>Type</th> */}
                               <th style={{ fontWeight: 'bold' }}>Destination</th>
                               <th style={{ fontWeight: 'bold' }}>Date</th>
                               <th style={{ fontWeight: 'bold' }}>Recipient</th>
@@ -243,6 +262,7 @@ const Transfers = () => {
                                             <tr key={`${index}-${idx}`}>
                                                 {idx === 0 && (
                                                     <>
+                                                        {/* <td rowSpan={rowSpan}>{item.type}</td> */}
                                                         <td rowSpan={rowSpan}>{item.destination}</td>
                                                         <td rowSpan={rowSpan}>{formattedDate}</td>
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
@@ -255,7 +275,7 @@ const Transfers = () => {
                                                         {/* <td rowSpan={rowSpan}>{item.description}</td> */}
                                                         <td rowSpan={rowSpan}>
                                                         <select
-                                                            disabled={item.status === "Acknowledged"} 
+                                                            disabled={item.status === "Acknowledged" || item.status === "Returned"} 
                                                             value={item.status}
                                                             onChange={(e) => {
                                                                 setStautsChange({status: e.target.value, id: item.transferID, items: itemsArray});
@@ -265,16 +285,28 @@ const Transfers = () => {
                                                                 color: 
                                                                   item.status === 'Pending'
                                                                     ? '#FF922C'
-                                                                    : item.status === 'Acknowledged'
+                                                                    : item.status === 'Acknowledged' || item.status === 'Returned'
                                                                     ? '#238823'
                                                                     : item.status === 'Cancelled'
                                                                     ? '#D2222D'
+                                                                    : item.status === 'On Loan'
+                                                                    ? '#1E90FF'
                                                                     : 'black', // default color
                                                               }}
                                                             >
-                                                            <option style={{ color: 'black' }} value="Pending">Pending</option>
-                                                            <option style={{ color: 'black' }} value="Acknowledged">Acknowledged</option>
-                                                            <option style={{ color: 'black' }} value="Cancelled">Cancelled</option>
+                                                            {item.type === 'Transfer' ? (
+                                                              <>
+                                                                <option style={{ color: 'black' }} value="Pending">Pending</option>
+                                                                <option style={{ color: 'black' }} value="Acknowledged">Acknowledged</option>
+                                                                <option style={{ color: 'black' }} value="Cancelled">Cancelled</option>
+                                                              </>
+                                                            ) : (
+                                                              <>
+                                                              <option style={{ color: 'black' }} value="On Loan">On Loan</option>
+                                                              <option style={{ color: 'black' }} value="Returned">Returned</option>
+                                                            </>
+                                                            )}
+
                                                             </select>
                                                         </td>
                                                     </>

@@ -49,14 +49,15 @@ app.listen(process.env.PORT || PORT, () => {
 })
 app.post('/login/:lab', async (req, res) => {
     console.log(req.params.lab )
+    let pool;
     const sqlConfig = {
       
         // user: req.body.user, //testuser
         // password: req.body.password, //1234
         user: 'testuser', //testuser
         password: '1234', //1234
-        // server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-        server: 'YIHANG\\SQLEXPRESS',
+        server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+        // server: 'YIHANG\\SQLEXPRESS',
         // server: 'MDPADMIN\\SQLEXPRESS',
         // database: req.params.lab === 'sw' ? 'inventory' : "hardware_inventory",
         database: req.params.lab === 'sw' ? 'software_inventory' : "hardware_inventory",
@@ -69,16 +70,23 @@ app.post('/login/:lab', async (req, res) => {
 
     try {
       // Attempt to connect with the provided credentials
+        // pool = new sql.ConnectionPool(sqlConfig);
+        // await pool.connect();
         await sql.connect(sqlConfig);
         req.session.loggedIn = true; 
         console.log("connected le");
-      // If connection is successful
+      // If connection is successfulW
       res.json({ success: true });
     } catch (err) {
       // If the connection fails, send an error response
       console.error('Login failed:', err.message);
       res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
+    } finally {
+      // Ensure connection pool is closed after use
+      if (pool && pool.connected) {
+          // pool.close();
+      }
+  }
   });
 
 

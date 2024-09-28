@@ -123,6 +123,13 @@ const NewTransfer = ({}) => {
           {labs.length > 0 && (
             <div className='transfer_info'>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <h5>Type</h5>
+                <select value={transferInfo.destination || "Transfer"} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
+                  <option value="Transfer">Transfer</option>
+                  <option value="Loan">Loan</option>
+                </select>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <h5>Destination</h5>
                 <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
                   <option value="">Select Lab</option>

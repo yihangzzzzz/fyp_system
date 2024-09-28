@@ -64,11 +64,12 @@ transferRoute.get('/', async (req, res) => {
     t.email,
     t.status,
     t.transferDocument,
+    t.type,
     STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
     FROM transfers t
     JOIN transferItems ti
     ON t.transferID = ti.transferID
-    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument`);
+    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type`);
 
         // const data = sql.query(query);
         data.then((res1) => {
@@ -123,7 +124,7 @@ transferRoute.get('/pdf/:filename', (req, res) => {
 transferRoute.post('/newtransfer', async (req, res) => {
 
     const {info, items} = req.body;
-    let status = "Pending";
+    let status = info.type === "Transfer" ? "Pending" : "On Loan";
 
     if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
         status = "Acknowledged";
@@ -131,8 +132,8 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
     try {
         
-        const result = await sql.query(`INSERT INTO transfers (date, destination, recipient, email, status) 
-        VALUES ('${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
+        const result = await sql.query(`INSERT INTO transfers (type, date, destination, recipient, email, status) 
+        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
         SELECT SCOPE_IDENTITY() AS transferID`)
         
         const transferID = result.recordset[0].transferID;
