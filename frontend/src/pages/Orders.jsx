@@ -266,7 +266,8 @@ const Orders = () => {
                               <th style={{ fontWeight: 'bold' }}>PO Number</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
                               <th style={{ fontWeight: 'bold' }}>Status</th>
-                              <th style={{ fontWeight: 'bold' }}>Sub-Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Remaining</th>
+                              <th style={{ fontWeight: 'bold' }}>Delivered</th>
                               <th style={{ fontWeight: 'bold' }}>DO Date</th>
                               <th style={{ fontWeight: 'bold' }}>DO Number</th>
                           </tr>
@@ -317,6 +318,7 @@ const Orders = () => {
                                           ? '#D2222D'
                                           : 'black', // default color
                                     }}>{item.status}</td>
+                                    <td rowSpan={rowSpan} >{item.quantity - item.deliveredQuantity}</td>
                                     </>
                                       )}
                                     <td>{itemDetail.split(':')[0]}</td>

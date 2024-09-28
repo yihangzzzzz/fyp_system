@@ -17,21 +17,35 @@ import Confirmation from './confirmation';
 import { useNavigate } from 'react-router-dom';
 
 
-const Actions = ({toDelete, toEdit}) => {
+const Actions = ({toDelete, toEdit, mode}) => {
   const navigate = useNavigate();
   const [deleteItemName, setDeleteItemName] = useState(toDelete);
   const [editItemName, setEditItemName] = useState(toEdit);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const handleDelete = () => {
-      
+    
+    if (mode === 'inventory') {
       axios
-        .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(deleteItemName)}`)
-        .catch((error) => {
-          console.log("Error deleting item: " + error);
-        });
-        setIsConfirmationOpen(false);
-        navigate(`/inventory`);
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(deleteItemName)}`)
+      .catch((error) => {
+        console.log("Error deleting item: " + error);
+      });
+      setIsConfirmationOpen(false);
+      navigate(`/inventory`);
+    }
+
+    else if (mode === 'user') {
+      axios
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login/${encodeURIComponent(toDelete)}`)
+      .catch((error) => {
+        console.log("Error deleting item: " + error);
+      });
+      setIsConfirmationOpen(false);
+      navigate(`/users`);
+    }
+      
+
   }
 
   const handleEdit = () => {
@@ -52,7 +66,6 @@ const Actions = ({toDelete, toEdit}) => {
     //   {/* Add more options as needed */}
     // </select>
     <div className='inventory_actions'>
-      <MdOutlineAddBox title='Add'/>
       <MdModeEditOutline 
         title='Edit'
         onClick={handleEdit}/>

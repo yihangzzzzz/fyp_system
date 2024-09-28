@@ -212,7 +212,8 @@ const Inventory = () => {
                                 ) : (
                                     <Actions
                                     toDelete={item.itemName}
-                                    toEdit={item.itemName}/>
+                                    toEdit={item.itemName}
+                                    mode={'inventory'}/>
                                     // <Actions/>
                                 )}
                               </td>
