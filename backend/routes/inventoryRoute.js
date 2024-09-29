@@ -14,6 +14,7 @@ const inventoryRouter = express.Router();
 
 // GETTING ALL RECORDS
 inventoryRouter.get('/', async (req, res) => {
+    const pool = req.sqlPool;
 
     // const {sortBy} = req.query;
     // let query;
@@ -32,7 +33,7 @@ inventoryRouter.get('/', async (req, res) => {
     // }
 
     try {
-        sql.query(`
+        pool.query(`
             SELECT *
             FROM warehouse
         `)
@@ -48,11 +49,12 @@ inventoryRouter.get('/', async (req, res) => {
 
 // GET 1 RECORD
 inventoryRouter.get('/:itemName', async (req, res) => {
+    const pool = req.sqlPool;
 
     const { itemName } = req.params;
 
     try {
-        const data = sql.query(`SELECT *
+        const data = pool.query(`SELECT *
                                 FROM warehouse
                                 WHERE itemName = '${itemName}'`);
         data.then((res1) => {
@@ -69,13 +71,14 @@ inventoryRouter.get('/:itemName', async (req, res) => {
 
 // ADD 1 ITEM
 inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
+    const pool = req.sqlPool;
 
     try {
 
         const {name, quantity} = req.body;
         const picture = req.file.filename;
 
-        sql.query(`INSERT INTO warehouse (itemName, cabinet, picture)
+        pool.query(`INSERT INTO warehouse (itemName, cabinet, picture)
                    VALUES ('${name}', ${quantity}, '${picture}')`);
 
         res.send('Image uploaded and saved to database');
@@ -89,9 +92,10 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 
 // DELETE ONE RECORD
 inventoryRouter.delete('/:itemName', async (req, res) => {
+    const pool = req.sqlPool;
     try {
         const { itemName } = req.params;
-        await sql.query(`DELETE FROM warehouse WHERE itemName = '${itemName}'`);
+        await pool.query(`DELETE FROM warehouse WHERE itemName = '${itemName}'`);
         res.status(200).json({ message: 'Item deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -103,6 +107,7 @@ inventoryRouter.delete('/:itemName', async (req, res) => {
 
 // UPDATE ORDERED QUANTITY
 inventoryRouter.put('/order', async (req, res) => {
+    const pool = req.sqlPool;
 
     const orders = req.body;
    
@@ -112,7 +117,7 @@ inventoryRouter.put('/order', async (req, res) => {
 
             const name = order.name;
             const ordered = order.quantity;
-            sql.query(`UPDATE warehouse
+            pool.query(`UPDATE warehouse
                 SET ordered = ordered + ${ordered}
                 WHERE itemName = '${name}'`);
             })
@@ -128,11 +133,12 @@ inventoryRouter.put('/order', async (req, res) => {
 
 // UPDATE LOW STOCK
 inventoryRouter.put('/lowstock', async (req, res) => {
+    const pool = req.sqlPool;
 
     const {name, newLowStock} = req.body;
    
     try {
-            sql.query(`UPDATE warehouse
+            pool.query(`UPDATE warehouse
                 SET lowStock = ${newLowStock}
                 WHERE itemName = '${name}'`);
 
@@ -148,6 +154,7 @@ inventoryRouter.put('/lowstock', async (req, res) => {
 
 // UPDATE 1 ITEM DETAILS
 inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => {
+    const pool = req.sqlPool;
 
     const oldItemName = req.params.itemName;
     const picture = req.file ? req.file.filename : req.body.picture
@@ -164,7 +171,7 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
 
     try {
 
-        sql.query(`UPDATE warehouse
+        pool.query(`UPDATE warehouse
             SET itemName = '${itemName}',
                 description = '${description}',
                 cabinet = ${cabinet},
@@ -175,16 +182,16 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
                 picture = '${picture}'
             WHERE itemName = '${oldItemName}'`);
         // if (req.file === true) {
-        //     sql.query(`UPDATE warehouse
+        //     pool.query(`UPDATE warehouse
         //         SET picture = '${req.file.filename}'
         //         WHERE itemName = '${oldItemName}'`);
         // }
 
-        sql.query(`UPDATE orders
+        pool.query(`UPDATE orders
             SET itemName = '${itemName}'
             WHERE itemName = '${oldItemName}'`);
 
-        sql.query(`UPDATE transferItems
+        pool.query(`UPDATE transferItems
             SET itemName = '${itemName}'
             WHERE itemName = '${oldItemName}'`);
 

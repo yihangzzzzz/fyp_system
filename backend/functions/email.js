@@ -7,7 +7,17 @@ const { fileURLToPath } = require('url');
 const { send } = require('process');
 const { file } = require('pdfkit');
 
-async function sendEmail(info, items, transferID) {
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // use SSL
+  auth: {
+    user: 'fyp.inventory.system@gmail.com',
+    pass: 'mjqvcfewvocuaztd',
+  }
+});
+
+async function sendTransferEmail(info, items, transferID) {
 
     const __dirname = path.resolve();
 
@@ -32,16 +42,6 @@ async function sendEmail(info, items, transferID) {
     const filePath = path.join(__dirname, '..', '/backend/images/' , documentName);
     fs.writeFileSync(filePath, pdfBytes);
 
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // use SSL
-        auth: {
-          user: 'fyp.inventory.system@gmail.com',
-          pass: 'mjqvcfewvocuaztd',
-        }
-      });
-
     const mailOptions = {
         from: 'fyp.inventory.system@gmail.com',
         to: `${info.email}`,
@@ -61,16 +61,47 @@ async function sendEmail(info, items, transferID) {
             path: filePath
         }
     };
+
     
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
         console.log('Error:', error);
         } else {
-        console.log('Email sent:', info.response);
+        console.log('Email sent:', info.response, 'at', filePath);
         }
     });
 
     return documentName;
+}
+
+async function sendFinanceEmail(doDocument) {
+
+
+  const filePath = path.join(__dirname, '..', '/images/' , doDocument);
+
+
+  const FinancemailOptions = {
+      from: 'fyp.inventory.system@gmail.com',
+      to: `yihangzzzzz@gmail.com`, // input finance email
+      subject: 'New Delivery DO from SPL',
+      html: `
+        <p>Love Christina</p>`
+        ,
+      attachments: {
+          filename: 'DO_Document.pdf',
+          path: filePath
+      }
+  };
+
+
+  
+  transporter.sendMail(FinancemailOptions, function(error, info){
+      if (error) {
+      console.log('Error:', error);
+      } else {
+      console.log('Email sent:', info.response, 'at', filePath);
+      }
+  });
 }
 
 async function updateTransferDocument (transferID) {
@@ -104,7 +135,8 @@ async function updateTransferDocument (transferID) {
 }
 
 module.exports = {
-  sendEmail,
+  sendTransferEmail,
+  sendFinanceEmail,
   updateTransferDocument,
 };
 

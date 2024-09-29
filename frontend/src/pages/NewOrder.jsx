@@ -10,9 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar.jsx';
 import axios from 'axios';
 import Confirmation from '../components/confirmation.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const NewOrder = ({}) => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate(); 
     const [poDocument, setPoDocument] = useState();
     const [items, setItems] = useState([]);
@@ -28,7 +31,7 @@ const NewOrder = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -41,7 +44,7 @@ const NewOrder = ({}) => {
       const pdftosend = {poDocument: e};
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/scanDocument`, 
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/scanDocument?db=${db}`, 
           pdftosend, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -95,12 +98,12 @@ const NewOrder = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/neworder`, newOrder)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/neworder?db=${db}`, newOrder)
         
       } catch (error) {
         console.error('Error updating items:', error);
       }
-      navigate('/orders');
+      navigate(`/orders?db=${db}`);
       
     };
 

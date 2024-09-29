@@ -8,10 +8,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import Navbar from '../components/navbar.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 
 const LowStock = () => {
+    const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
 
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -23,7 +26,7 @@ const LowStock = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -50,7 +53,7 @@ const LowStock = () => {
     const handleLowStockChange = async (name, newLowStock) => {
         
         await axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/lowstock`, {name: name, newLowStock: newLowStock});
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/lowstock?db=${db}`, {name: name, newLowStock: newLowStock});
         fetchInventory();
     }
 

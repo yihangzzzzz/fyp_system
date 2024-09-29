@@ -1,13 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/navbar.jsx';
 import Modal from '../components/modal.jsx';
 import Actions from '../components/actions.jsx';
 
 
+
 const Users = () => {
 
+    const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -17,7 +20,7 @@ const Users = () => {
 
     const fetchUsers = async () => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`)
         .then((res) => {
             setUsers(res.data.recordset);
         })
@@ -28,7 +31,7 @@ const Users = () => {
 
     const handleAddUser = async (e) => {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_/newuser`, e);
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/newuser?db=${db}`, e);
         setIsModalOpen(false)
         fetchUsers();
         console.log("added user", e)

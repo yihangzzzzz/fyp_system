@@ -30,11 +30,11 @@ const sqlPool = async function (req, res, next) {
   if (req.query.db) {
     if (req.query.db === 'sw') {
       req.sqlPool = await poolSWPromise; // Use hardware inventory pool
-      console.log("sw pool connected");
+      // console.log("sw pool connected");
     } else {
 
       req.sqlPool = await poolHWPromise; // Default to software inventory pool
-      console.log("hw pool connected");
+      // console.log("hw pool connected");
     }
   }
   next();
@@ -44,9 +44,9 @@ app.use(sqlPool)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.use('/login_be', loginRouter);
 app.use('/inventory_be', inventoryRouter);
-app.use('/transfers_', transferRouter);
-app.use('/orders_', orderRouter);
-app.use('/images_', express.static('images'))
+app.use('/transfers_be', transferRouter);
+app.use('/orders_be', orderRouter);
+app.use('/images', express.static('images'))
 
 
 app.listen(process.env.PORT || PORT, () => {

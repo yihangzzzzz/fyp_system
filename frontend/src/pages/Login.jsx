@@ -21,7 +21,7 @@ const Login = () => {
     useEffect(() => {
       console.log("query is ",db)
       console.log(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`)
-      // axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_/${lab}`);
+      // axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/${lab}`);
       // axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`);
     }, []);
 
@@ -42,7 +42,7 @@ const Login = () => {
         if (response.data.success) {
           // Handle successful login (e.g., redirect to dashboard)
         //   alert('Login Successful!');
-          navigate('/home');
+          navigate(`/home?db=${db}`);
           setUser('');
           setPassword('');
 

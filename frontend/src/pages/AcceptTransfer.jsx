@@ -6,15 +6,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 
 const AcceptTransfer = () => {
+    const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
+
 
     const { transferID } = useParams();
 
     useEffect(() => {
         axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/accepttransfer/${transferID}`)
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/accepttransfer/${transferID}?db=${db}`)
     }, []);
 
     return (

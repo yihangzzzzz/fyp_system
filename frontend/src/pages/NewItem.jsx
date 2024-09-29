@@ -13,9 +13,12 @@ import axios from 'axios';
 // import { Buffer } from 'buffer'; // Uncomment if needed
 import Confirmation from '../components/confirmation.jsx';
 import { ResizeImage } from '../functions/resizeImage.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const NewItem = ({}) => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
 
     const [picture, setPicture] = useState();  
     const [loading, setLoading] = useState(false);
@@ -43,7 +46,7 @@ const NewItem = ({}) => {
       axios
       // .post("http://www.iistesting.com:3000/inventory", newItem, {
       // })
-      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/newitem`, formData, {
+      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/newitem?db=${db}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -57,7 +60,7 @@ const NewItem = ({}) => {
         setLoading(false);
       });
 
-      navigate('/inventory');
+      navigate(`/inventory?db=${db}`);
     };
 
     const handleNewItemChange = (e, info) => {

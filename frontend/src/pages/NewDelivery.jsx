@@ -15,6 +15,7 @@ import Confirmation from '../components/confirmation.jsx';
 const NewDelivery = () => {
 
     const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate();
     // const { data } = props.location.state;
     const items = location.state || {};
@@ -57,7 +58,7 @@ const NewDelivery = () => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/newdelivery`, newDelivery, {
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/newdelivery?db=${db}`, newDelivery, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -69,7 +70,7 @@ const NewDelivery = () => {
 
 
 
-      navigate('/orders');
+      navigate(`/orders?db=${db}`);
     }
 
   return (

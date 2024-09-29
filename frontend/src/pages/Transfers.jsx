@@ -13,9 +13,12 @@ import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
 import { DownloadTable } from '../functions/downloadTable.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const Transfers = () => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate(); 
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -41,7 +44,7 @@ const Transfers = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -63,7 +66,7 @@ const Transfers = () => {
     const handleTransferStatusChange = async () => {
         setIsConfirmationOpen(false);
         await axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_`, statusChange);
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, statusChange);
         setStautsChange({status: '', id: null, items: null});
         fetchInventory();
     }
@@ -268,7 +271,7 @@ const Transfers = () => {
                                                         <td rowSpan={rowSpan}>{item.recipient}</td>
                                                         <td rowSpan={rowSpan}>{item.email}</td>
                                                         <td rowSpan={rowSpan}>
-                                                            <a href={`/transfers/pdf/${item.transferDocument}`} target="_blank" rel="noopener noreferrer">
+                                                            <a href={`/transfers_be/pdf/${item.transferDocument}?db=${db}`} target="_blank" rel="noopener noreferrer">
                                                                 VIew PDF
                                                             </a>
                                                         </td>

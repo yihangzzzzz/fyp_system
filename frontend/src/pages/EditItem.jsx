@@ -10,9 +10,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const EditItem = () => {
+    const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
+
 
     const navigate = useNavigate();
     const { itemName } = useParams();
@@ -27,7 +31,7 @@ const EditItem = () => {
     const fetchItem = async () => {
         setLoading(true);
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(itemName)}`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemName)}?db=${db}`)
         .then((res) => {
             setItem(res.data.recordset[0]);
             setLoading(false);
@@ -56,7 +60,7 @@ const EditItem = () => {
         console.log(item);
         try {
             await axios
-            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(itemName)}`, item, {
+            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemName)}?db=${db}`, item, {
                 headers: {
                   "Content-Type": "multipart/form-data"
                 }
@@ -64,7 +68,7 @@ const EditItem = () => {
         } catch (error) {
             console.error('Error updating items:', error);
           }
-        navigate('/inventory');
+        navigate(`/inventory?db=${db}`);
     }
 
     return (
@@ -82,7 +86,7 @@ const EditItem = () => {
                         accept='image/*'
                         onChange={(e) => handleImageChange(e.target.files[0])}
                     />
-                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture} />
+                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture + `?db=${db}`} />
                 </div>
                 <div className='input-box'>
                     <h5>Item Name</h5>
@@ -148,7 +152,7 @@ const EditItem = () => {
                     />
                 </div>
                 <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Save</button>
-                <button className="cancel-button" type="submit" onClick={() => navigate(`/inventory`)}>Cancel</button>
+                <button className="cancel-button" type="submit" onClick={() => navigate(`/inventory?db=${db}`)}>Cancel</button>
             </div>
             <Confirmation
             isOpen={isConfirmationOpen}

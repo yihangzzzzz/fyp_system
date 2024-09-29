@@ -19,10 +19,13 @@ import { useNavigate, useHistory } from 'react-router-dom';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import FilterModal from '../components/filterModal.jsx';
 import { DownloadTable } from '../functions/downloadTable.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 
 const Orders = () => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate();
     // const history = useHistory();
     const [formData, setFormData] = useState([]);
@@ -52,7 +55,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             console.log("orders are ", res.data.recordset);
@@ -95,7 +98,9 @@ const Orders = () => {
         // Check if filterQuery.poNumber is present, if so, filter based on poNumber
         (!filterQuery.poNumber || item.poNumber.includes(filterQuery.poNumber)) && 
 
-        (!filterQuery.status || item.status.includes(filterQuery.status)) 
+        (!filterQuery.status || item.status.includes(filterQuery.status)) && 
+
+        (!filterQuery.finance || item.status.includes(filterQuery.finance)) 
       );
     })
     .sort((a, b) => {
@@ -117,13 +122,21 @@ const Orders = () => {
       }
     };
 
+    const handleSendFinance = async (doNumber, doDocument) => {
+      await axios
+      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/sendfinance?db=${db}`, {
+        doNumber,
+        doDocument,
+      })
+    }
+
     // const handleNewDelivery = async () => {
     //   setIsModalOpen(false);
 
     //   const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
     //   console.log(itemsToUpdate);
     //   await axios
-    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/fulfillorder`, itemsToUpdate, {
+    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/fulfillorder`, itemsToUpdate, {
     //     headers: {
     //       "Content-Type": "multipart/form-data"
     //     }
@@ -134,7 +147,7 @@ const Orders = () => {
     // };
 
     const ackNewDelivery = async () => {
-      navigate('/orders/newdelivery', { state: { name: selectedRows.map(item => ({
+      navigate(`/orders/newdelivery?db=${db}`, { state: { name: selectedRows.map(item => ({
         orderID: item.orderID,
         itemName: item.itemName,
         totalQuantity: item.quantity,
@@ -246,6 +259,20 @@ const Orders = () => {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
+                  <div className="input-field">
+                    <h5>Finance</h5>
+                    <select
+                      name="finance"
+                      value={filterQuery.finance|| ''}
+                      onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                      // onChange={(e) => setPoDocument(e.target.value)}
+                      style={{ outline: '2px solid black' }}
+                    >
+                      <option value="">Select Status</option> {/* Default option */}
+                      <option value="Send">Send</option>
+                      <option value="Sent">Sent</option>
+                    </select>
+                  </div>
                     </div>
 
                    </div>
@@ -270,6 +297,7 @@ const Orders = () => {
                               <th style={{ fontWeight: 'bold' }}>Delivered</th>
                               <th style={{ fontWeight: 'bold' }}>DO Date</th>
                               <th style={{ fontWeight: 'bold' }}>DO Number</th>
+                              <th style={{ fontWeight: 'bold' }}>Finance Department</th>
                           </tr>
                       </thead>
                       <tbody className='inventory-table-body'>
@@ -303,7 +331,7 @@ const Orders = () => {
                                     <td rowSpan={rowSpan}>{item.itemName}</td>
                                     <td rowSpan={rowSpan}>{formattedPoDate}</td>
                                     <td rowSpan={rowSpan}>
-                                      <a href={`/orders/pdf/${item.poDocument}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`/orders_be/pdf/${item.poDocument}?db=${db}`} target="_blank" rel="noopener noreferrer">
                                         {item.poNumber}
                                       </a>
                                     </td>
@@ -325,11 +353,17 @@ const Orders = () => {
                                     {/* <td>{(itemDetail.split(':')[2] === null) ? ('') : (formattedDoDate)}</td> */}
                                     <td>{!itemDetail.split(':')[2] ? '' : formattedDoDate}</td>
                                     <td>
-                                      <a href={`/orders/pdf/${itemDetail.split(':')[3]}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`/orders_be/pdf/${itemDetail.split(':')[3]}?db=${db}`} target="_blank" rel="noopener noreferrer">
                                       {itemDetail.split(':')[1]}
                                       </a>
                                     </td>
-                                    
+                                    <td>
+                                      {itemDetail.split(':')[4] === "Send" ? (
+                                        <button style={{color: '#FF922C'}}onClick={() => handleSendFinance(itemDetail.split(':')[1], itemDetail.split(':')[3])}>Send</button>
+                                      ) : (
+                                        <span style={{color: '#238823'}}>{itemDetail.split(':')[4]}</span>
+                                      )}
+                                    </td>
                                 </tr>
                           )})}
 

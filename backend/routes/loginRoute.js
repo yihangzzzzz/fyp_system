@@ -16,7 +16,6 @@ const loginRouter = express.Router();
 loginRouter.post('/', async (req, res) => {
 
     const pool = req.sqlPool;
-    console.log("pool is",pool);
     const user = req.body.user;
     const password = req.body.password;
     
@@ -42,12 +41,13 @@ loginRouter.post('/', async (req, res) => {
 })
 
 loginRouter.post('/newuser', async (req, res) => {
+    const pool = req.sqlPool;
 
     const username = req.body.username;
     const password = req.body.password;
 
     try {
-        await sql.query(`
+        await pool.query(`
             INSERT INTO users
             (username, password)
             VALUES ('${username}', '${password}')
@@ -61,9 +61,10 @@ loginRouter.post('/newuser', async (req, res) => {
 })
 
 loginRouter.get('/', async (req, res) => {
+    const pool = req.sqlPool;
 
     try {
-        const userData = sql.query(`
+        const userData = pool.query(`
             SELECT *
             FROM users
         `);
@@ -78,15 +79,34 @@ loginRouter.get('/', async (req, res) => {
 })
 
 loginRouter.delete('/:username', async (req, res) => {
+    const pool = req.sqlPool;
 
     const {username} = req.params
 
     try {
-        await sql.query(`
+        await pool.query(`
             DELETE FROM users
             WHERE username = '${username}'
         `)
         res.send('User deleted');
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
+loginRouter.get('/emailtemplates', async (req, res) => {
+    const pool = req.sqlPool;
+
+    try {
+        const result = pool.query(`
+            SELECT *
+            FROM emailTemplates
+        `);
+        result.then((res1) => {
+            return res.json(res1)
+        })
+
     } catch (err) {
         console.error('Error:', err);
         res.status(500).send('Internal Server Error');

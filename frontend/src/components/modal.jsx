@@ -1,11 +1,14 @@
 // const React = require('react');
 
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 
 
 // const Modal = ({onSubmit, onClose, formData, setFormData, FormComponent, deliveredItems}) => {
 const Modal = ({isOpen, onSubmit, onCancel}) => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
 
   const[newUser, setNewUser] = useState({})
   

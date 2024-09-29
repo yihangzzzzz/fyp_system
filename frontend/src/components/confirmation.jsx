@@ -8,6 +8,7 @@
 
 import React, { useRef } from 'react';
 
+
 const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
   if (!isOpen) return null;
 

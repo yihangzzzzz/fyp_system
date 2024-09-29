@@ -7,7 +7,7 @@ const path = require('path');
 const { json } = require('express');
 const { log } = require('console');
 const upload = require('../functions/picture.js');
-const { sendEmail, updateTransferDocument } = require('../functions/email.js');
+const { sendTransferEmail, updateTransferDocument } = require('../functions/email.js');
 // const updateTransferDocument = require('../functions/email.js');
 
 
@@ -26,37 +26,9 @@ const transferRoute = express.Router();
 
 // GETTING ALL RECORDS
 transferRoute.get('/', async (req, res) => {
-
-
-
-    // const {sortBy} = req.query;
-    // let query;
-    // switch (sortBy) {
-    //     case 'name':
-    //         query = 'select * from transfers order by itemName';
-    //         break;
-    //     case 'quantity':
-    //         query = 'select * from transfers order by quantity';
-    //         break;
-    //     case 'date':
-    //         query = 'select * from transfers order by date';
-    //         break;
-    //     case 'destination':
-    //         query = 'select * from transfers order by destination';
-    //         break;
-    //     default:
-    //         query = 'select * from transfers';
-    // }
-
+    const pool = req.sqlPool;
     try {
-        // const pool = req.pool;
-        // const data = pool.request().query(query)
-        // data.then((res1) => {
-        //     return res.json(res1)
-
-        // })
-
-        const data = sql.query(`SELECT
+        const data = pool.query(`SELECT
     t.transferID,
     t.destination,
     t.date,
@@ -71,7 +43,7 @@ transferRoute.get('/', async (req, res) => {
     ON t.transferID = ti.transferID
     GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type`);
 
-        // const data = sql.query(query);
+        // const data = pool.query(query);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -83,15 +55,10 @@ transferRoute.get('/', async (req, res) => {
 })
 
 transferRoute.get('/labs', async (req, res) => {
+    const pool = req.sqlPool;
 
     try {
-        // const pool = req.pool;
-        // const data = pool.request().query(query)
-        // data.then((res1) => {
-        //     return res.json(res1)
-
-        // })
-        const data = sql.query(`SELECT labCode from LABS`);
+        const data = pool.query(`SELECT labCode from LABS`);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -105,6 +72,7 @@ transferRoute.get('/labs', async (req, res) => {
 // GET 1 PDF
 
 transferRoute.get('/pdf/:filename', (req, res) => {
+    const pool = req.sqlPool;
     const { filename } = req.params;
     const options = {
         root: path.join(__dirname, '../images'),
@@ -122,8 +90,10 @@ transferRoute.get('/pdf/:filename', (req, res) => {
 
 // ADDING NEW TRANSFER RECORD
 transferRoute.post('/newtransfer', async (req, res) => {
+    const pool = req.sqlPool;
 
     const {info, items} = req.body;
+    console.log("type is",info.type);
     let status = info.type === "Transfer" ? "Pending" : "On Loan";
 
     if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
@@ -132,14 +102,14 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
     try {
         
-        const result = await sql.query(`INSERT INTO transfers (type, date, destination, recipient, email, status) 
+        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status) 
         VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
         SELECT SCOPE_IDENTITY() AS transferID`)
         
         const transferID = result.recordset[0].transferID;
-        const transferDocument = await sendEmail(info, items, transferID);
+        const transferDocument = await sendTransferEmail(info, items, transferID);
 
-        sql.query(`UPDATE transfers
+        pool.query(`UPDATE transfers
             SET transferDocument =  '${transferDocument}'
             WHERE transferID = ${transferID}`)
 
@@ -148,7 +118,7 @@ transferRoute.post('/newtransfer', async (req, res) => {
         //     return res.json(res1)
         // })
     } catch (error) {
-        console.log("error is " + error.message);
+        console.log("error is le " + error.message);
         res.send({message : error.message});
     };
 })
@@ -156,40 +126,17 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
 // ADDING NEW TRANSFER ITEMS RECORD
 transferRoute.post('/newtransfer/additems', async (req, res) => {
+    const pool = req.sqlPool;
 
-    // const {info, items} = req.body;
     const transferID = req.query.transferID;
-    // const transferID = parseInt(req.params.transferID);
     const items = req.body;
 
-    // res.status(200).json({ message: transferID });
 
-    // let transferID;
-
-    // sql.query(`INSERT INTO transfers (date, destination, recipient) 
-    //     VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
-    //     SELECT SCOPE_IDENTITY() AS transferID`)
-    //     .then((res1) => {
-    //         transferID = res1;
-    //     });
-
-    // res.status(200).json({ message: transferID });
-
-    // const transferID = result.recordset[0].transferID;
-
-    // // const name = req.body.name;
-    // // const serial = req.body.serial;
-    // // const quantity = req.body.quantity;
     try {
         
         items.forEach(item => {
 
-        // const result = sql.query(`INSERT INTO transfers (date, destination, recipient) 
-        // VALUES ('${info.date}', '${info.destination}', '${info.recipient}')
-        // SELECT SCOPE_IDENTITY() AS transferID`)
-
-
-        sql.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
+        pool.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
             VALUES (${transferID}, '${item.name}', ${item.quantity})`);
     })
     
@@ -202,10 +149,11 @@ transferRoute.post('/newtransfer/additems', async (req, res) => {
 })
 // DELETE ONE RECORD
 transferRoute.delete('/:itemName', async (req, res) => {
+    const pool = req.sqlPool;
     try {
         const { itemName } = req.params;
         // Replace this with your actual SQL query to delete the item
-        await sql.query(`DELETE FROM warehouse WHERE itemName = ${itemName}`);
+        await pool.query(`DELETE FROM warehouse WHERE itemName = ${itemName}`);
         res.status(200).json({ message: 'Item deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -217,12 +165,13 @@ transferRoute.delete('/:itemName', async (req, res) => {
 
 // UPDATE ONE RECORD
 transferRoute.put('/', async (req, res) => {
+    const pool = req.sqlPool;
 
     const type = req.query.type;
 
     try {
 
-        await sql.query(`UPDATE transfers
+        await pool.query(`UPDATE transfers
             SET status = '${req.body.status}'
             WHERE transferID = ${req.body.id}`);
 
@@ -230,17 +179,11 @@ transferRoute.put('/', async (req, res) => {
 
             req.body.items.forEach (item => {
                 const [itemName, quantity] = item.split(':');
-                sql.query(`UPDATE warehouse 
+                pool.query(`UPDATE warehouse 
                     SET cabinet = cabinet - ${quantity}
                     WHERE itemName = '${itemName}'`);
             })
         }
-
-
-        // await sql.query(`UPDATE transfers
-        //     SET status = 'Cancelled'
-        //     WHERE transferID = 3`);
-
 
         res.status(200).json({ message: 'Items updated successfully' });
 
@@ -252,6 +195,7 @@ transferRoute.put('/', async (req, res) => {
 })
 
 transferRoute.put('/updateinventory', async (req, res) => {
+    const pool = req.sqlPool;
 
     const type = req.query.type;
     // res.send({message : type});
@@ -261,7 +205,7 @@ transferRoute.put('/updateinventory', async (req, res) => {
         if (type === "counter") {
 
             req.body.forEach (item => {
-                sql.query(`UPDATE warehouse 
+                pool.query(`UPDATE warehouse 
                     SET cabinet = cabinet - ${item.quantity},
                         counter = counter + ${item.quantity}
                     WHERE itemName = '${item.name}'`);
@@ -271,13 +215,13 @@ transferRoute.put('/updateinventory', async (req, res) => {
         else if (type === "cabinet") {
 
             req.body.forEach (item => {
-                sql.query(`UPDATE warehouse 
+                pool.query(`UPDATE warehouse 
                     SET cabinet = cabinet + ${item.quantity},
                         counter = counter - ${item.quantity}
                     WHERE itemName = '${item.name}'`);
             })
 
-            await sql.query(`UPDATE transfers
+            await pool.query(`UPDATE transfers
                 SET status = 'Acknowledged'
                 WHERE transferID = ${req.body.id}`);
         }
@@ -293,11 +237,12 @@ transferRoute.put('/updateinventory', async (req, res) => {
 
 transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
 
+    const pool = req.sqlPool;
     const { transferID } = req.params;
     
     try {
         
-        const status = await sql.query(`
+        const status = await pool.query(`
             SELECT status
             FROM transfers
             WHERE transferID = ${transferID}
@@ -306,21 +251,21 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
         if (status.recordset[0].status === "Pending") {
             updateTransferDocument(transferID);
 
-            const result = await sql.query(`
+            const result = await pool.query(`
                 SELECT *
                 FROM transferItems
                 WHERE transferID = ${transferID}
             `)
             
             result.recordset.forEach(item => {
-                sql.query(`
+                pool.query(`
                     UPDATE warehouse
                     SET cabinet = cabinet - ${item.quantity}
                     WHERE itemName = '${item.itemName}'
                 `)
             })
 
-            sql.query(`
+            pool.query(`
                 UPDATE transfers
                 SET status = 'Acknowledged'
                 WHERE transferID = ${transferID}

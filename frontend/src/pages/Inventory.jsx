@@ -17,9 +17,12 @@ import Navbar from '../components/navbar.jsx';
 import NewItemForm from '../components/NewDeliveryForm.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { DownloadTable } from '../functions/downloadTable.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const Inventory = () => {
+    const location = useLocation();
+    const db = new URLSearchParams(location.search).get('db');
     const [inventory, setInventory] = useState([]);
     // const [loading, setLoading] = useState(false);
     // const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +46,7 @@ const Inventory = () => {
 
     const fetchInventory = async () => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`)
         // .get(`http://localhost:3000/inventory`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
@@ -55,7 +58,7 @@ const Inventory = () => {
 
     // const handleAddItem = (newItem) => {
     //   axios
-    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_`, newItem)
+    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be`, newItem)
     //     .then(() => {
     //         setLoading(false);
             
@@ -181,7 +184,7 @@ const Inventory = () => {
                     <tbody>
                         {filteredInventory.map((item, index) => (
                             <tr key={index}>
-                            <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture} /></td>
+                            <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture + `?db=${db}`} /></td>
                             <td>{item.itemName}</td>
                             <td>{item.description}</td>
                             {item.cabinet < item.lowStock ? (

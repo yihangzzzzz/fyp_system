@@ -15,9 +15,12 @@ import { MdOutlineAddBox, MdModeEditOutline, MdDelete } from 'react-icons/md';
 import axios from 'axios';
 import Confirmation from './confirmation';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 
 const Actions = ({toDelete, toEdit, mode}) => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
   const navigate = useNavigate();
   const [deleteItemName, setDeleteItemName] = useState(toDelete);
   const [editItemName, setEditItemName] = useState(toEdit);
@@ -27,7 +30,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
     
     if (mode === 'inventory') {
       axios
-      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(deleteItemName)}`)
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(deleteItemName)}?db=${db}`)
       .catch((error) => {
         console.log("Error deleting item: " + error);
       });
@@ -37,7 +40,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
 
     else if (mode === 'user') {
       axios
-      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_/${encodeURIComponent(toDelete)}`)
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/${encodeURIComponent(toDelete)}?db=${db}`)
       .catch((error) => {
         console.log("Error deleting item: " + error);
       });
@@ -49,7 +52,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
   }
 
   const handleEdit = () => {
-    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}`)
+    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}?db=${db}`)
   }
 
   return (

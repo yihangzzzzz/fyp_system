@@ -6,9 +6,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/navbar.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 const Home  = () => {
+
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
 
   return (
     <div className='home-page'>
@@ -20,13 +24,13 @@ const Home  = () => {
                     <h2>Inventory</h2>
                     <ul>
                       <li>
-                          <Link to="/inventory">Warehouse Items</Link>
+                          <Link to={`/inventory?db=${db}`}>Warehouse Items</Link>
                       </li>
                       <li>
-                          <Link to="/inventory/lowstock">Set Low Stock Limit</Link>
+                          <Link to={`/inventory/lowstock?db=${db}`}>Low Stock</Link>
                       </li>
                       <li>
-                          <Link to="/inventory/newitem">Add New Item</Link>
+                          <Link to={`/inventory/newitem?db=${db}`}>New Item</Link>
                       </li>
                     </ul>
                 </div>
@@ -34,10 +38,10 @@ const Home  = () => {
                     <h2>Orders</h2>
                     <ul>
                       <li>
-                            <Link to="/orders">All Orders</Link>
+                          <Link to={`/orders?db=${db}`}>Current Orders</Link>
                       </li>
                       <li>
-                            <Link to="/orders/neworder">New Order</Link>
+                          <Link to={`/orders/neworder?db=${db}`}>New Order</Link>
                       </li>
                     </ul>
                 </div>
@@ -45,10 +49,10 @@ const Home  = () => {
                     <h2>Transfers</h2>
                     <ul>
                       <li>
-                            <Link to="/transfers">All Transfers</Link>
+                          <Link to={`/transfers?db=${db}`}>All Transfers</Link>
                       </li>
                       <li>
-                            <Link to="/transfers/newtransfer">New Transfer</Link>
+                          <Link to={`/transfers/newtransfer?db=${db}`}>New Transfer</Link>
                       </li>
                     </ul>
                 </div>

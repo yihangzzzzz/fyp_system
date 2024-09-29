@@ -10,14 +10,17 @@ import axios from 'axios';
 import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 
 const NewTransfer = ({}) => {
+  const location = useLocation();
+  const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     const [labs, setLabs] = useState([]);
     const [transferItems, setTransferItems] = useState([]);
-    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '' });
+    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '', type:'Transfer' });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
@@ -29,7 +32,7 @@ const NewTransfer = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -41,7 +44,7 @@ const NewTransfer = ({}) => {
     const fetchLabs = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/labs`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/labs?db=${db}`)
         .then((res) => {
             setLabs(res.data.recordset);
         })
@@ -78,7 +81,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/newtransfer`, newTransfer)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/newtransfer?db=${db}`, newTransfer)
         .then((res) => {
           transferID = res.data.recordset[0].transferID
         });
@@ -88,7 +91,7 @@ const NewTransfer = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/newtransfer/additems?transferID=${encodeURIComponent(transferID)}`, transferItems)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/newtransfer/additems?transferID=${encodeURIComponent(transferID)}&db=${db}`, transferItems)
       } catch (error) {
         console.error('Error updating items:', error);
       }
@@ -96,18 +99,18 @@ const NewTransfer = ({}) => {
       try {
         if (transferInfo.destination.includes('Counter')) {
           await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/updateinventory?type=counter`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/updateinventory?type=counter&?db=${db}`, transferItems)
         }
         else if (transferInfo.destination.includes('Cabinet')) {
           await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_/updateinventory?type=cabinet`, transferItems)
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/updateinventory?type=cabinet&?db=${db}`, transferItems)
         }
         
       } catch (error) {
         console.error('Error updating items:', error);
       }
 
-      navigate('/transfers');
+      navigate(`/transfers?db=${db}`);
     }
       
   
@@ -124,7 +127,7 @@ const NewTransfer = ({}) => {
             <div className='transfer_info'>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <h5>Type</h5>
-                <select value={transferInfo.destination || "Transfer"} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
+                <select value={transferInfo.type} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
                   <option value="Transfer">Transfer</option>
                   <option value="Loan">Loan</option>
                 </select>
