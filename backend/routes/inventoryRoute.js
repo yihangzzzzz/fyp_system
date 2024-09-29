@@ -15,24 +15,27 @@ const inventoryRouter = express.Router();
 // GETTING ALL RECORDS
 inventoryRouter.get('/', async (req, res) => {
 
-    const {sortBy} = req.query;
-    let query;
-    switch (sortBy) {
-        case 'name':
-            query = 'select * from warehouse order by itemName';
-            break;
-        case 'serial':
-            query = 'select * from warehouse order by serialNumber';
-            break;
-        case 'quantity':
-            query = 'select * from warehouse order by cabinet';
-            break;
-        default:
-            query = 'select * from warehouse';
-    }
+    // const {sortBy} = req.query;
+    // let query;
+    // switch (sortBy) {
+    //     case 'name':
+    //         query = 'select * from warehouse order by itemName';
+    //         break;
+    //     case 'serial':
+    //         query = 'select * from warehouse order by serialNumber';
+    //         break;
+    //     case 'quantity':
+    //         query = 'select * from warehouse order by cabinet';
+    //         break;
+    //     default:
+    //         query = 'select * from warehouse';
+    // }
 
     try {
-        sql.query(query)
+        sql.query(`
+            SELECT *
+            FROM warehouse
+        `)
         .then((res1) => {
             return res.json(res1)
         })
@@ -81,39 +84,6 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 })
-
-
-// ADDING NEW RECORD
-// inventoryRouter.post('/', async (req, res) => {
-
-//     const name = req.body.name;
-//     const serial = req.body.serial;
-//     const quantity = req.body.quantity;
-//     const picture = req.file.buffer;
-//     // const name = req.body.name;
-//     // const serial = req.body.serial;
-//     // const quantity = req.body.quantity;
-
-//     try {
-//         // const pool = req.pool;
-//         // const query = `INSERT INTO warehouse (itemName, serialNumber, quantity) 
-//         //                VALUES (${name}, ${serial}, ${quantity})`;
-//             const query = `INSERT INTO warehouse (picture, itemName, serialNumber, cabinet) 
-//                     VALUES (${picture}, '${name}', ${serial}, ${quantity})`;
-//         // const request = pool.request()
-//         // request.input('name', sql.NVarChar, name);
-//         // request.input('serial', sql.NVarChar, serial);
-//         // request.input('quantity', sql.Int, quantity);
-
-//         // request.query(query);
-//         sql.query(query);
-//         res.status(200).json({ message: 'Item added successfully' });
-
-//     } catch (error) {
-//         console.log("error is " + error.message);
-//         res.send({message : error.message});
-//     }
-// })
 
 // ================================= DELETE ====================================================
 

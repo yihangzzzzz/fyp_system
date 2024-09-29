@@ -2,6 +2,7 @@ const cors = require('cors');
 // const helmet = require('helmet');
 const express = require('express');
 const sql = require('mssql');
+const { ConnectionPool } = require('mssql')
 const session = require('express-session');
 // require('dotenv').config(); // Uncomment if using dotenv for environment variables
 // const PORT = require('./config.js');
@@ -11,6 +12,7 @@ const orderRouter = require('./routes/orderRoute.js');
 const loginRouter = require('./routes/loginRoute.js');
 const path = require('path');
 const PORT = 3000;
+const { poolHWPromise, poolSWPromise } = require('./config.js');
 
 const app = express();
 
@@ -24,70 +26,102 @@ app.use(session({
     cookie: { secure: false } // set to true if using HTTPS
   }));
 
-// const isAuthenticated = (req, res, next) => {
-//   if (req.session.loggedIn) {
-//       return next();
-//   } else {
-//       res.redirect('/login'); // Redirect to login page if not authenticated
-//   }
-// };
-// app.get('/protected-page', isAuthenticated, (req, res) => {
-//     res.send('This is a protected page');
-//     // res.redirect('/');
-// });
+const sqlPool = async function (req, res, next) {
+  if (req.query.db) {
+    if (req.query.db === 'sw') {
+      req.sqlPool = await poolSWPromise; // Use hardware inventory pool
+      console.log("sw pool connected");
+    } else {
 
+      req.sqlPool = await poolHWPromise; // Default to software inventory pool
+      console.log("hw pool connected");
+    }
+  }
+  next();
+}
+
+app.use(sqlPool)
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.use('/login', loginRouter);
-app.use('/inventory', inventoryRouter);
-app.use('/transfers', transferRouter);
-app.use('/orders', orderRouter);
-app.use('/images', express.static('images'))
+app.use('/login_be', loginRouter);
+app.use('/inventory_be', inventoryRouter);
+app.use('/transfers_', transferRouter);
+app.use('/orders_', orderRouter);
+app.use('/images_', express.static('images'))
 
 
 app.listen(process.env.PORT || PORT, () => {
     console.log("app is running le");
 })
-app.post('/login/:lab', async (req, res) => {
-    console.log(req.params.lab )
-    let pool;
-    const sqlConfig = {
+// app.post('/login_be', async (req, res) => {
+//     let pool;
+//     let sqlConfig = {
       
-        // user: req.body.user, //testuser
-        // password: req.body.password, //1234
-        user: 'testuser', //testuser
-        password: '1234', //1234
-        server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
-        // server: 'YIHANG\\SQLEXPRESS',
-        // server: 'MDPADMIN\\SQLEXPRESS',
-        // database: req.params.lab === 'sw' ? 'inventory' : "hardware_inventory",
-        database: req.params.lab === 'sw' ? 'software_inventory' : "hardware_inventory",
-        driver: 'msnodesqlv8',
-        options: {
-            trustedConnection: false,
-            encrypt: false
-        }
-    };
+//         // user: req.body.user, //testuser
+//         // password: req.body.password, //1234
+//         user: 'testuser', //testuser
+//         password: '1234', //1234
+//         server: 'DESKTOP-VN9PRPU\\SQLEXPRESS', // or 'localhost' for a local instance
+//         // server: 'YIHANG\\SQLEXPRESS',
+//         // server: 'MDPADMIN\\SQLEXPRESS',
+//         database: req.query.db === 'sw' ? 'software_inventory' : "hardware_inventory",
+//         // database: req.params.lab === 'sw' ? 'software_inventory' : "hardware_inventory",
+//         driver: 'msnodesqlv8',
+//         options: {
+//             trustedConnection: false,
+//             encrypt: false
+//         }
+//     };
 
-    try {
-      // Attempt to connect with the provided credentials
-        // pool = new sql.ConnectionPool(sqlConfig);
-        // await pool.connect();
-        await sql.connect(sqlConfig);
-        req.session.loggedIn = true; 
-        console.log("connected le");
-      // If connection is successfulW
-      res.json({ success: true });
-    } catch (err) {
-      // If the connection fails, send an error response
-      console.error('Login failed:', err.message);
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
-    } finally {
-      // Ensure connection pool is closed after use
-      if (pool && pool.connected) {
-          // pool.close();
-      }
-  }
-  });
+//     try {
+//       // Attempt to connect with the provided credentials
+//         // pool = new ConnectionPool(sqlConfig);
+//         // await pool.connect();
+//         await sql.connect(sqlConfig);
+//         req.session.loggedIn = true; 
+//         console.log("connected le");
+//       // If connection is successfulW
+//       res.json({ success: true });
+//     } catch (err) {
+//       // If the connection fails, send an error response
+//       console.error('Login failed:', err.message);
+//       res.status(401).json({ success: false, message: 'Invalid credentials' });
+//     } finally {
+//       // Ensure connection pool is closed after use
+//       if (pool && pool.connected) {
+//           // pool.close();
+//       }
+//   }
+//   });
+// const sqlConfigSW = {
+//   user: 'testuser',
+//   password: '1234',
+//   server: 'DESKTOP-VN9PRPU\\SQLEXPRESS',
+//   database: 'software_inventory',
+//   driver: 'msnodesqlv8',
+//   options: { trustedConnection: false, encrypt: false },
+//   pool: { max: 10, min: 0, idleTimeoutMillis: 30000 }
+// };
+
+// const sqlConfigHW = {
+//   user: 'testuser',
+//   password: '1234',
+//   server: 'DESKTOP-VN9PRPU\\SQLEXPRESS',
+//   database: 'hardware_inventory',
+//   driver: 'msnodesqlv8',
+//   options: { trustedConnection: false, encrypt: false },
+//   pool: { max: 10, min: 0, idleTimeoutMillis: 30000 }
+// };
+
+// // Create connection pools for each
+// const poolSWPromise = new sql.ConnectionPool(sqlConfigSW).connect().then(pool => {
+//   console.log('Connected to Software Inventory DB');
+//   return pool;
+// });
+
+// const poolHWPromise = new sql.ConnectionPool(sqlConfigHW).connect().then(pool => {
+//   console.log('Connected to Hardware Inventory DB');
+//   return pool;
+// });
 
 
 
@@ -122,10 +156,33 @@ app.post('/login/:lab', async (req, res) => {
 // }
 // connectDB();
 
+
+// app.use(async (req, res, next) => {
+//   // const { db } = req.query; // Get the database choice from query parameters
+//   if (req.query.db) {
+//     try {
+//         if (req.query.db === 'sw') {
+//           req.test = 'sw is here';
+//             // req.sqlPool = await poolSWPromise; // Use hardware inventory pool
+//             // res.sqlPool = 'nice sw'
+//             console.log("sw pool connected", req.test);
+//         } else {
+//           req.test = 'hw is here';
+//             // req.sqlPool = await poolHWPromise; // Default to software inventory pool
+//             // res.sqlPool = 'nice hw'
+//             console.log("hw pool connected", req.test);
+//         }
+        
+//     } catch (err) {
+//         console.error('Error acquiring connection pool:', err);
+//         res.status(500).send('Database connection error');
+//     }
+//   }
+//   next();
+// });
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
-
-
 
 

@@ -41,7 +41,7 @@ const Transfers = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             setLoading(false);
@@ -63,7 +63,7 @@ const Transfers = () => {
     const handleTransferStatusChange = async () => {
         setIsConfirmationOpen(false);
         await axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers`, statusChange);
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_`, statusChange);
         setStautsChange({status: '', id: null, items: null});
         fetchInventory();
     }

@@ -27,7 +27,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
     
     if (mode === 'inventory') {
       axios
-      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(deleteItemName)}`)
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(deleteItemName)}`)
       .catch((error) => {
         console.log("Error deleting item: " + error);
       });
@@ -37,7 +37,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
 
     else if (mode === 'user') {
       axios
-      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login/${encodeURIComponent(toDelete)}`)
+      .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_/${encodeURIComponent(toDelete)}`)
       .catch((error) => {
         console.log("Error deleting item: " + error);
       });

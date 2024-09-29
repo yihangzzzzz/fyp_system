@@ -28,7 +28,7 @@ const NewOrder = ({}) => {
     const fetchItems = async () => {
       try {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_`)
         .then((res) => {
             setItems(res.data.recordset);
         })
@@ -41,7 +41,7 @@ const NewOrder = ({}) => {
       const pdftosend = {poDocument: e};
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/scanDocument`, 
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/scanDocument`, 
           pdftosend, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -95,7 +95,7 @@ const NewOrder = ({}) => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/neworder`, newOrder)
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/neworder`, newOrder)
         
       } catch (error) {
         console.error('Error updating items:', error);

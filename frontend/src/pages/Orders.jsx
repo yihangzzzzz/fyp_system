@@ -52,7 +52,7 @@ const Orders = () => {
 
     const fetchInventory = async (sortAtt) => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders`, {params: {sortBy: sortAtt}})
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
             console.log("orders are ", res.data.recordset);
@@ -123,7 +123,7 @@ const Orders = () => {
     //   const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
     //   console.log(itemsToUpdate);
     //   await axios
-    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/fulfillorder`, itemsToUpdate, {
+    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/fulfillorder`, itemsToUpdate, {
     //     headers: {
     //       "Content-Type": "multipart/form-data"
     //     }

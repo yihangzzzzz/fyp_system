@@ -4,6 +4,24 @@
 /* @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities"; */
+.button-container {
+  display: flex;
+  gap: 150px; /* Space between buttons */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.large-button {
+  padding: 20px 40px; /* Make the buttons large */
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #4CAF50; /* Green color */
+  color: white;
+  transition: background-color 0.3s ease;
+}
 
 .title {
   /* justify-content: space-between; */

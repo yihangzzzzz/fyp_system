@@ -57,7 +57,7 @@ const NewDelivery = () => {
 
       try {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders/newdelivery`, newDelivery, {
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_/newdelivery`, newDelivery, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

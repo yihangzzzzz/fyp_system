@@ -35,6 +35,8 @@ import Login from './pages/Login.jsx';
 import NewDelivery from './pages/NewDelivery.jsx';
 import ProtectedPage from './pages/ProtectedPage.jsx';
 import Users from './pages/Users.jsx';
+import MainPage from './pages/MainPage.jsx';
+
 
 
 
@@ -46,7 +48,9 @@ const App = () => {
             <Routes>
         {/* <DefaultRoute element={<Home/>}/> */}
         {/* <Route path = '/' element = {<Login/>} /> */}
-        <Route path = '/login/:lab' element = {<Login/>} />
+        {/* <Route path = '/login/:lab' element = {<Login/>} /> */}
+        <Route path = '/' element = {<MainPage/>} />
+        <Route path = '/login' element = {<Login/>} />
         <Route path = '/home' element = {<Home/>} />
         <Route path = '/protected-page' element = {<ProtectedPage/>} />
 

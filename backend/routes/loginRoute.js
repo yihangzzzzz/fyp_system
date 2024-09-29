@@ -7,15 +7,23 @@ const path = require('path');
 const { json } = require('express');
 const { log } = require('console');
 const upload = require('../functions/picture.js');
+const { poolHWPromise, poolSWPromise } = require('../config.js');
+
+
 
 const loginRouter = express.Router();
 
 loginRouter.post('/', async (req, res) => {
 
+    const pool = req.sqlPool;
+    console.log("pool is",pool);
     const user = req.body.user;
     const password = req.body.password;
+    
 
-    const userData = await sql.query(`
+    // console.log(pool)
+
+    const userData = await pool.query(`
         SELECT *
         FROM users
         WHERE username = '${user}'

@@ -17,7 +17,7 @@ const Users = () => {
 
     const fetchUsers = async () => {
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_`)
         .then((res) => {
             setUsers(res.data.recordset);
         })
@@ -28,7 +28,7 @@ const Users = () => {
 
     const handleAddUser = async (e) => {
         await axios
-        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login/newuser`, e);
+        .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_/newuser`, e);
         setIsModalOpen(false)
         fetchUsers();
         console.log("added user", e)

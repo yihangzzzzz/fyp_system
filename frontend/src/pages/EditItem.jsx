@@ -27,7 +27,7 @@ const EditItem = () => {
     const fetchItem = async () => {
         setLoading(true);
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(itemName)}`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(itemName)}`)
         .then((res) => {
             setItem(res.data.recordset[0]);
             setLoading(false);
@@ -56,7 +56,7 @@ const EditItem = () => {
         console.log(item);
         try {
             await axios
-            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/${encodeURIComponent(itemName)}`, item, {
+            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/${encodeURIComponent(itemName)}`, item, {
                 headers: {
                   "Content-Type": "multipart/form-data"
                 }

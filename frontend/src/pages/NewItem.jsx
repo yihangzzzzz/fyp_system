@@ -43,7 +43,7 @@ const NewItem = ({}) => {
       axios
       // .post("http://www.iistesting.com:3000/inventory", newItem, {
       // })
-      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory/newitem`, formData, {
+      .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_/newitem`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
