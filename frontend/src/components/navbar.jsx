@@ -5,6 +5,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { FaHome } from "react-icons/fa";
+import { MdInventory2 } from "react-icons/md";
+import { FaTruck } from "react-icons/fa";
+import { RiFileTransferFill } from "react-icons/ri";
+import { IoIosSettings } from "react-icons/io";
 
 
 const Navbar = () => {
@@ -22,10 +27,13 @@ const Navbar = () => {
 
     return (
       <div className='navbar'>
+            <img className='dropdown' src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/ntu_ccds_logo.png`} alt="Logo" style={{ height: '75px', marginRight: '10px' }} />
             <div className="dropdown">
+                <FaHome />
               <Link to={`/home?db=${db}`}style={{fontSize: '16px', padding: '10px'}}>Home</Link>
             </div>
             <div className="dropdown">
+                <MdInventory2/>
                 <button className="dropbtn">Inventory</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/inventory?db=${db}`}>Items</Link></li>
@@ -35,6 +43,7 @@ const Navbar = () => {
             </div>
 
             <div className="dropdown">
+                <FaTruck/>
                 <button className="dropbtn">Orders</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/orders?db=${db}`}>Current Orders</Link></li>
@@ -43,6 +52,7 @@ const Navbar = () => {
             </div>
 
             <div className="dropdown">
+                <RiFileTransferFill/>
                 <button className="dropbtn">Transfers</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/transfers?db=${db}`}>All Transfers</Link></li>
@@ -50,6 +60,7 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="dropdown">
+                <IoIosSettings/>
                 <button className="dropbtn">Settings</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/settings/usermanagement?db=${db}`}>User Management</Link></li>

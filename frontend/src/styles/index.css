@@ -4,6 +4,11 @@
 /* @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities"; */
+
+body {
+  background-color: #f0f0f0; /* Light grey */
+}
+
 .button-container {
   display: flex;
   gap: 150px; /* Space between buttons */
@@ -26,9 +31,10 @@
 .title {
   /* justify-content: space-between; */
   /* flex: auto; */
-  color: white;
+  color: black;
   font-size: x-large;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+  font-family: 'Roboto', sans-serif;
 }
 
 .topbar{
@@ -37,7 +43,7 @@
   gap: 10px;     
   margin: 10px;
   padding: 20px;
-  background-color: rgb(49, 84, 115);
+  background-color: #f0f0f0;
   border-radius: 15px;
   opacity: 80%;
   box-shadow: 40cm;
@@ -71,9 +77,11 @@
 }
 
 .navbar {
+  display: flex;
   background-color: #333;
   color: white;
   padding: 10px;
+  gap: 5px;
 }
 
 .navbar-brand {
@@ -210,7 +218,8 @@ th {
   padding: 10px;           /* Padding around the title */
   border-radius: 8px;      /* Rounded corners */
   text-align: center;      /* Centered text */
-  margin-bottom: 20px;     /* Space below the title */
+  margin-bottom: 20px;  
+  font-family: 'Roboto', sans-serif; /* Space below the title */
 }
 
 .submit-button {
@@ -324,8 +333,11 @@ th {
 
 /* Dropdown container */
 .dropdown {
-  position: relative; /* Position relative for dropdown positioning */
-  display: inline-block; /* Inline-block to fit content */
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  display: inline-block;
 }
 
 /* Dropdown content (hidden by default) */
@@ -500,4 +512,37 @@ th {
   flex-direction: column; /* Stack children vertically */
   margin: 0px;
   gap: 0px; /* Remove any margin around the container */
+}
+
+
+
+
+
+.search-container {
+  position: relative;
+  margin: 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 20px; /* Padding on right for icon space */
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 20px;
+  pointer-events: none; /* Makes the icon unclickable */
 }

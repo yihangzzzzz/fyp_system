@@ -18,6 +18,7 @@ import NewItemForm from '../components/NewDeliveryForm.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { DownloadTable } from '../functions/downloadTable.jsx';
 import { useLocation } from 'react-router-dom';
+import { FaSearch } from "react-icons/fa";
 
 
 const Inventory = () => {
@@ -132,13 +133,25 @@ const Inventory = () => {
                     onChange={handleSearch}
                     className='searchBar'
                 /> */}
+
+                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
+                
+                <div className="search-container">
+                    <input
+                        type="text"
+                        name='itemName'
+                        className="search-input"
+                        placeholder="Search for item"
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}/>
+                    <FaSearch className="search-icon" />
+                </div>
                 <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
                     {/* <option value="serial">Serial Number</option> */}
                     <option value="cabinet">Quantity</option>
                 </select>
-                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                 <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
             </div>
             {loading ? (
@@ -152,7 +165,7 @@ const Inventory = () => {
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
                     <div className='inputs'>
-                    <div className="input-field">
+                    {/* <div className="input-field">
                       <h5>Item</h5>
                       <input
                         type="text"
@@ -163,7 +176,7 @@ const Inventory = () => {
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
                         style={{ outline: '2px solid black' }}
                       />
-                   </div>
+                   </div> */}
                    <div className="input-field">
                       <h5>Low Stock</h5>
                       <input
