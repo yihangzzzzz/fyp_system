@@ -10,16 +10,28 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'images');
+        const dbParam = req.query.db; // Get the query parameter
+
+        // Determine the directory based on the db parameter
+        let uploadDir;
+        if (dbParam === 'hw') {
+            uploadDir = 'documents/hw';
+        } else if (dbParam === 'sw') {
+            uploadDir = 'documents/sw';
+        } else {
+            uploadDir = 'documents'; // Default directory if no match
+        }
+
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
     },
     });
 
-const upload = multer ({
-    storage: storage
-    })
+
+// Multer configuration
+const upload = multer({ storage });
 
 
 module.exports = upload;

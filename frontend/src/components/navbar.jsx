@@ -50,7 +50,11 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="dropdown">
-              <Link to={`/users?db=${db}`} style={{fontSize: '16px', padding: '10px'}}>Users</Link>
+                <button className="dropbtn">Settings</button>
+                <ul className="dropdown-content">
+                    <li><Link to={`/settings/usermanagement?db=${db}`}>User Management</Link></li>
+                    <li><Link to={`/settings/emailtemplates?db=${db}`}>Email Templates</Link></li>
+                </ul>
             </div>
         </div>
     );

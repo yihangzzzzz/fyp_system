@@ -20,7 +20,7 @@ const NewTransfer = ({}) => {
     const [items, setItems] = useState([]);
     const [labs, setLabs] = useState([]);
     const [transferItems, setTransferItems] = useState([]);
-    const [transferInfo, setTransferInfo] = useState({destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '', type:'Transfer' });
+    const [transferInfo, setTransferInfo] = useState({db: db, destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '', type:"Transfer Out", remarks:'' });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const x = '';
   
@@ -128,12 +128,13 @@ const NewTransfer = ({}) => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <h5>Type</h5>
                 <select value={transferInfo.type} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
-                  <option value="Transfer">Transfer</option>
+                  <option value="Transfer Out">Transfer Out</option>
+                  <option value="Transfer In">Transfer In</option>
                   <option value="Loan">Loan</option>
                 </select>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Destination</h5>
+                {transferInfo.type === 'Transfer In' ? (<h5>Sender</h5>) : (<h5>Destination</h5>)}
                 <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
                   <option value="">Select Lab</option>
                   {labs.map(item => (
@@ -168,6 +169,15 @@ const NewTransfer = ({}) => {
                       type="text"
                       value={transferInfo.email}
                       onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
+                      style={{ outline: '2px solid black' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <h5>Remarks</h5>
+                    <textarea
+                      type="text"
+                      value={transferInfo.remarks}
+                      onChange={(e) => handleTransferInfoChange(e.target.value, 'remarks')}
                       style={{ outline: '2px solid black' }}
                     />
                   </div>

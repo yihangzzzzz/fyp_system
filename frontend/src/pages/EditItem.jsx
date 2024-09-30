@@ -86,7 +86,7 @@ const EditItem = () => {
                         accept='image/*'
                         onChange={(e) => handleImageChange(e.target.files[0])}
                     />
-                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture + `?db=${db}`} />
+                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}` + item.picture} />
                 </div>
                 <div className='input-box'>
                     <h5>Item Name</h5>

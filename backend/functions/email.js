@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-async function sendTransferEmail(info, items, transferID) {
+async function sendTransferEmail(info, items, transferID, db) {
 
     const __dirname = path.resolve();
 
@@ -39,7 +39,7 @@ async function sendTransferEmail(info, items, transferID) {
     const pdfBytes = await pdfDoc.save();
     // documentName = `transfer${transferID}_${info.destination}_${info.date}.pdf`
     documentName = `transfer${transferID}.pdf`
-    const filePath = path.join(__dirname, '..', '/backend/images/' , documentName);
+    const filePath = path.join(__dirname, '..', `/backend/documents/${db}` , documentName);
     fs.writeFileSync(filePath, pdfBytes);
 
     const mailOptions = {
@@ -54,7 +54,7 @@ async function sendTransferEmail(info, items, transferID) {
             <li>Recipient: ${info.recipient}</li>
           </ul>
           <p>Please click on the link below to acknowledge:</p>
-          <a href="http://localhost:3000/transfers/accepttransfer/${transferID}">Acknowledge Transfer</a>`
+          <a href="http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}">Acknowledge Transfer</a>`
           ,
         attachments: {
             filename: 'transferDocument.pdf',
@@ -77,7 +77,7 @@ async function sendTransferEmail(info, items, transferID) {
 async function sendFinanceEmail(doDocument) {
 
 
-  const filePath = path.join(__dirname, '..', '/images/' , doDocument);
+  const filePath = path.join(__dirname, '..', '/documents/' , doDocument);
 
 
   const FinancemailOptions = {
@@ -104,9 +104,9 @@ async function sendFinanceEmail(doDocument) {
   });
 }
 
-async function updateTransferDocument (transferID) {
+async function updateTransferDocument (transferID, db) {
   documentName = `transfer${transferID}.pdf`
-  const filePath = path.join(__dirname, '..', 'images/' , documentName);
+  const filePath = path.join(__dirname, '..', `documents/${db}/` , documentName);
   const pdfBytes = fs.readFileSync(filePath); // Read the PDF as a buffer
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();

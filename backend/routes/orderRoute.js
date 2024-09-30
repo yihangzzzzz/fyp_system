@@ -71,9 +71,10 @@ orderRouter.get('/', async (req, res) => {
 
 orderRouter.get('/pdf/:filename', (req, res) => {
     const pool = req.sqlPool;
+    const db = req.query.db;
     const { filename } = req.params;
     const options = {
-        root: path.join(__dirname, '../images'),
+        root: path.join(__dirname, `../documents/${db}`),
     };
   
     res.sendFile(filename, options, (err) => {
@@ -88,9 +89,10 @@ orderRouter.get('/pdf/:filename', (req, res) => {
 
 orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) => {
     const pool = req.sqlPool;
+    const db = req.query.db;
 
     const pythonScript = path.join(__dirname, '../functions', 'readDocument.py');
-    const pdfFilePath = path.join(__dirname, '../', req.file.path);
+    const pdfFilePath = path.join(__dirname, `../`, req.file.path);
     const pythonProcess = spawn('python', [pythonScript, pdfFilePath]);
 
     let result = '';

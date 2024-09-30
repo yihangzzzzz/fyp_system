@@ -27,26 +27,62 @@ const transferRoute = express.Router();
 // GETTING ALL RECORDS
 transferRoute.get('/', async (req, res) => {
     const pool = req.sqlPool;
+    
     try {
-        const data = pool.query(`SELECT
-    t.transferID,
-    t.destination,
-    t.date,
-    t.recipient,
-    t.email,
-    t.status,
-    t.transferDocument,
-    t.type,
-    STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
-    FROM transfers t
-    JOIN transferItems ti
-    ON t.transferID = ti.transferID
-    GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type`);
-
-        // const data = pool.query(query);
-        data.then((res1) => {
-            return res.json(res1)
-        })
+        const result = {
+            outbound: await pool.query(`SELECT
+                t.transferID,
+                t.destination,
+                t.date,
+                t.recipient,
+                t.email,
+                t.status,
+                t.transferDocument,
+                t.type,
+                t.remarks,
+                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+                FROM transfers t
+                JOIN transferItems ti
+                ON t.transferID = ti.transferID
+                WHERE t.type IN ('Transfer Out', 'Loan')
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`),
+            inbound: await pool.query(`SELECT
+                t.transferID,
+                t.destination,
+                t.date,
+                t.recipient,
+                t.email,
+                t.status,
+                t.transferDocument,
+                t.type,
+                t.remarks,
+                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+                FROM transfers t
+                JOIN transferItems ti
+                ON t.transferID = ti.transferID
+                WHERE t.type = 'Transfer In'
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`)
+        }
+    //     const result = pool.query(`SELECT
+    // t.transferID,
+    // t.destination,
+    // t.date,
+    // t.recipient,
+    // t.email,
+    // t.status,
+    // t.transferDocument,
+    // t.type,
+    // t.remarks,
+    // STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+    // FROM transfers t
+    // JOIN transferItems ti
+    // ON t.transferID = ti.transferID
+    // GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`);
+        // console.log(result);
+        // result.then((res1) => {
+        //     return res.json(res1)
+        // })
+        return res.json(result)
 
     } catch (error) {
         console.log("error is " + error.message);
@@ -73,9 +109,10 @@ transferRoute.get('/labs', async (req, res) => {
 
 transferRoute.get('/pdf/:filename', (req, res) => {
     const pool = req.sqlPool;
+    const db = req.query.db;
     const { filename } = req.params;
     const options = {
-        root: path.join(__dirname, '../images'),
+        root: path.join(__dirname, `../documents/${db}`),
     };
   
     res.sendFile(filename, options, (err) => {
@@ -94,7 +131,7 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
     const {info, items} = req.body;
     console.log("type is",info.type);
-    let status = info.type === "Transfer" ? "Pending" : "On Loan";
+    let status = info.type === "Loan" ? "On Loan" : "Pending";
 
     if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
         status = "Acknowledged";
@@ -102,12 +139,12 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
     try {
         
-        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status) 
-        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}')
+        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status, remarks) 
+        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${info.remarks}')
         SELECT SCOPE_IDENTITY() AS transferID`)
         
         const transferID = result.recordset[0].transferID;
-        const transferDocument = await sendTransferEmail(info, items, transferID);
+        const transferDocument = await sendTransferEmail(info, items, transferID, info.db);
 
         pool.query(`UPDATE transfers
             SET transferDocument =  '${transferDocument}'
@@ -238,6 +275,7 @@ transferRoute.put('/updateinventory', async (req, res) => {
 transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
 
     const pool = req.sqlPool;
+    const db = req.query.db;
     const { transferID } = req.params;
     
     try {
@@ -249,7 +287,7 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
         `)
 
         if (status.recordset[0].status === "Pending") {
-            updateTransferDocument(transferID);
+            updateTransferDocument(transferID, db);
 
             const result = await pool.query(`
                 SELECT *

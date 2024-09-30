@@ -1,6 +1,9 @@
 const PORT = 3500;
 const sql = require('mssql');
 const { ConnectionPool } = require('mssql')
+// const server = 'DESKTOP-VN9PRPU\\SQLEXPRESS';
+const server = 'YIHANG\\SQLEXPRESS';
+// const server = 'MDPADMIN\\SQLEXPRESS';
 // const mongodbURL = 
 //     'mongodb+srv://fypinventorysystem:Blackpink12%40@fyp-inventory-system.4oowh.mongodb.net/inventory_management?retryWrites=true&w=majority&appName=fyp-inventory-system';
 // const mssqlURL = 
@@ -8,7 +11,7 @@ const { ConnectionPool } = require('mssql')
 const sqlConfigSW = {
     user: 'testuser',
     password: '1234',
-    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS',
+    server: server,
     database: 'software_inventory',
     driver: 'msnodesqlv8',
     options: { trustedConnection: false, encrypt: false },
@@ -18,7 +21,7 @@ const sqlConfigSW = {
   const sqlConfigHW = {
     user: 'testuser',
     password: '1234',
-    server: 'DESKTOP-VN9PRPU\\SQLEXPRESS',
+    server: server,
     database: 'hardware_inventory',
     driver: 'msnodesqlv8',
     options: { trustedConnection: false, encrypt: false },

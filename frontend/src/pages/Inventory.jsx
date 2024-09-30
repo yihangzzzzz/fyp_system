@@ -24,12 +24,12 @@ const Inventory = () => {
     const location = useLocation();
     const db = new URLSearchParams(location.search).get('db');
     const [inventory, setInventory] = useState([]);
-    // const [loading, setLoading] = useState(false);
-    // const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); 
     const [sortQuery, setSortQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
-    const [editingOrderId, setEditingOrderId] = useState('');
+    const [editingOrderId, setEditingOrderId] = useState(null);
     const [filterQuery, setFilterQuery] = useState({});
     
     
@@ -44,21 +44,24 @@ const Inventory = () => {
     //     refreshData();
     //   }, []);
 
-    const fetchInventory = async () => {
+    const fetchInventory = async (sortAtt) => {
+        console.log("fetch got run")
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`, {params: {sortBy: sortAtt}})
         // .get(`http://localhost:3000/inventory`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data.recordset);
+            setLoading(false);
         })
         .catch((error) => {
             console.log("le error is " + error);
+            setLoading(false);
         });
     }
 
     // const handleAddItem = (newItem) => {
     //   axios
-    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be`, newItem)
+    //     .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory`, newItem)
     //     .then(() => {
     //         setLoading(false);
             
@@ -72,15 +75,15 @@ const Inventory = () => {
 
     // };
 
-    // const handleSearch = (e) => {
-    //     setSearchQuery(e.target.value); // Update search query as the user types
-    // };
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value); // Update search query as the user types
+    };
 
-    // const handleReset = () => {
-    //     setSearchQuery("");
-    //     setSortQuery('');
-    //     fetchInventory();
-    // }
+    const handleReset = () => {
+        setSearchQuery("");
+        setSortQuery('');
+        fetchInventory();
+    }
 
     const handleSetFilters = (field, value) => {
         setFilterQuery((prevFilters) => ({
@@ -111,9 +114,9 @@ const Inventory = () => {
             // Add more sort options as needed
         });
 
-    // const printTableToPDF = () => {
-    //     DownloadTable('table-to-print', 'Inventory Report');
-    // }
+    const printTableToPDF = () => {
+        DownloadTable('table-to-print', 'Inventory Report');
+    }
 
     return (
 
@@ -121,6 +124,14 @@ const Inventory = () => {
             <Navbar />
             <div className='topbar'>
                 <h1 className="title">Inventory</h1>
+                {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
+                {/* <input 
+                    type="text"
+                    placeholder="Search items..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className='searchBar'
+                /> */}
                 <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
@@ -130,90 +141,94 @@ const Inventory = () => {
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                 <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
             </div>
-            
-
-
-
-
-            
-            <div className="inventory_table">
-                <div className='filter-table'>
-                <div className="filter-header">                    
-                    <h4>Filters</h4>
-                    <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
-                </div>
-                <div className='inputs'>
-                <div className="input-field">
-                    <h5>Item</h5>
-                    <input
-                    type="text"
-                    name='itemName'
-                    value={filterQuery.itemName || ''}
-                    onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
-                    // onChange={(e) => setPoDocument(e.target.files[0])}
-                    // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                    style={{ outline: '2px solid black' }}
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <div className="inventory_table">
+                    <div className='filter-table'>
+                    <div className="filter-header">                    
+                        <h4>Filters</h4>
+                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                    </div>
+                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    <div className='inputs'>
+                    <div className="input-field">
+                      <h5>Item</h5>
+                      <input
+                        type="text"
+                        name='itemName'
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                   <div className="input-field">
+                      <h5>Low Stock</h5>
+                      <input
+                        type="checkbox"
+                        name="lowStock" // Updated the name for clarity
+                        checked={filterQuery.lowStock || false} // Set checked state based on filterQuery
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.checked)} // Handle checkbox state
+                        style={{ outline: '2px solid black' }}
                     />
+                   </div>
+                    </div>
+                    
+
+                  </div>
+                  <table className='inventory-table' id='table-to-print'>
+                      <thead>
+                          <tr>
+                              <th style={{ fontWeight: 'bold' }}>Picture</th>
+                              <th style={{ fontWeight: 'bold' }}>Item Name</th>
+                              <th style={{ fontWeight: 'bold' }}>Description</th>
+                              {/* <th style={{ fontWeight: 'bold' }}>Serial Number</th> */}
+                              <th style={{ fontWeight: 'bold' }}>Cabinet</th>
+                              <th style={{ fontWeight: 'bold' }}>Counter</th>
+                              <th style={{ fontWeight: 'bold' }}>Ordered</th>
+                              <th style={{ fontWeight: 'bold' }}>Lost/Damaged</th>
+                              <th style={{ fontWeight: 'bold' }}>Remarks</th>
+                              <th style={{ fontWeight: 'bold' }}>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {filteredInventory.map((item, index) => (
+                              <tr key={index}>
+                              <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}/` + item.picture} /></td>
+                              <td>{item.itemName}</td>
+                              {/* <td>{item.serialNumber}</td> */}
+                              <td>{item.description}</td>
+                              {item.cabinet < item.lowStock ? (
+                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.cabinet}</td>
+                              ) : (
+                                <td>{item.cabinet}</td>
+                              )}
+                              <td>{item.counter}</td>
+                              <td>{item.ordered}</td>
+                              <td>{item.lostDamaged}</td>
+                              <td>{item.remarks}</td>
+                              <td>
+                              {editingOrderId === index ? ( <h1>pls</h1>
+                                ) : (
+                                    <Actions
+                                    toDelete={item.itemName}
+                                    toEdit={item.itemName}
+                                    mode={'inventory'}/>
+                                    // <Actions/>
+                                )}
+                              </td>
+                              </tr>
+                          ))}
+                      </tbody>
+                  </table>
                 </div>
-                <div className="input-field">
-                    <h5>Low Stock</h5>
-                    <input
-                    type="checkbox"
-                    name="lowStock" // Updated the name for clarity
-                    checked={filterQuery.lowStock || false} // Set checked state based on filterQuery
-                    onChange={(e) => handleSetFilters(e.target.name, e.target.checked)} // Handle checkbox state
-                    style={{ outline: '2px solid black' }}
-                />
-                </div>
-                </div>
-                </div>
-                <table className='inventory-table' id='table-to-print'>
-                    <thead>
-                        <tr>
-                            <th style={{ fontWeight: 'bold' }}>Picture</th>
-                            <th style={{ fontWeight: 'bold' }}>Item Name</th>
-                            <th style={{ fontWeight: 'bold' }}>Description</th>
-                            <th style={{ fontWeight: 'bold' }}>Cabinet</th>
-                            <th style={{ fontWeight: 'bold' }}>Counter</th>
-                            <th style={{ fontWeight: 'bold' }}>Ordered</th>
-                            <th style={{ fontWeight: 'bold' }}>Lost/Damaged</th>
-                            <th style={{ fontWeight: 'bold' }}>Remarks</th>
-                            <th style={{ fontWeight: 'bold' }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredInventory.map((item, index) => (
-                            <tr key={index}>
-                            <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/` + item.picture + `?db=${db}`} /></td>
-                            <td>{item.itemName}</td>
-                            <td>{item.description}</td>
-                            {item.cabinet < item.lowStock ? (
-                            <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.cabinet}</td>
-                            ) : (
-                            <td>{item.cabinet}</td>
-                            )}
-                            <td>{item.counter}</td>
-                            <td>{item.ordered}</td>
-                            <td>{item.lostDamaged}</td>
-                            <td>{item.remarks}</td>
-                            <td>
-                            {editingOrderId === index ? ( <h1>pls</h1>
-                            ) : (
-                                <Actions
-                                toDelete={item.itemName}
-                                toEdit={item.itemName}
-                                mode={'inventory'}/>
-                            )}
-                            </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            )}
       </div>
 
-    )
+    );
 }
 
 // module.exports = Inventory
-export default Inventory
+export default Inventory;

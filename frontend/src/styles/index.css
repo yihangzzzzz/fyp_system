@@ -486,3 +486,18 @@ th {
 .print-button {
   color: white;
 }
+
+.transfer-tables-mode {
+  display: flex;
+  align-items: left;
+  gap: 0px;
+  margin: 0px;
+  margin-bottom: 0px;
+}
+
+.transfer-main-table {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  margin: 0px;
+  gap: 0px; /* Remove any margin around the container */
+}

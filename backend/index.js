@@ -46,7 +46,7 @@ app.use('/login_be', loginRouter);
 app.use('/inventory_be', inventoryRouter);
 app.use('/transfers_be', transferRouter);
 app.use('/orders_be', orderRouter);
-app.use('/images', express.static('images'))
+app.use('/documents', express.static('documents'))
 
 
 app.listen(process.env.PORT || PORT, () => {

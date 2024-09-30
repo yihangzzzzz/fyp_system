@@ -36,6 +36,7 @@ import NewDelivery from './pages/NewDelivery.jsx';
 import ProtectedPage from './pages/ProtectedPage.jsx';
 import Users from './pages/Users.jsx';
 import MainPage from './pages/MainPage.jsx';
+import EmailTemplates from './pages/EmailTemplates.jsx';
 
 
 
@@ -68,7 +69,8 @@ const App = () => {
         <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />
         <Route path = '/transfers/accepttransfer/:transferID' element = {<AcceptTransfer/>} />
 
-        <Route path = '/users' element = {<Users/>} />
+        <Route path = '/settings/usermanagement' element = {<Users/>} />
+        <Route path = '/settings/emailtemplates' element = {<EmailTemplates/>} />
 
         
       </Routes>

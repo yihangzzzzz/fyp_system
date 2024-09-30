@@ -113,4 +113,28 @@ loginRouter.get('/emailtemplates', async (req, res) => {
     }
 })
 
+loginRouter.put('/editemailtemplates', async (req, res) => {
+    const pool = req.sqlPool;
+
+    const transferTemplate = req.body.transferTemplate;
+    const financeTemplate = req.body.financeTemplate;
+
+    try {
+        pool.query(`
+            UPDATE emailTemplates
+            SET subject = '${transferTemplate.subject}',
+                message = '${transferTemplate.message}'
+            WHERE templateName = 'transfer'
+        `);
+        pool.query(`
+            UPDATE emailTemplates
+            SET subject = '${financeTemplate.subject}',
+                message = '${financeTemplate.message}',
+                email = '${financeTemplate.email}'
+            WHERE templateName = 'finance'
+        `);
+    } catch (err) {
+        console.error('Error updating email templates: ', err)
+    }
+})
 module.exports = loginRouter;

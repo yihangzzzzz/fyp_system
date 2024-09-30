@@ -21,6 +21,8 @@ const Transfers = () => {
   const db = new URLSearchParams(location.search).get('db');
     const navigate = useNavigate(); 
     const [inventory, setInventory] = useState([]);
+    const [inventoryInbound, setInventoryInbound] = useState([]);
+    const [inventoryOutbound, setInventoryOutbound] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
@@ -29,6 +31,7 @@ const Transfers = () => {
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
     const [filterQuery, setFilterQuery] = useState({});
+    const [tableMode, setTableMode] = useState('Outbound');
     
     
     useEffect(() => {
@@ -46,8 +49,10 @@ const Transfers = () => {
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
-            setInventory(res.data.recordset);
-            setLoading(false);
+          setInventoryInbound(res.data.inbound.recordset);
+          setInventoryOutbound(res.data.outbound.recordset);
+          setInventory(res.data.outbound.recordset)
+          setLoading(false);
         })
         .catch((error) => {
             console.log("le error is " + error);
@@ -164,7 +169,8 @@ const Transfers = () => {
                       style={{ outline: '2px solid black' }}
                     >
                       <option value="">Select Type</option> {/* Default option */}
-                      <option value="Transfer">Transfer</option>
+                      <option value="Transfer Out">Transfer Out</option>
+                      <option value="Transfer In">Transfer In</option>
                       <option value="Loan">Loan</option>
                     </select>
                   </div>
@@ -235,6 +241,12 @@ const Transfers = () => {
                     
 
                   </div>
+                  <div className='transfer-main-table'>
+                  <div className='transfer-tables-mode'>
+                  <button className='acknowledgeButton' onClick={() => {setInventory(inventoryInbound)}}>Inbound</button>
+                  <button className='acknowledgeButton' onClick={() => {setInventory(inventoryOutbound)}}>Outbound</button>
+                  <button className='acknowledgeButton' onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound])}}>All</button>
+                  </div>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr>
@@ -248,6 +260,7 @@ const Transfers = () => {
                               {/* <th style={{ fontWeight: 'bold' }}>Description</th> */}
                               <th style={{ fontWeight: 'bold' }}>Items</th>
                               <th style={{ fontWeight: 'bold' }}>Quantity</th>
+                              <th style={{ fontWeight: 'bold' }}>Remarks</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -297,26 +310,31 @@ const Transfers = () => {
                                                                     : 'black', // default color
                                                               }}
                                                             >
-                                                            {item.type === 'Transfer' ? (
+                                                            {item.type === 'Loan' ? (
+                                                              <>
+                                                                <option style={{ color: 'black' }} value="On Loan">On Loan</option>
+                                                                <option style={{ color: 'black' }} value="Returned">Returned</option>
+                                                              </>
+                                                            ) : (
                                                               <>
                                                                 <option style={{ color: 'black' }} value="Pending">Pending</option>
                                                                 <option style={{ color: 'black' }} value="Acknowledged">Acknowledged</option>
                                                                 <option style={{ color: 'black' }} value="Cancelled">Cancelled</option>
-                                                              </>
-                                                            ) : (
-                                                              <>
-                                                              <option style={{ color: 'black' }} value="On Loan">On Loan</option>
-                                                              <option style={{ color: 'black' }} value="Returned">Returned</option>
                                                             </>
                                                             )}
 
                                                             </select>
                                                         </td>
+ 
                                                     </>
+                                                    
                                                 )}
                                                 {/* Split itemDetail to separate itemName and quantity */}
                                                 <td>{itemDetail.split(':')[0]}</td>
                                                 <td>{itemDetail.split(':')[1]}</td>
+                                                {idx === 0 && (
+                                                  <td rowSpan={rowSpan}>{item.remarks}</td>
+                                                )}
                                                 
                                             </tr>
                                         ))}
@@ -336,6 +354,7 @@ const Transfers = () => {
                           })}
                       </tbody>
                   </table>
+                  </div>
                 </div>
             )}
         <Confirmation

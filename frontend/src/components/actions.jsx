@@ -35,7 +35,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
         console.log("Error deleting item: " + error);
       });
       setIsConfirmationOpen(false);
-      navigate(`/inventory`);
+      navigate(`/inventory?db=${db}`);
     }
 
     else if (mode === 'user') {
@@ -45,7 +45,7 @@ const Actions = ({toDelete, toEdit, mode}) => {
         console.log("Error deleting item: " + error);
       });
       setIsConfirmationOpen(false);
-      navigate(`/users`);
+      navigate(`/users?db=${db}`);
     }
       
 
