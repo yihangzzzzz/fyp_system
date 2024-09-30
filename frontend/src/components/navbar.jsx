@@ -28,45 +28,59 @@ const Navbar = () => {
     return (
       <div className='navbar'>
             <img className='dropdown' src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/ntu_ccds_logo.png`} alt="Logo" style={{ height: '75px', marginRight: '10px' }} />
-            <div className="dropdown">
-                <FaHome />
-              <Link to={`/home?db=${db}`}style={{fontSize: '16px', padding: '10px'}}>Home</Link>
+            
+            <div className='navbar-item'>
+              <FaHome />
+              <div className="dropdown">
+                <Link to={`/home?db=${db}`}style={{fontSize: '16px', padding: '10px'}}>Home</Link>
+              </div>
             </div>
-            <div className="dropdown">
-                <MdInventory2/>
+
+            <div className='navbar-item'>
+              <MdInventory2/>
+              <div className="dropdown">
                 <button className="dropbtn">Inventory</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/inventory?db=${db}`}>Items</Link></li>
                     <li><Link to={`/inventory/lowstock?db=${db}`}>Low Stock</Link></li>
                     <li><Link to={`/inventory/newitem?db=${db}`}>New Item</Link></li>
                 </ul>
+              </div>
             </div>
 
-            <div className="dropdown">
-                <FaTruck/>
+            <div className='navbar-item'>
+              <FaTruck/>
+              <div className="dropdown">
                 <button className="dropbtn">Orders</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/orders?db=${db}`}>Current Orders</Link></li>
                     <li><Link to={`/orders/neworder?db=${db}`}>New Order</Link></li>
                 </ul>
+              </div>
             </div>
 
-            <div className="dropdown">
-                <RiFileTransferFill/>
+            <div className='navbar-item'>
+              <RiFileTransferFill/>
+              <div className="dropdown">
                 <button className="dropbtn">Transfers</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/transfers?db=${db}`}>All Transfers</Link></li>
                     <li><Link to={`/transfers/newtransfer?db=${db}`}>New Transfer</Link></li>
                 </ul>
+              </div>
             </div>
-            <div className="dropdown">
-                <IoIosSettings/>
+
+            <div className='navbar-item'>
+              <IoIosSettings/>
+              <div className="dropdown">
                 <button className="dropbtn">Settings</button>
                 <ul className="dropdown-content">
                     <li><Link to={`/settings/usermanagement?db=${db}`}>User Management</Link></li>
                     <li><Link to={`/settings/emailtemplates?db=${db}`}>Email Templates</Link></li>
                 </ul>
+              </div>
             </div>
+            
         </div>
     );
 };

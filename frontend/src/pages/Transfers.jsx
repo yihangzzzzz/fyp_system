@@ -14,7 +14,9 @@ import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
 import { DownloadTable } from '../functions/downloadTable.jsx';
 import { useLocation } from 'react-router-dom';
-
+import { FaSearch } from "react-icons/fa";
+import { FaFilter } from "react-icons/fa6";
+import { FaSortAmountDown } from "react-icons/fa";
 
 const Transfers = () => {
   const location = useLocation();
@@ -32,6 +34,9 @@ const Transfers = () => {
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
     const [filterQuery, setFilterQuery] = useState({});
     const [tableMode, setTableMode] = useState('Outbound');
+    const [showFilters, setShowFilters] = useState(false);
+    const [selectedMode, setSelectedMode] = useState('Outbound');
+    const [showSort, setShowSort] = useState(false);
     
     
     useEffect(() => {
@@ -117,6 +122,16 @@ const Transfers = () => {
       <Navbar />
       <div className='topbar'>
                 <h1 className="title">Transfer Records</h1>
+                <div className="search-container">
+                    <input
+                        type="text"
+                        name='itemName'
+                        className="search-input"
+                        placeholder="Search for item"
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}/>
+                    <FaSearch className="search-icon" />
+                </div>
                 {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
                 {/* <input 
                     type="text"
@@ -125,13 +140,6 @@ const Transfers = () => {
                     onChange={handleSearch}
                     className='searchBar'
                 /> */}
-                <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
-                    <option value="">Sort by...</option>
-                    <option value="name">Item Name</option>
-                    <option value="quantity">Quantity</option>
-                    <option value="date">Date</option>
-                    <option value="destination">Destination</option>
-                </select>
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                 <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Transfer Records Report')}}>Print Table as PDF</button>
         </div>
@@ -140,14 +148,27 @@ const Transfers = () => {
             ) : (
                 <div className="inventory_table">
                 <div className='filter-table'>
-                    <div className="filter-header">                    
+                  <div className="filter-header">                    
+                      <div className='filter-child-element' onClick={() => {setShowFilters(!showFilters);setShowSort(false)}} style={{ cursor: 'pointer' }}>
                         <h4>Filters</h4>
-                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
-                    </div>
+                        <FaFilter />
+                      </div>
+                      <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                        <h4>Sort</h4>
+                        <FaSortAmountDown />
+                      </div>
+                      <div className='filter-child-element'>
+                        <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
+                      </div>
+
+                      {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
+                  </div>
 
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    {showFilters && (
                     <div className='inputs'>
-                    <div className="input-field">
+                    {/* <button title='Reset' className='addButton' onClick={() => {setFilterQuery({})}}>Clear Filters</button> */}
+                    {/* <div className="input-field">
                       <h5>Item</h5>
                       <input
                         type="text"
@@ -158,7 +179,7 @@ const Transfers = () => {
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
                         style={{ outline: '2px solid black' }}
                       />
-                   </div>
+                   </div> */}
                    <div className="input-field">
                     <h5>Type</h5>
                     <select
@@ -166,7 +187,7 @@ const Transfers = () => {
                       value={filterQuery.type|| ''}
                       onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                       // onChange={(e) => setPoDocument(e.target.value)}
-                      style={{ outline: '2px solid black' }}
+                      // style={{ outline: '2px solid black' }}
                     >
                       <option value="">Select Type</option> {/* Default option */}
                       <option value="Transfer Out">Transfer Out</option>
@@ -183,12 +204,13 @@ const Transfers = () => {
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                         // onChange={(e) => setPoDocument(e.target.files[0])}
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                       />
                    </div>
                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
                    <div className="input-field">
                       <h5>Transfer Date</h5>
+                      <div className='date-range-inputs'>
                       <input
                         type="date"
                         name='transferStartDate'
@@ -196,17 +218,19 @@ const Transfers = () => {
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                         // onChange={(e) => setPoDocument(e.target.files[0])}
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                       />
-                                            <input
+                      <h5>to</h5>
+                        <input
                         type="date"
                         name='transferEndDate'
                         value={filterQuery.transferEndDate || ''}
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                         // onChange={(e) => setPoDocument(e.target.files[0])}
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                       />
+                      </div>
                    </div>
                    <div className="input-field">
                       <h5>Recipient</h5>
@@ -217,7 +241,7 @@ const Transfers = () => {
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                         // onChange={(e) => setPoDocument(e.target.files[0])}
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                       />
                    </div>
                    <div className="input-field">
@@ -227,7 +251,7 @@ const Transfers = () => {
                       value={filterQuery.status|| ''}
                       onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                       // onChange={(e) => setPoDocument(e.target.value)}
-                      style={{ outline: '2px solid black' }}
+                      // style={{ outline: '2px solid black' }}
                     >
                       <option value="">Select Status</option> {/* Default option */}
                       <option value="Pending">Pending</option>
@@ -238,32 +262,46 @@ const Transfers = () => {
                     </select>
                   </div>
                     </div>
+                    )}
+                    {showSort && (
+                      <div className='inputs'>
+                          <div className='input-field'>
+                            <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
+                                <option value="">Sort by...</option>
+                                <option value="name">Item Name</option>
+                                <option value="quantity">Quantity</option>
+                                <option value="date">Date</option>
+                                <option value="destination">Destination</option>
+                            </select>
+                          </div>
+                      </div>
+                    )}
                     
 
                   </div>
                   <div className='transfer-main-table'>
                   <div className='transfer-tables-mode'>
-                  <button className='acknowledgeButton' onClick={() => {setInventory(inventoryInbound)}}>Inbound</button>
-                  <button className='acknowledgeButton' onClick={() => {setInventory(inventoryOutbound)}}>Outbound</button>
-                  <button className='acknowledgeButton' onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound])}}>All</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Inbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryInbound);setSelectedMode('Inbound');}}>Inbound</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Outbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryOutbound);setSelectedMode('Outbound');}}>Outbound</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound]);setSelectedMode('All');}}>All</button>
                   </div>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
-                          <tr>
-                              {/* <th style={{ fontWeight: 'bold' }}>Type</th> */}
-                              <th style={{ fontWeight: 'bold' }}>Destination</th>
-                              <th style={{ fontWeight: 'bold' }}>Date</th>
-                              <th style={{ fontWeight: 'bold' }}>Recipient</th>
-                              <th style={{ fontWeight: 'bold' }}>Email</th>
-                              <th style={{ fontWeight: 'bold' }}>Transfer Document</th>
-                              <th style={{ fontWeight: 'bold' }}>Status</th>
-                              {/* <th style={{ fontWeight: 'bold' }}>Description</th> */}
-                              <th style={{ fontWeight: 'bold' }}>Items</th>
-                              <th style={{ fontWeight: 'bold' }}>Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Remarks</th>
+                          <tr className='table-header-row'>
+                              {/* <th className='table-header-title'>Type</th> */}
+                              <th className='table-header-title'>Destination</th>
+                              <th className='table-header-title'>Date</th>
+                              <th className='table-header-title'>Recipient</th>
+                              <th className='table-header-title'>Email</th>
+                              <th className='table-header-title'>Transfer Document</th>
+                              <th className='table-header-title'>Status</th>
+                              {/* <th className='table-header-title'>Description</th> */}
+                              <th className='table-header-title'>Items</th>
+                              <th className='table-header-title'>Quantity</th>
+                              <th className='table-header-title'>Remarks</th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => {
 
                                 const itemsArray = item.items.split(', ');

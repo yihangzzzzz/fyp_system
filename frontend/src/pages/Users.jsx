@@ -52,12 +52,12 @@ const Users = () => {
         	    <table className='inventory-table'>
                     <thead>
                         <tr>
-                            <th style={{ fontWeight: 'bold' }}>Username</th> 
-                            <th style={{ fontWeight: 'bold' }}>Password</th>
-                            <th style={{ fontWeight: 'bold' }}>Actions</th>
+                            <th className='table-header-title' style={{ fontWeight: 'bold' }}>Username</th> 
+                            <th className='table-header-title' style={{ fontWeight: 'bold' }}>Password</th>
+                            <th className='table-header-title' style={{ fontWeight: 'bold' }}>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='inventory-table-body'>
                         {users.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.username}</td>

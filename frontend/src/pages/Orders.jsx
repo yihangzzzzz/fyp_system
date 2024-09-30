@@ -20,6 +20,9 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import FilterModal from '../components/filterModal.jsx';
 import { DownloadTable } from '../functions/downloadTable.jsx';
 import { useLocation } from 'react-router-dom';
+import { FaSearch } from "react-icons/fa";
+import { FaFilter } from "react-icons/fa6";
+import { FaSortAmountDown } from "react-icons/fa";
 
 
 
@@ -41,6 +44,9 @@ const Orders = () => {
     const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
     const [selectedRows, setSelectedRows] = useState([]); // State to track selected rows
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
+    const [showSort, setShowSort] = useState(false);
+    
 
     useEffect(() => {
         fetchInventory();
@@ -169,20 +175,16 @@ const Orders = () => {
       <Navbar />
       <div className='topbar'>
                 <h1 className="title">Order Records</h1>
-                {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
-                {/* <input 
-                    type="text"
-                    placeholder="Search items..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className='searchBar'
-                /> */}
-                <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
-                    <option value="">Sort by...</option>
-                    <option value="name">Item Name</option>
-                    <option value="po">PO Date</option>
-                    <option value="do">DO Date</option>
-                </select>
+                <div className="search-container">
+                    <input
+                        type="text"
+                        name='itemName'
+                        className="search-input"
+                        placeholder="Search for item"
+                        value={filterQuery.itemName || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}/>
+                    <FaSearch className="search-icon" />
+                </div>
                 {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                 <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'PO & DO Records Report')}}>Print Table as PDF</button>
             </div>
@@ -192,12 +194,25 @@ const Orders = () => {
                 <div className="inventory_table">
                   <div className='filter-table'>
                     <div className="filter-header">                    
-                        <h4>Filters</h4>
-                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                        <div className='filter-child-element' onClick={() => {setShowFilters(!showFilters);setShowSort(false)}} style={{ cursor: 'pointer' }}>
+                          <h4>Filters</h4>
+                          <FaFilter />
+                        </div>
+                        <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                          <h4>Sort</h4>
+                          <FaSortAmountDown />
+                        </div>
+                        <div className='filter-child-element'>
+                          <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
+                        </div>
+                        {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    
+                    {showFilters && (
                     <div className='inputs'>
-                    <div className="input-field">
+                    {/* <button title='Reset' className='addButton' onClick={() => {setFilterQuery({})}}>Clear Filters</button> */}
+                    {/* <div className="input-field">
                       <h5>Item</h5>
                       <input
                         type="text"
@@ -208,30 +223,32 @@ const Orders = () => {
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
                         style={{ outline: '2px solid black' }}
                       />
-                   </div>
+                   </div> */}
                    {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
                    <div className="input-field">
                       <h5>PO Date</h5>
-                      <input
-                        type="date"
-                        name='poStartDate'
-                        value={filterQuery.poStartDate || ''}
-                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
-                        // onChange={(e) => setPoDocument(e.target.files[0])}
-                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
-                      />
-                                            <input
-                        type="date"
-                        name='poEndDate'
-                        value={filterQuery.poEndDate || ''}
-                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
-                        // onChange={(e) => setPoDocument(e.target.files[0])}
-                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
-                      />
+                      <div className='date-range-inputs'>
+                        <input
+                          type="date"
+                          name='poStartDate'
+                          value={filterQuery.poStartDate || ''}
+                          onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                          // onChange={(e) => setPoDocument(e.target.files[0])}
+                          // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                          // style={{ outline: '2px solid black' }}
+                        />
+                        <h5>to</h5>
+                        <input
+                          type="date"
+                          name='poEndDate'
+                          value={filterQuery.poEndDate || ''}
+                          onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                          // onChange={(e) => setPoDocument(e.target.files[0])}
+                          // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                          // style={{ outline: '2px solid black' }}
+                        />
+                      </div>
                    </div>
-                   <div className='inputs'>
                    <div className="input-field">
                       <h5>PO Number</h5>
                       <input
@@ -241,7 +258,7 @@ const Orders = () => {
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                         // onChange={(e) => setPoDocument(e.target.files[0])}
                         // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                       />
                    </div>
                    <div className="input-field">
@@ -251,7 +268,7 @@ const Orders = () => {
                       value={filterQuery.status|| ''}
                       onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                       // onChange={(e) => setPoDocument(e.target.value)}
-                      style={{ outline: '2px solid black' }}
+                      // style={{ outline: '2px solid black' }}
                     >
                       <option value="">Select Status</option> {/* Default option */}
                       <option value="Pending">Pending</option>
@@ -266,17 +283,30 @@ const Orders = () => {
                       value={filterQuery.finance|| ''}
                       onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
                       // onChange={(e) => setPoDocument(e.target.value)}
-                      style={{ outline: '2px solid black' }}
+                      // style={{ outline: '2px solid black' }}
                     >
                       <option value="">Select Status</option> {/* Default option */}
                       <option value="Send">Send</option>
                       <option value="Sent">Sent</option>
                     </select>
                   </div>
-                    </div>
+
 
                    </div>
-
+                  )}
+                  {showSort && (
+                    <div className='inputs'>
+                      <div className='input-field'>
+                        <h5>Sort By</h5>
+                        <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
+                            <option value="">Select...</option>
+                            <option value="name">Item Name</option>
+                            <option value="po">PO Date</option>
+                            <option value="do">DO Date</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
                   </div>
                   {selectedRows.length > 0 && (
                     // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
@@ -286,18 +316,18 @@ const Orders = () => {
                   )}
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
-                          <tr>
-                              <th style={{ fontWeight: 'bold' }}></th>
-                              <th style={{ fontWeight: 'bold' }}>Name</th>
-                              <th style={{ fontWeight: 'bold' }}>PO Date</th>
-                              <th style={{ fontWeight: 'bold' }}>PO Number</th>
-                              <th style={{ fontWeight: 'bold' }}>Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Status</th>
-                              <th style={{ fontWeight: 'bold' }}>Remaining</th>
-                              <th style={{ fontWeight: 'bold' }}>Delivered</th>
-                              <th style={{ fontWeight: 'bold' }}>DO Date</th>
-                              <th style={{ fontWeight: 'bold' }}>DO Number</th>
-                              <th style={{ fontWeight: 'bold' }}>Finance Department</th>
+                          <tr className='table-header-row'>
+                              <th className='table-header-title'></th>
+                              <th className='table-header-title'>Name</th>
+                              <th className='table-header-title'>PO Date</th>
+                              <th className='table-header-title'>PO Number</th>
+                              <th className='table-header-title'>Quantity</th>
+                              <th className='table-header-title'>Status</th>
+                              <th className='table-header-title'>Remaining</th>
+                              <th className='table-header-title'>Delivered</th>
+                              <th className='table-header-title'>DO Date</th>
+                              <th className='table-header-title'>DO Number</th>
+                              <th className='table-header-title'>Finance Department</th>
                           </tr>
                       </thead>
                       <tbody className='inventory-table-body'>

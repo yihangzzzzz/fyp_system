@@ -19,6 +19,9 @@ import Confirmation from '../components/confirmation.jsx';
 import { DownloadTable } from '../functions/downloadTable.jsx';
 import { useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
+import { FaFilter } from "react-icons/fa6";
+import { FaSortAmountDown } from "react-icons/fa";
+
 
 
 const Inventory = () => {
@@ -32,6 +35,8 @@ const Inventory = () => {
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [filterQuery, setFilterQuery] = useState({});
+    const [showFilters, setShowFilters] = useState(false);
+    const [showSort, setShowSort] = useState(false);
     
     
     useEffect(() => {
@@ -146,12 +151,6 @@ const Inventory = () => {
                         onChange={(e) => handleSetFilters(e.target.name, e.target.value)}/>
                     <FaSearch className="search-icon" />
                 </div>
-                <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
-                    <option value="">Sort by...</option>
-                    <option value="name">Item Name</option>
-                    {/* <option value="serial">Serial Number</option> */}
-                    <option value="cabinet">Quantity</option>
-                </select>
                 <button className='print-button' onClick={() => {DownloadTable('table-to-print', 'Inventory Report')}}>Print Table as PDF</button>
             </div>
             {loading ? (
@@ -160,11 +159,23 @@ const Inventory = () => {
                 <div className="inventory_table">
                     <div className='filter-table'>
                     <div className="filter-header">                    
-                        <h4>Filters</h4>
-                        <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} />
+                        <div className='filter-child-element' onClick={() => {setShowFilters(!showFilters);setShowSort(false)}} style={{ cursor: 'pointer' }}>
+                          <h4>Filters</h4>
+                          <FaFilter />
+                        </div>
+                        <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                          <h4>Sort</h4>
+                          <FaSortAmountDown />
+                        </div>
+                        <div className='filter-child-element'>
+                          <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
+                        </div>
+                        {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
+                    {showFilters && (
                     <div className='inputs'>
+                    {/* <button title='Reset' className='addButton' onClick={() => {setFilterQuery({})}}>Clear Filters</button> */}
                     {/* <div className="input-field">
                       <h5>Item</h5>
                       <input
@@ -184,29 +195,42 @@ const Inventory = () => {
                         name="lowStock" // Updated the name for clarity
                         checked={filterQuery.lowStock || false} // Set checked state based on filterQuery
                         onChange={(e) => handleSetFilters(e.target.name, e.target.checked)} // Handle checkbox state
-                        style={{ outline: '2px solid black' }}
+                        // style={{ outline: '2px solid black' }}
                     />
                    </div>
                     </div>
+                    )}
+                    {showSort && (
+                        <div className='inputs'>
+                            <div className='input-field'>
+                                <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
+                                    <option value="">Select...</option>
+                                    <option value="name">Item Name</option>
+                                    {/* <option value="serial">Serial Number</option> */}
+                                    <option value="cabinet">Quantity</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
                     
 
                   </div>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
-                          <tr>
-                              <th style={{ fontWeight: 'bold' }}>Picture</th>
-                              <th style={{ fontWeight: 'bold' }}>Item Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Description</th>
-                              {/* <th style={{ fontWeight: 'bold' }}>Serial Number</th> */}
-                              <th style={{ fontWeight: 'bold' }}>Cabinet</th>
-                              <th style={{ fontWeight: 'bold' }}>Counter</th>
-                              <th style={{ fontWeight: 'bold' }}>Ordered</th>
-                              <th style={{ fontWeight: 'bold' }}>Lost/Damaged</th>
-                              <th style={{ fontWeight: 'bold' }}>Remarks</th>
-                              <th style={{ fontWeight: 'bold' }}>Actions</th>
+                          <tr className='table-header-row'>
+                              <th className='table-header-title'>Picture</th>
+                              <th className='table-header-title'>tem Name</th>
+                              <th className='table-header-title'>Description</th>
+                              {/* <th className='table-header-title'>Serial Number</th> */}
+                              <th className='table-header-title'>Cabinet</th>
+                              <th className='table-header-title'>Counter</th>
+                              <th className='table-header-title'>Ordered</th>
+                              <th className='table-header-title'>Lost/Damaged</th>
+                              <th className='table-header-title'>Remarks</th>
+                              <th className='table-header-title'>Actions</th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
                               <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}/` + item.picture} /></td>

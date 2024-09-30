@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import Navbar from '../components/navbar.jsx';
 import { useLocation } from 'react-router-dom';
+import { FaSearch } from "react-icons/fa";
 
 
 
@@ -62,13 +63,16 @@ const LowStock = () => {
             <Navbar />
             <div className='topbar'>
                 <h1 className="title">Set Low Stock Limit</h1>
-                <input 
-                    type="text"
-                    placeholder="Search items..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className='searchBar'
-                />
+                <div className="search-container">
+                    <input
+                        type="text"
+                        name='itemName'
+                        className="search-input"
+                        placeholder="Search for item"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <FaSearch className="search-icon" />
+                </div>
                 {/* <select onChange={(e) => {fetchInventory(e.target.value)}} className='sortDropdown'>
                     <option value="">Sort by...</option>
                     <option value="name">Item Name</option>
@@ -84,12 +88,12 @@ const LowStock = () => {
                   <table>
                       <thead>
                           <tr>
-                              <th style={{ fontWeight: 'bold' }}>Item Name</th>
-                              <th style={{ fontWeight: 'bold' }}>Currrent Quantity</th>
-                              <th style={{ fontWeight: 'bold' }}>Low Stock Limit</th>
+                              <th className='table-header-title' style={{ fontWeight: 'bold' }}>Item Name</th>
+                              <th className='table-header-title' style={{ fontWeight: 'bold' }}>Currrent Quantity</th>
+                              <th className='table-header-title' style={{ fontWeight: 'bold' }}>Low Stock Limit</th>
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
                               <td>{item.itemName}</td>
