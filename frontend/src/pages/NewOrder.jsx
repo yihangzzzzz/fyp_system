@@ -11,6 +11,7 @@ import Navbar from '../components/navbar.jsx';
 import axios from 'axios';
 import Confirmation from '../components/confirmation.jsx';
 import { useLocation } from 'react-router-dom';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const NewOrder = ({}) => {
@@ -22,6 +23,10 @@ const NewOrder = ({}) => {
     const [orderItems, setOrderItems] = useState([]);
     const [orderInfo, setOrderInfo] = useState({});
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [queryItems, setQueryItems] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const x = '';
   
     useEffect(() => {
@@ -42,6 +47,7 @@ const NewOrder = ({}) => {
 
     const handleAddPODocument = async (e) => {
       const pdftosend = {poDocument: e};
+      setIsUploading(true);
       try {
         await axios
         .post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/scanDocument?db=${db}`, 
@@ -54,20 +60,34 @@ const NewOrder = ({}) => {
         .then((res) => {
           setOrderInfo({poNumber: res.data.message.poNumber, poDate: res.data.message.poDate})
           setPoDocument(res.data.message.orderDocument)
-          // setOrderItems({})
-          if (res.data.message.items.length > 0) {
-            res.data.message.items.forEach(item => {
-              setOrderItems(prevOrderItems => [
-                ...prevOrderItems,
-                { name: item[0], date: new Date().toISOString().split('T')[0], quantity: item[1] }
-              ]);
-            });
-          }
-
+          handlePredictItems(res.data.message.items);
         })
       } catch (error) {
         console.error('Error updating items:', error);
       }
+    }
+
+    const handlePredictItems = async (queryItems) => {
+      try {
+        if (queryItems.length > 0) {
+          console.log("queryitems is", queryItems);
+          await axios
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/predictitems?db=${db}`, {queryItems})
+          .then((res) => {
+            if(res.data.message.predictedResult.length > 0) {
+              res.data.message.predictedResult.forEach(item => {
+                setOrderItems(prevOrderItems => [
+                  ...prevOrderItems,
+                  { name: item[0], date: new Date().toISOString().split('T')[0], quantity: item[1] }
+                ]);
+              });
+            }
+          })
+        }
+      } catch (error) {
+        console.error('Error updating items:', error);
+      }
+      setIsUploading(false);
     }
   
     const handleAddOrderInfo = (e, info) => {
@@ -78,6 +98,7 @@ const NewOrder = ({}) => {
     }
 
     const handleAddOrderItem = (event) => {
+      setIsSearchOpen(false);
       setOrderItems([...orderItems, { name: event.target.value, date: new Date().toISOString().split('T')[0], quantity: 0 }]);
     };
   
@@ -107,6 +128,15 @@ const NewOrder = ({}) => {
       
     };
 
+    const filteredItems = items
+    .filter((item) => {
+      return (
+        (!searchQuery || item.itemName.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    })
+
+  
+
 
     return (
       <div>
@@ -127,6 +157,12 @@ const NewOrder = ({}) => {
               onChange={(e) => handleAddPODocument(e.target.files[0])}
               style={{ outline: '2px solid black' }}
             />
+            {isUploading && (
+              <div style={{ marginLeft: '5px' }}>
+                <AiOutlineLoading3Quarters  className='loading-circle'/>
+                {/* You can replace this with a spinner component if you have one */}
+              </div>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <h5>PO Number</h5>
@@ -150,29 +186,51 @@ const NewOrder = ({}) => {
           </div>
         </div>
           {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
-          {items.length > 0 && (
             <div>
-              <select value={x} onChange={handleAddOrderItem}>
-                <option value="">Add Item...</option>
-                {items.map(item => (
-                  <option key={item.id} value={item.itemName}>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  placeholder="Search for item"
+                  onChange={(e) => {setSearchQuery(e.target.value)}}
+                  onClick={() => setIsSearchOpen(true)} // Open the dropdown when input is clicked
+                  className="add-item-search-input"
+                  onBlur={() => setIsSearchOpen(false)}
+                />
+                {isSearchOpen && filteredItems.length > 0 && (
+                  <div>
+                    {filteredItems.map(item => (
+                      <option onMouseDown={handleAddOrderItem} className='add-item-table-row' key={item.id} value={item.itemName} style={{cursor:'pointer'}}>
+                        {item.itemName}
+                      </option>
+                    ))}
+                  </div>
+                  // <select value={x} onChange={handleAddOrderItem}>
+
+                  // </select>
+                  )}
+
+
+              {/* <select className='add-item-button' value={x} onChange={handleAddOrderItem}>
+                <option className='add-item-table-row' value="">Add Item</option>
+                {filteredItems.map(item => (
+                  <option className='add-item-table-row' key={item.id} value={item.itemName}>
                     {item.itemName}
                   </option>
                 ))}
-              </select>
-              {/* <button onClick={handleAddToOrder}>Add to Order</button> */}
+              </select> */}
+
+
             </div>
-          )}
           {orderItems.length > 0 && (
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Date</th>
-                  <th>Quantity</th>
+                  <th className='table-header-title'>Item</th>
+                  <th className='table-header-title'>Date</th>
+                  <th className='table-header-title'>Quantity</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className='inventory-table-body'>
                 {orderItems.map((orderItem, index) => (
                   <tr key={index}>
                     <td>{orderItem.name}</td>

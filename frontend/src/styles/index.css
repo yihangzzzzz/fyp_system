@@ -529,6 +529,15 @@ th {
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Add some padding */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+.inputs.show {
+  max-height: 80px;
+  opacity: 1;
 }
 
 .input-field {
@@ -612,6 +621,16 @@ th {
   outline: none;
 }
 
+.add-item-search-input {
+  width: 15%;
+  padding: 10px 40px 10px 20px; /* Padding on right for icon space */
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  outline: none;
+}
+
 .search-input::placeholder {
   color: #999;
 }
@@ -624,4 +643,29 @@ th {
   color: #999;
   font-size: 20px;
   pointer-events: none; /* Makes the icon unclickable */
+}
+
+.loading-circle {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.add-item-button {
+  background-color: #1e2f97;
+  color: white;
+  border-radius: 5px;
+  /* padding: '10px'; */
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 5px;
+}
+
+.add-item-table-row {
+  background-color: white;
+  color: black;
 }

@@ -104,7 +104,7 @@ orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) 
     pythonProcess.on('close', (code) => {
         if (code === 0) {
             parsedResult = JSON.parse(result);
-        // console.log("result is ", result);
+        console.log("result is ", result);
         } else {
         //   res.status(500).send('Python script failed');
         console.log("failed sia sian");
@@ -116,6 +116,43 @@ orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) 
 
 
 });
+
+orderRouter.put('/predictitems', async (req, res) => {
+    const pool = req.sqlPool;
+    const data = await pool.query(`
+        SELECT itemName
+        FROM warehouse
+    `);
+    const dbItemNames = data.recordset.map(row => row.itemName)
+    const queryItemNames = req.body.queryItems.map(item => item[0]);;
+    const queryItemQuantities = req.body.queryItems.map(item => item[1]);;
+
+    const pythonScript = path.join(__dirname, '../functions', 'predictItem.py');
+    // console.log("db items is ", dbItemNames)
+    // console.log("query items is ", queryItemNames)
+    const pythonProcess = spawn('python', [pythonScript, dbItemNames, queryItemNames, queryItemQuantities]);
+
+    let result = '';
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+
+    let parsedResult = {};
+    pythonProcess.on('close', (code) => {
+        if (code === 0) {
+            parsedResult = JSON.parse(result);
+        console.log("predicted result is ", result);
+        } else {
+        //   res.status(500).send('Python script failed');
+        console.log("failed sia sian");
+        }
+        res.json({ message: parsedResult });
+      });
+
+
+
+    // return res.json(dbItemNames)
+})
 
 // ================================ POST ==================================================
 
