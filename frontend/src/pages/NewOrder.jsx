@@ -97,9 +97,9 @@ const NewOrder = ({}) => {
       }));
     }
 
-    const handleAddOrderItem = (event) => {
+    const handleAddOrderItem = (name) => {
       setIsSearchOpen(false);
-      setOrderItems([...orderItems, { name: event.target.value, date: new Date().toISOString().split('T')[0], quantity: 0 }]);
+      setOrderItems([...orderItems, { name: name, quantity: 0 }]);
     };
   
     const handleEditOrderItem = (index, field, value) => {
@@ -186,74 +186,65 @@ const NewOrder = ({}) => {
           </div>
         </div>
           {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
-            <div>
+            <div className='new-order-table'>
+
+              <div className='new-order-table-database'>
                 <input
-                  type="text"
-                  value={searchQuery}
-                  placeholder="Search for item"
-                  onChange={(e) => {setSearchQuery(e.target.value)}}
-                  onClick={() => setIsSearchOpen(true)} // Open the dropdown when input is clicked
-                  className="add-item-search-input"
-                  onBlur={() => setIsSearchOpen(false)}
-                />
-                {isSearchOpen && filteredItems.length > 0 && (
-                  <div>
-                    {filteredItems.map(item => (
-                      <option onMouseDown={handleAddOrderItem} className='add-item-table-row' key={item.id} value={item.itemName} style={{cursor:'pointer'}}>
-                        {item.itemName}
-                      </option>
-                    ))}
-                  </div>
-                  // <select value={x} onChange={handleAddOrderItem}>
+                    type="text"
+                    value={searchQuery}
+                    placeholder="Search for item"
+                    onChange={(e) => {setSearchQuery(e.target.value)}}
+                    onClick={() => setIsSearchOpen(true)} // Open the dropdown when input is clicked
+                    className="add-item-search-input"
+                    onBlur={() => setIsSearchOpen(false)}
+                  />
+                  {filteredItems.length > 0 && (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th className='table-header-title'>Item</th>
+                        </tr>
+                      </thead>
+                      <tbody className='inventory-table-body'>
+                        {filteredItems.map((item, index) => (
+                          <tr key={index}>
+                            <td onMouseDown={() => {handleAddOrderItem(item.itemName)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
+                              {item.itemName}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody >
+                    </table>
+                    )}
+              </div>
 
-                  // </select>
-                  )}
-
-
-              {/* <select className='add-item-button' value={x} onChange={handleAddOrderItem}>
-                <option className='add-item-table-row' value="">Add Item</option>
-                {filteredItems.map(item => (
-                  <option className='add-item-table-row' key={item.id} value={item.itemName}>
-                    {item.itemName}
-                  </option>
-                ))}
-              </select> */}
-
+            {orderItems.length > 0 && (
+              <table className='new-order-items'>
+                <thead>
+                  <tr>
+                    <th className='table-header-title'>Item</th>
+                    <th className='table-header-title'>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody className='inventory-table-body'>
+                  {orderItems.map((orderItem, index) => (
+                    <tr key={index}>
+                      <td>{orderItem.name}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={orderItem.quantity}
+                          onChange={(e) => handleEditOrderItem(index, 'quantity', Number(e.target.value))}
+                        />
+                      </td>
+                      <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
 
             </div>
-          {orderItems.length > 0 && (
-            <table>
-              <thead>
-                <tr>
-                  <th className='table-header-title'>Item</th>
-                  <th className='table-header-title'>Date</th>
-                  <th className='table-header-title'>Quantity</th>
-                </tr>
-              </thead>
-              <tbody className='inventory-table-body'>
-                {orderItems.map((orderItem, index) => (
-                  <tr key={index}>
-                    <td>{orderItem.name}</td>
-                    <td>
-                      <input
-                        type="date"
-                        value={orderItem.date}
-                        onChange={(e) => handleEditOrderItem(index, 'date', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={orderItem.quantity}
-                        onChange={(e) => handleEditOrderItem(index, 'quantity', Number(e.target.value))}
-                      />
-                    </td>
-                    <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
           {/* <button className="submit-button" type="submit" onClick={handleSubmitOrder}>Submit</button> */}
           <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
         </div>

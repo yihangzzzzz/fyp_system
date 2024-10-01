@@ -22,6 +22,7 @@ const NewTransfer = ({}) => {
     const [transferItems, setTransferItems] = useState([]);
     const [transferInfo, setTransferInfo] = useState({db: db, destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '', type:"Transfer Out", remarks:'' });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const x = '';
   
     useEffect(() => {
@@ -53,8 +54,8 @@ const NewTransfer = ({}) => {
       }
     };
   
-    const handleAddTransferItem = (event) => {
-      setTransferItems([...transferItems, { name: event.target.value, quantity: 0 }]);
+    const handleAddTransferItem = (name) => {
+      setTransferItems([...transferItems, { name: name, quantity: 0 }]);
     };
 
     const handleTransferInfoChange = (e, info) => {
@@ -97,22 +98,36 @@ const NewTransfer = ({}) => {
       }
 
       try {
+        let type;
         if (transferInfo.destination.includes('Counter')) {
-          await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/updateinventory?type=counter&?db=${db}`, transferItems)
+          type = 'counter'
         }
         else if (transferInfo.destination.includes('Cabinet')) {
-          await axios
-          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/updateinventory?type=cabinet&?db=${db}`, transferItems)
+          type = 'cabinet'
         }
+        else if (transferInfo.type === 'Unaccounted') {
+          type = 'unaccounted'
+        }
+        else {
+          return;
+        }
+
+        await axios
+          .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/updateinventory?type=${type}&?db=${db}`, transferItems)
         
       } catch (error) {
         console.error('Error updating items:', error);
       }
-
+      setIsConfirmationOpen(false);
       navigate(`/transfers?db=${db}`);
     }
-      
+    
+    const filteredItems = items
+    .filter((item) => {
+      return (
+        (!searchQuery || item.itemName.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    })
   
 
     return (
@@ -121,8 +136,8 @@ const NewTransfer = ({}) => {
         <div className='topbar'>
           <h1 className="title">New Transfer Form</h1>
         </div>
-        <div className='order_table'>
-          {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
+        
+        <div className='order_table'> 
           {labs.length > 0 && (
             <div className='transfer_info'>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -131,6 +146,7 @@ const NewTransfer = ({}) => {
                   <option value="Transfer Out">Transfer Out</option>
                   <option value="Transfer In">Transfer In</option>
                   <option value="Loan">Loan</option>
+                  <option value="Unaccounted">Unaccounted</option>
                 </select>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -185,44 +201,64 @@ const NewTransfer = ({}) => {
               )}
             </div>
           )}
-          {items.length > 0 && (
-            <div>
-              <select value={x} onChange={handleAddTransferItem}>
-                <option value="">Add Item...</option>
-                {items.map(item => (
-                  <option key={item.id} value={item.itemName}>
-                    {item.itemName}
-                  </option>
-                ))}
-              </select>
-              {/* <button onClick={handleAddToOrder}>Add to Order</button> */}
+
+
+          <div className='new-order-table'>
+
+            <div className='new-order-table-database'>
+              <input
+                type="text"
+                value={searchQuery}
+                placeholder="Search for item"
+                onChange={(e) => {setSearchQuery(e.target.value)}}
+                className="add-item-search-input"
+              />
+              {filteredItems.length > 0 && (
+                <table>
+                  <thead>
+                    <tr>
+                      <th className='table-header-title'>Item</th>
+                    </tr>
+                  </thead>
+                  <tbody className='inventory-table-body'>
+                    {filteredItems.map((item, index) => (
+                      <tr key={index}>
+                        <td onMouseDown={() => {handleAddTransferItem(item.itemName)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
+                          {item.itemName}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody >
+                </table>
+              )}
             </div>
-          )}
-          {transferItems.length > 0 && (
-            <table>
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Quantity to Transfer</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transferItems.map((orderItem, index) => (
-                  <tr key={index}>
-                    <td>{orderItem.name}</td>
-                    <td>
-                      <input
-                        type="number"
-                        value={orderItem.quantity}
-                        onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
-                      />
-                    </td>
-                    <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
+
+            {transferItems.length > 0 && (
+              <table className='new-order-items'>
+                <thead>
+                  <tr>
+                    <th className='table-header-title'>Item</th>
+                    <th className='table-header-title'>Quantity</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody className='inventory-table-body'>
+                  {transferItems.map((transferItem, index) => (
+                    <tr key={index}>
+                      <td>{transferItem.name}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={transferItem.quantity}
+                          onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
+                        />
+                      </td>
+                      <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
           <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
         </div>
         <Confirmation
@@ -233,6 +269,4 @@ const NewTransfer = ({}) => {
     );
 }
   
-  
-// module.exports = NewTransfer;
 export default NewTransfer;

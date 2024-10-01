@@ -131,16 +131,18 @@ def extract_PO_info(pdf_path):
                 # print(f"Text below 'DESCRIPTION' on page {page_number + 1}: {text_in_area}")
     items = list(zip(names, quantities))
     result['items'] = items
-    return          
+    return
+
            
 # Example usage
 if __name__ == "__main__":
     pdf_path = sys.argv[1]
     
     # script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
-    # pdf_path = os.path.join(script_dir, '..', 'documents', 'samplePO3.pdf') 
+    # pdf_path = os.path.join(script_dir, '..', 'documents', 'testing.pdf') 
 
-    # result = extract_order_no(pdf_path)
     extract_order_no(pdf_path)
     extract_PO_info(pdf_path)
     print(json.dumps(result))
+
+

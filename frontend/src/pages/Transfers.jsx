@@ -25,6 +25,7 @@ const Transfers = () => {
     const [inventory, setInventory] = useState([]);
     const [inventoryInbound, setInventoryInbound] = useState([]);
     const [inventoryOutbound, setInventoryOutbound] = useState([]);
+    const [inventoryUnaccounted, setInventoryAccounted] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
@@ -56,6 +57,7 @@ const Transfers = () => {
         .then((res) => {
           setInventoryInbound(res.data.inbound.recordset);
           setInventoryOutbound(res.data.outbound.recordset);
+          setInventoryAccounted(res.data.unaccounted.recordset)
           setInventory(res.data.outbound.recordset)
           setLoading(false);
         })
@@ -283,7 +285,8 @@ const Transfers = () => {
                   <div className='transfer-tables-mode'>
                   <button className={`transfer-table-mode-button ${selectedMode === 'Inbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryInbound);setSelectedMode('Inbound');}}>Inbound</button>
                   <button className={`transfer-table-mode-button ${selectedMode === 'Outbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryOutbound);setSelectedMode('Outbound');}}>Outbound</button>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound]);setSelectedMode('All');}}>All</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Unaccounted' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryUnaccounted);setSelectedMode('Unaccounted');}}>Unaccounted</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound, ...inventoryUnaccounted]);setSelectedMode('All');}}>All</button>
                   </div>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>

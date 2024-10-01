@@ -120,18 +120,18 @@ const NewDelivery = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Total Ordered</th>
-                  <th>Delivered</th>
-                  <th>Enter Quantity</th>
+                  <th className='table-header-title'>Item</th>
+                  <th className='table-header-title'>Total Ordered</th>
+                  <th className='table-header-title'>Remaining</th>
+                  <th className='table-header-title'>Enter Quantity</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className='inventory-table-body'>
                 {items.name.map((item, index) => (
                   <tr key={index}>
                     <td>{item.itemName}</td>
                     <td>{item.totalQuantity}</td>
-                    <td>{item.deliveredQuantity}</td>
+                    <td>{item.totalQuantity - item.deliveredQuantity}</td>
                     <td>
                       <input
                         type="number"

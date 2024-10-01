@@ -61,6 +61,22 @@ transferRoute.get('/', async (req, res) => {
                 JOIN transferItems ti
                 ON t.transferID = ti.transferID
                 WHERE t.type = 'Transfer In'
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`),
+            unaccounted: await pool.query(`SELECT
+                t.transferID,
+                t.destination,
+                t.date,
+                t.recipient,
+                t.email,
+                t.status,
+                t.transferDocument,
+                t.type,
+                t.remarks,
+                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+                FROM transfers t
+                JOIN transferItems ti
+                ON t.transferID = ti.transferID
+                WHERE t.type = 'Unaccounted'
                 GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`)
         }
     //     const result = pool.query(`SELECT
@@ -257,11 +273,20 @@ transferRoute.put('/updateinventory', async (req, res) => {
                         counter = counter - ${item.quantity}
                     WHERE itemName = '${item.name}'`);
             })
-
-            await pool.query(`UPDATE transfers
-                SET status = 'Acknowledged'
-                WHERE transferID = ${req.body.id}`);
         }
+
+        else if (type === "unaccounted") {
+            req.body.forEach (item => {
+                pool.query(`UPDATE warehouse 
+                    SET lostDamaged = lostDamaged + ${item.quantity},
+                        cabinet = cabinet - ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            })
+        }
+
+        await pool.query(`UPDATE transfers
+            SET status = 'Acknowledged'
+            WHERE transferID = ${req.body.id}`);
 
         res.status(200).json({ message: 'Items updated successfully' });
 

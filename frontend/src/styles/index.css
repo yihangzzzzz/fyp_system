@@ -248,7 +248,7 @@ th {
   padding: 10px;           /* Padding around the title */
   border-radius: 8px;      /* Rounded corners */
   text-align: center;
-  width: 50%;   /* Centered text */
+  width: 20%;   /* Centered text */
 }
 
 .cancel-button {
@@ -529,10 +529,10 @@ th {
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Add some padding */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
+  /* max-height: 0;
+  opacity: 0; */
+  /* overflow: hidden; */
+  /* transition: max-height 0.4s ease, opacity 0.4s ease; */
 }
 
 .inputs.show {
@@ -622,7 +622,7 @@ th {
 }
 
 .add-item-search-input {
-  width: 15%;
+  width: 60%;
   padding: 10px 40px 10px 20px; /* Padding on right for icon space */
   border: 1px solid #ccc;
   border-radius: 50px;
@@ -668,4 +668,23 @@ th {
 .add-item-table-row {
   background-color: white;
   color: black;
+}
+
+.new-order-table {
+  display: flex;
+  margin: 15px;
+  gap: 30px;
+}
+
+.new-order-table-database {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.new-order-items {
+  width: 40%;
 }

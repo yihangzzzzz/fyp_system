@@ -174,7 +174,7 @@ const Inventory = () => {
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
                     {showFilters && (
-                    <div className={`inputs ${showFilters ? 'show' : ''}`}>
+                    <div className='inputs'>
                     {/* <button title='Reset' className='addButton' onClick={() => {setFilterQuery({})}}>Clear Filters</button> */}
                     {/* <div className="input-field">
                       <h5>Item</h5>
