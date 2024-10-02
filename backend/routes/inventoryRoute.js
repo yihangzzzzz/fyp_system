@@ -75,11 +75,11 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 
     try {
 
-        const {name, quantity} = req.body;
+        const {name, quantity, description} = req.body;
         const picture = req.file.filename;
 
-        pool.query(`INSERT INTO warehouse (itemName, cabinet, picture)
-                   VALUES ('${name}', ${quantity}, '${picture}')`);
+        pool.query(`INSERT INTO warehouse (itemName, cabinet, picture, description)
+                   VALUES ('${name}', ${quantity}, '${picture}', '${description}')`);
 
         res.send('Image uploaded and saved to database');
     } catch (err) {

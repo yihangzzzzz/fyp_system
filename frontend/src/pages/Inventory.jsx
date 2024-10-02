@@ -215,11 +215,11 @@ const Inventory = () => {
                     
 
                   </div>
-                  <table className='inventory-table' id='table-to-print'>
+                  <table className='new-order-items' id='table-to-print'>
                       <thead>
                           <tr className='table-header-row'>
                               <th className='table-header-title'>Picture</th>
-                              <th className='table-header-title'>tem Name</th>
+                              <th className='table-header-title'>Item Name</th>
                               <th className='table-header-title'>Description</th>
                               {/* <th className='table-header-title'>Serial Number</th> */}
                               <th className='table-header-title'>Cabinet</th>
@@ -234,7 +234,7 @@ const Inventory = () => {
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
                               <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}/` + item.picture} /></td>
-                              <td>{item.itemName}</td>
+                              <td >{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>
                               {item.cabinet < item.lowStock ? (

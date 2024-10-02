@@ -145,46 +145,48 @@ const NewOrder = ({}) => {
           <h1 className="title">Order Form</h1>
         </div>
         <div className='order_table'>
-        <div className='transfer_info'>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-            <h5>Upload PO Document</h5>
-            <input
-              type="file"
-              name='poDocument'
-              accept=".pdf"
-              // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
-              // onChange={(e) => setPoDocument(e.target.files[0])}
-              onChange={(e) => handleAddPODocument(e.target.files[0])}
-              style={{ outline: '2px solid black' }}
-            />
-            {isUploading && (
-              <div style={{ marginLeft: '5px' }}>
-                <AiOutlineLoading3Quarters  className='loading-circle'/>
-                {/* You can replace this with a spinner component if you have one */}
-              </div>
-            )}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <h5>PO Number</h5>
+
+
+        <div className='transfer_info_main'>
+          <div className='transfer_info'>
+            <div className='transfer-info-input'>
+              <h5>PO Document</h5>
               <input
-              type="text"
-              name="poNumber"
-              value={orderInfo.poNumber}
-              onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
-              style={{ outline: '2px solid black' }}
+                type="file"
+                name='poDocument'
+                accept=".pdf"
+                // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
+                // onChange={(e) => setPoDocument(e.target.files[0])}
+                onChange={(e) => handleAddPODocument(e.target.files[0])}
               />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <h5>PO Date</h5>
-              <input
-              type="date"
-              name="poDate"
-              value={orderInfo.poDate}
-              onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
-              style={{ outline: '2px solid black' }}
-              />
+              {isUploading && (
+                <div style={{ marginLeft: '5px' }}>
+                  <AiOutlineLoading3Quarters  className='loading-circle'/>
+                  {/* You can replace this with a spinner component if you have one */}
+                </div>
+              )}
+            </div>
+            <div className='transfer-info-input'>
+              <h5>PO Number</h5>
+                <input
+                type="text"
+                name="poNumber"
+                value={orderInfo.poNumber}
+                onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
+                />
+            </div>
+            <div className='transfer-info-input'>
+              <h5>PO Date</h5>
+                <input
+                type="date"
+                name="poDate"
+                value={orderInfo.poDate}
+                onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
+                />
+            </div>
           </div>
         </div>
+
           {/* <button onClick={handleAddItem} className="add-item-button" style={{ backgroundColor: 'blue', color: 'white' }}>Add Item</button> */}
             <div className='new-order-table'>
 

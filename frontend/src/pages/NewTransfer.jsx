@@ -139,67 +139,69 @@ const NewTransfer = ({}) => {
         
         <div className='order_table'> 
           {labs.length > 0 && (
-            <div className='transfer_info'>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Type</h5>
-                <select value={transferInfo.type} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
-                  <option value="Transfer Out">Transfer Out</option>
-                  <option value="Transfer In">Transfer In</option>
-                  <option value="Loan">Loan</option>
-                  <option value="Unaccounted">Unaccounted</option>
-                </select>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                {transferInfo.type === 'Transfer In' ? (<h5>Sender</h5>) : (<h5>Destination</h5>)}
-                <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
-                  <option value="">Select Lab</option>
-                  {labs.map(item => (
-                    <option key={item.id} value={item.labCode}>
-                      {item.labCode}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Date</h5>
-                  <input
-                    type="date"
-                    value={transferInfo.date}
-                    onChange={(e) => handleTransferInfoChange(e.target.value, 'date')}
-                  />
-              </div>
-              {!(transferInfo.destination.includes('Counter') || transferInfo.destination.includes('Cabinet')) && (
-                <div className='transfer_info'>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <h5>Recipient</h5>
-                    <input
-                      type="text"
-                      value={transferInfo.recipient}
-                      onChange={(e) => handleTransferInfoChange(e.target.value, 'recipient')}
-                      style={{ outline: '2px solid black' }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <h5>Email</h5>
-                    <input
-                      type="text"
-                      value={transferInfo.email}
-                      onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
-                      style={{ outline: '2px solid black' }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <h5>Remarks</h5>
-                    <textarea
-                      type="text"
-                      value={transferInfo.remarks}
-                      onChange={(e) => handleTransferInfoChange(e.target.value, 'remarks')}
-                      style={{ outline: '2px solid black' }}
-                    />
-                  </div>
+            
+            <div className='transfer_info_main'>
+              <div className='transfer_info'>
+                <div className='transfer-info-input'>
+                  <h5>Type</h5>
+                  <select value={transferInfo.type} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
+                    <option value="Transfer Out">Transfer Out</option>
+                    <option value="Transfer In">Transfer In</option>
+                    <option value="Loan">Loan</option>
+                    <option value="Unaccounted">Unaccounted</option>
+                  </select>
                 </div>
-              )}
-            </div>
+                <div className='transfer-info-input'>
+                  {transferInfo.type === 'Transfer In' ? (<h5>Sender</h5>) : (<h5>Destination</h5>)}
+                  <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
+                    <option value="">Select Lab</option>
+                    {labs.map(item => (
+                      <option key={item.id} value={item.labCode}>
+                        {item.labCode}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className='transfer-info-input'>
+                  <h5>Date</h5>
+                    <input
+                      type="date"
+                      value={transferInfo.date}
+                      onChange={(e) => handleTransferInfoChange(e.target.value, 'date')}
+                    />
+                </div>
+              </div>
+
+
+                {!(transferInfo.destination.includes('Counter') || transferInfo.destination.includes('Cabinet')) && (
+                  <div className='transfer_info'>
+                    <div className='transfer-info-input'>
+                      <h5>Recipient</h5>
+                      <input
+                        type="text"
+                        value={transferInfo.recipient}
+                        onChange={(e) => handleTransferInfoChange(e.target.value, 'recipient')}
+                      />
+                    </div>
+                    <div className='transfer-info-input'>
+                      <h5>Email</h5>
+                      <input
+                        type="text"
+                        value={transferInfo.email}
+                        onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
+                    />
+                    </div>
+                    <div className='transfer-info-input'>
+                      <h5>Remarks</h5>
+                      <textarea
+                        type="text"
+                        value={transferInfo.remarks}
+                        onChange={(e) => handleTransferInfoChange(e.target.value, 'remarks')}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
           )}
 
 

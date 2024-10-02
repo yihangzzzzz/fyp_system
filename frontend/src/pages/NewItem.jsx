@@ -41,6 +41,7 @@ const NewItem = ({}) => {
       formData.append('name', newItem.name);
       // formData.append('serial', newItem.serial);
       formData.append('quantity', newItem.quantity);
+      formData.append('description', newItem.description);
       console.log("formdata is ",newItem);
 
       axios
@@ -140,12 +141,6 @@ const NewItem = ({}) => {
     reader.readAsDataURL(file);
 };
 
-
-
-    
-  
-
-
     return (
       <div>
         <Navbar />
@@ -153,46 +148,48 @@ const NewItem = ({}) => {
           <h1 className="title">Add New Item</h1>
         </div>
         <div className='order_table'>
-        <div className='transfer_info'>
-        <div>
-            <h5 htmlFor='image'>Upload Image</h5>
-            <input
-                type='file'
-                id='image'
-                accept='image/*'
-                // value={newItem.picture}
-                onChange={(e) => handleImageChange(e.target.files[0])}
-            />
+
+        <div className='transfer_info_main'>
+          <div className='transfer_info'>
+            <div className='transfer-info-input'>
+                <h5 htmlFor='image'>Upload Image</h5>
+                <input
+                    type='file'
+                    id='image'
+                    accept='image/*'
+                    // value={newItem.picture}
+                    onChange={(e) => handleImageChange(e.target.files[0])}
+                />
+            </div>
+            <div className='transfer-info-input'>
+                    <h5>Item Name</h5>
+                      <input
+                        type="text"
+                        value={newItem.name}
+                        onChange={(e) => handleNewItemChange(e.target.value, 'name')}
+                      />
+            </div>
+            <div className='transfer-info-input'>
+                    <h5>Quantity</h5>
+                      <input
+                        type="number"
+                        value={newItem.quantity}
+                        onChange={(e) => handleNewItemChange(e.target.value, 'quantity')}
+                      />
+            </div>
+            <div className='transfer-info-input'>
+              <h5>Description</h5>
+              <textarea
+                type="description"
+                value={newItem.description}
+                onChange={(e) => handleNewItemChange(e.target.value, 'description')}
+              />
+            </div>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Item Name</h5>
-                  <input
-                    type="text"
-                    value={newItem.name}
-                    onChange={(e) => handleNewItemChange(e.target.value, 'name')}
-                    style={{ outline: '2px solid black' }}
-                  />
-        </div>
-        {/* <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Serial Number</h5>
-                  <input
-                    type="number"
-                    value={newItem.serial}
-                    onChange={(e) => handleNewItemChange(e.target.value, 'serial')}
-                    style={{ outline: '2px solid black' }}
-                  />
-        </div> */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h5>Quantity</h5>
-                  <input
-                    type="number"
-                    value={newItem.quantity}
-                    onChange={(e) => handleNewItemChange(e.target.value, 'quantity')}
-                    style={{ outline: '2px solid black' }}
-                  />
-        </div>
+
         <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
-        </div>
+        
         </div>
         <Confirmation
         isOpen={isConfirmationOpen}

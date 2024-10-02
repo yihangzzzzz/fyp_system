@@ -80,41 +80,44 @@ const NewDelivery = () => {
           <h1 className="title">New Delivery</h1>
         </div>
         <div className='order_table'>
-          <div className='transfer_info'>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-              <h5>Upload DO Document</h5>
-              <input
-                type="file"
-                name='doDocument'
-                accept=".pdf"
-                // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
-                // onChange={(e) => setPoDocument(e.target.files[0])}
-                onChange={(e) => handleDODocumentChange(e)}
-                style={{ outline: '2px solid black' }}
-              />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <h5>DO Number</h5>
+
+          <div className='transfer_info_main'>
+            <div className='transfer_info'>
+              <div className='transfer-info-input'>
+                <h5>DO Document</h5>
                 <input
-                type="text"
-                name="doNumber"
-              //   value={orderInfo.poNumber}
-                onChange={(e) => handleAddDeliveryInfo(e.target.value, "doNumber")}
-                style={{ outline: '2px solid black' }}
-                required
+                  type="file"
+                  name='doDocument'
+                  accept=".pdf"
+                  // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
+                  // onChange={(e) => setPoDocument(e.target.files[0])}
+                  onChange={(e) => handleDODocumentChange(e)}
                 />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <h5>DO Date</h5>
-                <input
-                type="date"
-                name="doDate"
-              //   value={orderInfo.poDate}
-                onChange={(e) => handleAddDeliveryInfo(e.target.value, "doDate")}
-                style={{ outline: '2px solid black' }}
-                required
-                />
-            </div>
+              </div>
+              <div className='transfer-info-input'>
+                <h5>DO Number</h5>
+                  <input
+                  type="text"
+                  name="doNumber"
+                //   value={orderInfo.poNumber}
+                  onChange={(e) => handleAddDeliveryInfo(e.target.value, "doNumber")}
+                  required
+                  />
+              </div>
+              <div className='transfer-info-input'>
+                <h5>DO Date</h5>
+                  <input
+                  type="date"
+                  name="doDate"
+                //   value={orderInfo.poDate}
+                  onChange={(e) => handleAddDeliveryInfo(e.target.value, "doDate")}
+                  required
+                  />
+              </div>
+              </div>
+          </div>
+
+
             <div>
 
             <table>
@@ -165,7 +168,7 @@ const NewDelivery = () => {
                   )
               })} */}
             </div>
-          </div>
+         
           <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
         </div>
         <Confirmation

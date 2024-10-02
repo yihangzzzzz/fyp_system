@@ -283,11 +283,45 @@ th {
 
 }
 
+.transfer_info_main {
+  padding: 35px; /* Adjusted padding */
+  margin: 10px;
+  display: flex;
+  gap: 20px; 
+  background-color: skyblue; /* Background color */
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  width: fit-content; /* Fit content width */
+  height: fit-content; /* Fit content height */
+}
+
 .transfer_info {
   padding: 15px;
   display: flex;
-  flex-direction: column; /* Arrange items vertically */
-  gap: 20px; 
+  gap: 35px; 
+  flex-direction: column;
+}
+
+.transfer-info-input {
+  display: flex; /* Arrange elements in a row */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px; /* Space between the header and input */
+}
+
+.transfer-info-input h5 {
+  font-weight: 600;
+}
+
+.transfer-info-input input, select, textarea{
+  padding: 5px; /* Padding inside the input */
+  border-radius: 5px; /* Rounded borders */
+  border: 1px solid #ccc; /* Border for the input */
+  box-shadow: none; /* No shadow */
+  flex: 1;
+}
+
+.transfer-info-input select{
+  cursor: pointer;
 }
 
 .home-page {
@@ -687,4 +721,12 @@ th {
 
 .new-order-items {
   width: 40%;
+}
+
+.item_name {
+  word-wrap: break-word; /* Allows long words to break onto the next line */
+  white-space: normal; /* Ensures text wraps normally */
+  overflow-wrap: break-word; /* Similar to word-wrap, for better compatibility */
+  max-width: 200px; /* Set a maximum width */
+  overflow: visible; /* Ensure overflow content is visible */
 }

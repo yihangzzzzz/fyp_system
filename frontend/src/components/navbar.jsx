@@ -40,11 +40,11 @@ const Navbar = () => {
             <div className='navbar-item'>
               <MdInventory2/>
               <div className="dropdown">
-                <button className="dropbtn">Inventory</button>
+                <button className="dropbtn">Lab Inventory</button>
                 <ul className="dropdown-content">
-                    <li><Link to={`/inventory?db=${db}`}>Items</Link></li>
-                    <li><Link to={`/inventory/lowstock?db=${db}`}>Low Stock</Link></li>
-                    <li><Link to={`/inventory/newitem?db=${db}`}>New Item</Link></li>
+                    <li><Link to={`/inventory?db=${db}`}>Lab Items Quantity</Link></li>
+                    <li><Link to={`/inventory/lowstock?db=${db}`}>Set Low Stock</Link></li>
+                    <li><Link to={`/inventory/newitem?db=${db}`}>Add New Item</Link></li>
                 </ul>
               </div>
             </div>
@@ -52,10 +52,10 @@ const Navbar = () => {
             <div className='navbar-item'>
               <FaTruck/>
               <div className="dropdown">
-                <button className="dropbtn">Orders</button>
+                <button className="dropbtn">PO & Delivery</button>
                 <ul className="dropdown-content">
-                    <li><Link to={`/orders?db=${db}`}>Current Orders</Link></li>
-                    <li><Link to={`/orders/neworder?db=${db}`}>New Order</Link></li>
+                    <li><Link to={`/orders?db=${db}`}>All PO & Delivery Records</Link></li>
+                    <li><Link to={`/orders/neworder?db=${db}`}>Create New PO</Link></li>
                 </ul>
               </div>
             </div>
@@ -65,8 +65,8 @@ const Navbar = () => {
               <div className="dropdown">
                 <button className="dropbtn">Transfers</button>
                 <ul className="dropdown-content">
-                    <li><Link to={`/transfers?db=${db}`}>All Transfers</Link></li>
-                    <li><Link to={`/transfers/newtransfer?db=${db}`}>New Transfer</Link></li>
+                    <li><Link to={`/transfers?db=${db}`}>All Transfer Records</Link></li>
+                    <li><Link to={`/transfers/newtransfer?db=${db}`}>Create New Transfer</Link></li>
                 </ul>
               </div>
             </div>
