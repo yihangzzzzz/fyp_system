@@ -236,16 +236,16 @@ const NewTransfer = ({}) => {
             </div>
 
             {transferItems.length > 0 && (
-              <table className='new-order-items'>
+              <table>
                 <thead>
                   <tr>
                     <th className='table-header-title'>Item</th>
                     <th className='table-header-title'>Quantity</th>
                   </tr>
                 </thead>
-                <tbody className='inventory-table-body'>
+                <tbody>
                   {transferItems.map((transferItem, index) => (
-                    <tr key={index}>
+                    <tr className='fixed-height-row' key={index}>
                       <td>{transferItem.name}</td>
                       <td>
                         <input

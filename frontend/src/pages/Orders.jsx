@@ -311,7 +311,7 @@ const Orders = () => {
                   {selectedRows.length > 0 && (
                     // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
                     <button onClick={() => ackNewDelivery()} className='acknowledgeButton'>
-                      Acknowledge
+                      Add New Delivery
                     </button>
                   )}
                   <table className='inventory-table' id='table-to-print'>

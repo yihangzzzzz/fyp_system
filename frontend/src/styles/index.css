@@ -730,3 +730,8 @@ th {
   max-width: 200px; /* Set a maximum width */
   overflow: visible; /* Ensure overflow content is visible */
 }
+
+.fixed-height-row {
+  height: 50px; /* Adjust the height as needed */
+  line-height: 50px; /* Center text vertically */
+}
