@@ -25,7 +25,7 @@ const Transfers = () => {
     const [inventory, setInventory] = useState([]);
     const [inventoryInbound, setInventoryInbound] = useState([]);
     const [inventoryOutbound, setInventoryOutbound] = useState([]);
-    const [inventoryUnaccounted, setInventoryAccounted] = useState([]);
+    const [inventoryMiscellaneous, setInventoryMiscellaneous] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
@@ -33,7 +33,7 @@ const Transfers = () => {
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
-    const [filterQuery, setFilterQuery] = useState({});
+    const [filterQuery, setFilterQuery] = useState({itemName:''});
     const [tableMode, setTableMode] = useState('Outbound');
     const [showFilters, setShowFilters] = useState(false);
     const [selectedMode, setSelectedMode] = useState('Outbound');
@@ -57,7 +57,7 @@ const Transfers = () => {
         .then((res) => {
           setInventoryInbound(res.data.inbound.recordset);
           setInventoryOutbound(res.data.outbound.recordset);
-          setInventoryAccounted(res.data.unaccounted.recordset)
+          setInventoryMiscellaneous(res.data.miscellaneous.recordset)
           setInventory(res.data.outbound.recordset)
           setLoading(false);
         })
@@ -285,17 +285,19 @@ const Transfers = () => {
                   <div className='transfer-tables-mode'>
                   <button className={`transfer-table-mode-button ${selectedMode === 'Inbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryInbound);setSelectedMode('Inbound');}}>Inbound</button>
                   <button className={`transfer-table-mode-button ${selectedMode === 'Outbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryOutbound);setSelectedMode('Outbound');}}>Outbound</button>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'Unaccounted' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryUnaccounted);setSelectedMode('Unaccounted');}}>Unaccounted</button>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound, ...inventoryUnaccounted]);setSelectedMode('All');}}>All</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Miscellaneous' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryMiscellaneous);setSelectedMode('Miscellaneous');}}>Miscellaneous</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound, ...inventoryMiscellaneous]);setSelectedMode('All');}}>All</button>
                   </div>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr className='table-header-row'>
                               {/* <th className='table-header-title'>Type</th> */}
+                              {selectedMode === 'All' && (<th className='table-header-title'>Type</th>)}
                               <th className='table-header-title'>Destination</th>
                               <th className='table-header-title'>Date</th>
-                              <th className='table-header-title'>Recipient</th>
-                              <th className='table-header-title'>Email</th>
+                              {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Sender</th>)}
+                              {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Recipient</th>)}
+                              {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Email</th>)}
                               <th className='table-header-title'>Transfer Document</th>
                               <th className='table-header-title'>Status</th>
                               {/* <th className='table-header-title'>Description</th> */}
@@ -320,10 +322,12 @@ const Transfers = () => {
                                                 {idx === 0 && (
                                                     <>
                                                         {/* <td rowSpan={rowSpan}>{item.type}</td> */}
+                                                        {selectedMode === 'All' && (<td rowSpan={rowSpan}>{item.type}</td>)}
                                                         <td rowSpan={rowSpan}>{item.destination}</td>
                                                         <td rowSpan={rowSpan}>{formattedDate}</td>
-                                                        <td rowSpan={rowSpan}>{item.recipient}</td>
-                                                        <td rowSpan={rowSpan}>{item.email}</td>
+                                                        {selectedMode != 'Miscellaneous' && (<td rowSpan={rowSpan}>{item.sender}</td>)}
+                                                        {selectedMode != 'Miscellaneous' && (<td rowSpan={rowSpan}>{item.recipient}</td>)}
+                                                        {selectedMode != 'Miscellaneous' && (<td rowSpan={rowSpan}>{item.email}</td>)}
                                                         <td rowSpan={rowSpan}>
                                                             <a href={`/transfers_be/pdf/${item.transferDocument}?db=${db}`} target="_blank" rel="noopener noreferrer">
                                                                 VIew PDF
@@ -371,7 +375,10 @@ const Transfers = () => {
                                                     
                                                 )}
                                                 {/* Split itemDetail to separate itemName and quantity */}
-                                                <td>{itemDetail.split(':')[0]}</td>
+                                                {/* <td className={`transfer-table-item ${(itemDetail.split(':')[0].toLowerCase() === 'hex key set') ? 'selected' : ''}`}> */}
+                                                <td className={`transfer-table-item ${(itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase()) || !filterQuery.itemName) ? 'selected' : ''}`}>
+                                                  {itemDetail.split(':')[0]}
+                                                </td>
                                                 <td>{itemDetail.split(':')[1]}</td>
                                                 {idx === 0 && (
                                                   <td rowSpan={rowSpan}>{item.remarks}</td>

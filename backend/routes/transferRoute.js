@@ -40,12 +40,13 @@ transferRoute.get('/', async (req, res) => {
                 t.transferDocument,
                 t.type,
                 t.remarks,
+                t.sender,
                 STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
                 FROM transfers t
                 JOIN transferItems ti
                 ON t.transferID = ti.transferID
                 WHERE t.type IN ('Transfer Out', 'Loan')
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`),
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
             inbound: await pool.query(`SELECT
                 t.transferID,
                 t.destination,
@@ -56,13 +57,14 @@ transferRoute.get('/', async (req, res) => {
                 t.transferDocument,
                 t.type,
                 t.remarks,
+                t.sender,
                 STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
                 FROM transfers t
                 JOIN transferItems ti
                 ON t.transferID = ti.transferID
                 WHERE t.type = 'Transfer In'
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`),
-            unaccounted: await pool.query(`SELECT
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
+            miscellaneous: await pool.query(`SELECT
                 t.transferID,
                 t.destination,
                 t.date,
@@ -72,32 +74,14 @@ transferRoute.get('/', async (req, res) => {
                 t.transferDocument,
                 t.type,
                 t.remarks,
+                t.sender,
                 STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
                 FROM transfers t
                 JOIN transferItems ti
                 ON t.transferID = ti.transferID
-                WHERE t.type = 'Unaccounted'
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`)
+                WHERE t.type = 'Miscellaneous'
+                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`)
         }
-    //     const result = pool.query(`SELECT
-    // t.transferID,
-    // t.destination,
-    // t.date,
-    // t.recipient,
-    // t.email,
-    // t.status,
-    // t.transferDocument,
-    // t.type,
-    // t.remarks,
-    // STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
-    // FROM transfers t
-    // JOIN transferItems ti
-    // ON t.transferID = ti.transferID
-    // GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks`);
-        // console.log(result);
-        // result.then((res1) => {
-        //     return res.json(res1)
-        // })
         return res.json(result)
 
     } catch (error) {
@@ -110,7 +94,7 @@ transferRoute.get('/labs', async (req, res) => {
     const pool = req.sqlPool;
 
     try {
-        const data = pool.query(`SELECT labCode from LABS`);
+        const data = pool.query(`SELECT * from LABS`);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -146,30 +130,64 @@ transferRoute.post('/newtransfer', async (req, res) => {
     const pool = req.sqlPool;
 
     const {info, items} = req.body;
-    console.log("type is",info.type);
-    let status = info.type === "Loan" ? "On Loan" : "Pending";
 
-    if (info.destination.includes('Counter') || info.destination.includes('Cabinet')) {
-        status = "Acknowledged";
+    let status 
+    switch (info.type) {
+        case 'Loan':
+            status = 'On Loan';
+            break;
+        case 'Miscellaneous':
+            status = 'Acknowledged';
+            break;
+        default:
+            status = 'Pending';
+            break;
     }
 
     try {
         
-        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status, remarks) 
-        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${info.remarks}')
+        // Uptdaing TRANSFERS table
+        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status, remarks, sender) 
+        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${info.remarks}', '${info.sender}')
         SELECT SCOPE_IDENTITY() AS transferID`)
         
         const transferID = result.recordset[0].transferID;
         const transferDocument = await sendTransferEmail(info, items, transferID, info.db);
 
+        
         pool.query(`UPDATE transfers
             SET transferDocument =  '${transferDocument}'
             WHERE transferID = ${transferID}`)
+    
+        items.forEach(item => {
+            // UPDATE transferItems table
+            pool.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
+                VALUES (${transferID}, '${item.name}', ${item.quantity})`);
 
-        return res.json(result)
-        // result.then((res1) => {
-        //     return res.json(res1)
-        // })
+            // UPDATE inventory table if type is Miscellaneous
+            if (info.destination.includes('Counter')) {
+                pool.query(`UPDATE warehouse
+                    SET cabinet = cabinet - ${item.quantity},
+                        counter = counter + ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            }
+
+            else if (info.destination.includes('Cabinet')) {
+                pool.query(`UPDATE warehouse
+                    SET cabinet = cabinet + ${item.quantity},
+                        counter = counter - ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            }
+
+            else if (info.destination.includes('Lost/Damaged')) {
+                pool.query(`UPDATE warehouse
+                    SET cabinet = cabinet - ${item.quantity},
+                        lostDamaged = lostDamaged + ${item.quantity}
+                    WHERE itemName = '${item.name}'`);
+            }
+        })
+        res.status(200).json({ message: 'Items updated successfully' });
+
     } catch (error) {
         console.log("error is le " + error.message);
         res.send({message : error.message});

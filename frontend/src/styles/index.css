@@ -735,3 +735,11 @@ th {
   height: 50px; /* Adjust the height as needed */
   line-height: 50px; /* Center text vertically */
 }
+
+.transfer-table-item.selected {
+  background-color: #90EE90;
+}
+
+.transfer-table-item {
+  background-color: white;
+}

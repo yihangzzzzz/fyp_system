@@ -124,7 +124,7 @@ const EditItem = () => {
                         style={{ outline: '2px solid black' }}
                     />
                 </div>
-                <div className='input-box'>
+                {/* <div className='input-box'>
                     <h5>Ordered</h5>
                     <input
                         type="number"
@@ -141,7 +141,7 @@ const EditItem = () => {
                         onChange={(e) => handleItemChange(e.target.value, 'lostDamaged')}
                         style={{ outline: '2px solid black' }}
                     />
-                </div>
+                </div> */}
                 <div className='input-box'>
                     <h5>Remarks</h5>
                     <textarea
