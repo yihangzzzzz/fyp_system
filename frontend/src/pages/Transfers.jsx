@@ -29,11 +29,12 @@ const Transfers = () => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
+    const [sortQuery, setSortQuery] = useState(''); // State for search input
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
-    const [filterQuery, setFilterQuery] = useState({itemName:''});
+    const [filterQuery, setFilterQuery] = useState({itemName: ''});
     const [tableMode, setTableMode] = useState('Outbound');
     const [showFilters, setShowFilters] = useState(false);
     const [selectedMode, setSelectedMode] = useState('Outbound');
@@ -110,9 +111,14 @@ const Transfers = () => {
   
           (!filterQuery.status || item.status.includes(filterQuery.status)) && 
 
-          (!filterQuery.itemName || item.items.split(',').some((itemDetail) => {
-            const itemName = itemDetail.split(':')[0]; // Extract the item name from the 'itemName:quantity' string
-            return itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
+          (item.items.split(',').some((itemDetail) => {
+            if (filterQuery.itemName) {
+              const itemName = itemDetail.split(':')[0];
+              return itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
+            }
+            else {
+              return true;
+            }
           }))
         );
       })
@@ -160,7 +166,7 @@ const Transfers = () => {
                         <FaSortAmountDown />
                       </div>
                       <div className='filter-child-element'>
-                        <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
+                        <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({itemName : ''});setSortQuery({});}}>Clear Filters</button>
                       </div>
 
                       {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
@@ -376,10 +382,12 @@ const Transfers = () => {
                                                 )}
                                                 {/* Split itemDetail to separate itemName and quantity */}
                                                 {/* <td className={`transfer-table-item ${(itemDetail.split(':')[0].toLowerCase() === 'hex key set') ? 'selected' : ''}`}> */}
-                                                <td className={`transfer-table-item ${(itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase()) || !filterQuery.itemName) ? 'selected' : ''}`}>
+                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
                                                   {itemDetail.split(':')[0]}
                                                 </td>
-                                                <td>{itemDetail.split(':')[1]}</td>
+                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
+                                                  {itemDetail.split(':')[1]}
+                                                </td>
                                                 {idx === 0 && (
                                                   <td rowSpan={rowSpan}>{item.remarks}</td>
                                                 )}

@@ -123,6 +123,23 @@ transferRoute.get('/pdf/:filename', (req, res) => {
     });
   });
 
+  // GET EACH ITEM TRANSFER FOR GRAPH
+  transferRoute.get('/transfergraph', async (req, res) => {
+    const pool = req.sqlPool;
+
+    try {
+        const result = await pool.query(`
+            SELECT t.transferID, t.date, ti.itemName, ti.quantity
+            FROM transfers t JOIN transferItems ti
+            ON t.transferID = ti.transferID    
+        `)
+        return res.json(result)
+
+    } catch (error) {
+        console.log("error is le " + error.message);
+        res.send({message : error.message});
+    };
+})
 // ====================== POST ==================================
 
 // ADDING NEW TRANSFER RECORD

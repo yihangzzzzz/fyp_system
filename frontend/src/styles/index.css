@@ -737,9 +737,18 @@ th {
 }
 
 .transfer-table-item.selected {
-  background-color: #90EE90;
+  background-color: #CCFFCC;
 }
 
 .transfer-table-item {
   background-color: white;
+}
+
+.line_graphs {
+  align-content: center;
+}
+
+.transfer_graph {
+  width: 50%;
+  height: 40%;
 }
