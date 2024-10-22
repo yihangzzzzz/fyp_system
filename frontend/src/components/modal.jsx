@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 
 
 // const Modal = ({onSubmit, onClose, formData, setFormData, FormComponent, deliveredItems}) => {
-const Modal = ({isOpen, onSubmit, onCancel}) => {
+const Modal = ({isOpen, onSubmit, onCancel, editUsername}) => {
   const location = useLocation();
   const db = new URLSearchParams(location.search).get('db');
 
@@ -35,7 +35,8 @@ const Modal = ({isOpen, onSubmit, onCancel}) => {
             <input
               type="text"
               name='username'
-              // value={filterQuery.itemName || ''}
+              disabled = {editUsername ? true : false}
+              placeholder = {editUsername ? editUsername : ''}
               onChange={(e) => handleSetNewUser(e.target.name, e.target.value)}
               style={{ outline: '2px solid black' }}
             />

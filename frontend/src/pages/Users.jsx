@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { MdOutlineAddBox, MdModeEditOutline, MdDelete } from 'react-icons/md';
 import Navbar from '../components/navbar.jsx';
 import Modal from '../components/modal.jsx';
 import Actions from '../components/actions.jsx';
@@ -12,7 +13,10 @@ const Users = () => {
     const location = useLocation();
     const db = new URLSearchParams(location.search).get('db');
     const [users, setUsers] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editUsername, setEditUsername] = useState('');
+
 
     useEffect(() => {
         fetchUsers();
@@ -37,6 +41,21 @@ const Users = () => {
         console.log("added user", e)
     }
 
+    const handleDelete = (username) => {
+        axios
+        .delete(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/${encodeURIComponent(username)}?db=${db}`)
+        .catch((error) => {
+        console.log("Error deleting item: " + error);
+        });
+        setIsConfirmationOpen(false);
+        navigate(`/users?db=${db}`);
+    }
+
+    const handleEditUser = (username) => {
+        axios
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/${encodeURIComponent(username)}?db=${db}`)
+    }
+
 
 
     return (
@@ -45,7 +64,7 @@ const Users = () => {
             <div className='topbar'>
                 <h1 className='title'>User Management</h1>
             </div>
-            <button onClick={() => {setIsModalOpen(true)}} className='acknowledgeButton'>
+            <button onClick={() => {setIsAddModalOpen(true)}} className='acknowledgeButton'>
                 Add User
             </button>
             <div className='inventory_table'>
@@ -60,13 +79,18 @@ const Users = () => {
                     <tbody className='inventory-table-body'>
                         {users.map((item, index) => (
                             <tr key={index}>
+                                {}
                                 <td>{item.username}</td>
                                 <td>{item.password}</td>
-                                <td>                                    
-                                    <Actions
-                                    toDelete={item.username}
-                                    toEdit={item.username}
-                                    mode={'user'}/>
+                                <td className='user_actions'>                                    
+                                    <MdModeEditOutline 
+                                        title='Edit'
+                                        onClick={() => {setIsEditModalOpen(true); setEditUsername(item.username);}}
+                                        />
+                                    <MdDelete
+                                        title='Delete'
+                                        onClick={() => {handleDelete(item.username)}}
+                                        />
                                 </td>
                             </tr>
                         ))}
@@ -74,9 +98,16 @@ const Users = () => {
                 </table>
             </div>
             <Modal
-            isOpen={isModalOpen}
+            isOpen={isAddModalOpen}
             onSubmit={(e) => handleAddUser(e)}
-            onCancel={() => {setIsModalOpen(false)}}/>
+            onCancel={() => {setIsAddModalOpen(false)}}
+            />
+
+            <Modal
+            isOpen={isEditModalOpen}
+            onSubmit={(e) => handleEditUser(e)}
+            onCancel={() => {setIsEditModalOpen(false)}}
+            editUsername={editUsername}/>
         </div>
     )
 }

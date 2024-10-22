@@ -756,3 +756,8 @@ th {
   width: 50%;
   height: 40%;
 }
+
+.user_actions {
+  display: flex;
+  gap: 10px;
+}

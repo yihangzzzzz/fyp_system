@@ -52,7 +52,13 @@ const Actions = ({toDelete, toEdit, mode}) => {
   }
 
   const handleEdit = () => {
-    navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}?db=${db}`)
+    if (mode === 'inventory') {
+      navigate(`/inventory/edititem/${encodeURIComponent(editItemName)}?db=${db}`)
+    }
+    
+    else if (mode === 'user') {
+      
+    }
   }
 
   return (

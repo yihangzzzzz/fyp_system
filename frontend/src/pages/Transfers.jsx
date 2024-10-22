@@ -56,10 +56,10 @@ const Transfers = () => {
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
-          setInventoryInbound(res.data.inbound.recordset);
-          setInventoryOutbound(res.data.outbound.recordset);
-          setInventoryMiscellaneous(res.data.miscellaneous.recordset)
-          setInventor([...res.data.inbound.recordset, ...res.data.outbound.recordset, ...res.data.miscellaneous.recordset])
+          setInventoryInbound(res.data.inbound);
+          setInventoryOutbound(res.data.outbound);
+          setInventoryMiscellaneous(res.data.miscellaneous)
+          setInventory([...res.data.inbound, ...res.data.outbound, ...res.data.miscellaneous])
           setLoading(false);
         })
         .catch((error) => {
@@ -306,7 +306,7 @@ const Transfers = () => {
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Sender</th>)}
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Recipient</th>)}
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Email</th>)}
-                              <th className='table-header-title'>Transfer Document</th>
+                              <th className='table-header-title'>Transfer<br></br>Document</th>
                               <th className='table-header-title'>Status</th>
                               {/* <th className='table-header-title'>Description</th> */}
                               <th className='table-header-title'>Items</th>
