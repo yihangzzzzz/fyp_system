@@ -130,17 +130,6 @@ const Inventory = () => {
             <Navbar />
             <div className='topbar'>
                 <h1 className="title">Inventory</h1>
-                {/* <MdOutlineAddBox title='Add New Item' className='addButton' onClick={() => setIsModalOpen(true)} /> */}
-                {/* <input 
-                    type="text"
-                    placeholder="Search items..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className='searchBar'
-                /> */}
-
-                {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
-                
                 <div className="search-container">
                     <input
                         type="text"
@@ -163,10 +152,10 @@ const Inventory = () => {
                           <h4>Filters</h4>
                           <FaFilter />
                         </div>
-                        <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                        {/* <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
                           <h4>Sort</h4>
                           <FaSortAmountDown />
-                        </div>
+                        </div> */}
                         <div className='filter-child-element'>
                           <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
                         </div>
@@ -200,18 +189,17 @@ const Inventory = () => {
                    </div>
                     </div>
                     )}
-                    {showSort && (
+                    {/* {showSort && (
                         <div className='inputs'>
                             <div className='input-field'>
                                 <select onChange={(e) => {setSortQuery(e.target.value)}} className='sortDropdown'>
                                     <option value="">Select...</option>
                                     <option value="name">Item Name</option>
-                                    {/* <option value="serial">Serial Number</option> */}
                                     <option value="cabinet">Quantity</option>
                                 </select>
                             </div>
                         </div>
-                    )}
+                    )} */}
                     
 
                   </div>

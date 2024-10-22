@@ -15,23 +15,6 @@ const inventoryRouter = express.Router();
 // GETTING ALL RECORDS
 inventoryRouter.get('/', async (req, res) => {
     const pool = req.sqlPool;
-
-    // const {sortBy} = req.query;
-    // let query;
-    // switch (sortBy) {
-    //     case 'name':
-    //         query = 'select * from warehouse order by itemName';
-    //         break;
-    //     case 'serial':
-    //         query = 'select * from warehouse order by serialNumber';
-    //         break;
-    //     case 'quantity':
-    //         query = 'select * from warehouse order by cabinet';
-    //         break;
-    //     default:
-    //         query = 'select * from warehouse';
-    // }
-
     try {
         pool.query(`
             SELECT *

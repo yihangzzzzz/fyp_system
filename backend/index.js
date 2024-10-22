@@ -19,6 +19,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
@@ -50,8 +52,12 @@ app.use('/documents', express.static('documents'))
 
 
 app.listen(process.env.PORT || PORT, () => {
-    console.log("app is running le");
+    console.log("System is running sucessfully");
 })
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 // app.post('/login_be', async (req, res) => {
 //     let pool;
 //     let sqlConfig = {
@@ -181,8 +187,6 @@ app.listen(process.env.PORT || PORT, () => {
 //   next();
 // });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-});
+
 
 

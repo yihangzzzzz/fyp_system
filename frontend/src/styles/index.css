@@ -248,7 +248,7 @@ th {
   padding: 10px;           /* Padding around the title */
   border-radius: 8px;      /* Rounded corners */
   text-align: center;
-  width: 20%;   /* Centered text */
+  width: 50%;   /* Centered text */
 }
 
 .cancel-button {
@@ -745,7 +745,11 @@ th {
 }
 
 .line_graphs {
-  align-content: center;
+  display: flex;               /* Enable flexbox */
+  justify-content: center;     /* Horizontal centering */
+  align-items: center;         /* Vertical centering */
+  width: 50%;
+  height: 50%;
 }
 
 .transfer_graph {

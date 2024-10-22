@@ -35,9 +35,9 @@ const Transfers = () => {
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
     const [filterQuery, setFilterQuery] = useState({itemName: ''});
-    const [tableMode, setTableMode] = useState('Outbound');
+    // const [tableMode, setTableMode] = useState('Outbound');
     const [showFilters, setShowFilters] = useState(false);
-    const [selectedMode, setSelectedMode] = useState('Outbound');
+    const [selectedMode, setSelectedMode] = useState('All');
     const [showSort, setShowSort] = useState(false);
     
     
@@ -59,7 +59,7 @@ const Transfers = () => {
           setInventoryInbound(res.data.inbound.recordset);
           setInventoryOutbound(res.data.outbound.recordset);
           setInventoryMiscellaneous(res.data.miscellaneous.recordset)
-          setInventory(res.data.outbound.recordset)
+          setInventory([...res.data.inbound.recordset, ...res.data.outbound.recordset, ...res.data.miscellaneous.recordset])
           setLoading(false);
         })
         .catch((error) => {

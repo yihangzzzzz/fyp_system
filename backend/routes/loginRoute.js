@@ -18,9 +18,6 @@ loginRouter.post('/', async (req, res) => {
     const pool = req.sqlPool;
     const user = req.body.user;
     const password = req.body.password;
-    
-
-    // console.log(pool)
 
     const userData = await pool.query(`
         SELECT *
@@ -28,15 +25,14 @@ loginRouter.post('/', async (req, res) => {
         WHERE username = '${user}'
     `);
 
-
     if(userData.recordset.length === 0) {
-        res.status(401).json({ success: false, message: 'Invalid username la' });
+        res.status(401).json({ success: false, message: 'Invalid username' });
     }
     else if(userData.recordset[0].password === password) {
         res.json({ success: true });
     }
     else {
-        res.status(401).json({ success: false, message: 'Incorrect password sian' });
+        res.status(401).json({ success: false, message: 'Incorrect password' });
     }
 })
 

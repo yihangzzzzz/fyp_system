@@ -183,7 +183,9 @@ const Home  = () => {
 
         <div className='line_graphs'>
                 <h2>Line Graph</h2>
-                <canvas className='transfer_graph' ref={canvasRef}></canvas>
+                <div>
+                    <canvas className='transfer_graph' ref={canvasRef}></canvas>
+                </div>
         </div>
 
     </div>

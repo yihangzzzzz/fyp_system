@@ -21,13 +21,10 @@ const Login = () => {
     useEffect(() => {
       console.log("query is ",db)
       console.log(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`)
-      // axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/${lab}`);
-      // axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`);
     }, []);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-  
       try {
         const response = await axios.post(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`, {
           user,

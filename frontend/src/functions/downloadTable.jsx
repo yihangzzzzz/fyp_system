@@ -1,8 +1,34 @@
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 
 export const DownloadTable = (tableId, title) => {
+
+  // console.log("print is the run");
+  // const pdf = new jsPDF();
+  // pdf.setFontSize(18);
+  // pdf.text(title, 10, 10); // Add title to the PDF
+
+  // const table = document.getElementById(tableId); // Your table element
+
+  // pdf.autoTable({
+  //   html: table,
+  //   startY: 20, // Start after the title
+  //   styles: {
+  //       fontSize: 10,
+  //   },
+  //   headStyles: {
+  //       fillColor: [220, 220, 220], // Set background color for the table header
+  //   }
+  // });
+
+  // const date = new Date();
+  // const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  // pdf.save(`${title}_${formattedDate}.pdf`);
+
+
   const input = document.getElementById(tableId);
+  input.style.backgroundColor = 'black';
 
   html2canvas(input, { scale: 2 }).then((canvas) => {
     const imgData = canvas.toDataURL('image/png');
