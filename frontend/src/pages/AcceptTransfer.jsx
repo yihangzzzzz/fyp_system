@@ -12,13 +12,14 @@ import { useLocation } from 'react-router-dom';
 const AcceptTransfer = () => {
     const location = useLocation();
     const db = new URLSearchParams(location.search).get('db');
+    const type = new URLSearchParams(location.search).get('type');
 
 
     const { transferID } = useParams();
 
     useEffect(() => {
         axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/accepttransfer/${transferID}?db=${db}`)
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/accepttransfer/${transferID}?db=${db}&type=${type}`)
     }, []);
 
     return (

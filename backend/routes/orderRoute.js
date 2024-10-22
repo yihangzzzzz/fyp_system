@@ -36,30 +36,53 @@ orderRouter.get('/', async (req, res) => {
     }
 
     try {
-        // const data = pool.query(query);
-        const data = pool.query(`SELECT
-            o.orderID,
-			o.poNumber,
-			o.poDate,
-			o.itemName,
-			o.status,
-            o.quantity,
-            o.poDocument,
-            SUM(dd.subQuantity) AS deliveredQuantity,
-            STRING_AGG(CONCAT(dd.subQuantity, ':', dd.doNumber, ':', dd.doDate, ':', dd.doDocument, ':', dd.finance), ', ') AS items
-            FROM orders o
-            LEFT JOIN doDetails dd
-            ON o.orderID = dd.orderID
-            GROUP BY o.orderID,
-			o.poNumber,
-			o.poDate,
-			o.itemName,
-			o.status,
-            o.quantity,
-            o.poDocument`);
-        data.then((res1) => {
-            return res.json(res1)
+
+        // const data = pool.query(`SELECT
+        //     o.orderID,
+		// 	o.poNumber,
+		// 	o.poDate,
+		// 	o.itemName,
+		// 	o.status,
+        //     o.quantity,
+        //     o.poDocument,
+        //     SUM(dd.subQuantity) AS deliveredQuantity,
+        //     STRING_AGG(CONCAT(dd.subQuantity, ':', dd.doNumber, ':', dd.doDate, ':', dd.doDocument, ':', dd.finance), ', ') AS items
+        //     FROM orders o
+        //     LEFT JOIN doDetails dd
+        //     ON o.orderID = dd.orderID
+        //     GROUP BY o.orderID,
+		// 	o.poNumber,
+		// 	o.poDate,
+		// 	o.itemName,
+		// 	o.status,
+        //     o.quantity,
+        //     o.poDocument`);
+        
+        const orders = (await pool.query(`SELECT * FROM orders`)).recordset;
+        const doDetails = (await pool.query(`SELECT * from doDetails`)).recordset;
+
+        const ordersDict = {}
+        orders.forEach(order => {
+            order.items = []
+            ordersDict[order.orderID] = order
         })
+        doDetails.forEach(doDetail => {
+            ordersDict[doDetail.orderID].items.push(doDetail);
+        })
+        const result = Object.entries(ordersDict).map(([key, order]) => order)
+        result.forEach(order => {
+            let delivered = 0
+            order.items.forEach(subOrder => {
+                delivered += subOrder.subQuantity;
+            })
+            order.deliveredQuantity = delivered;
+        })
+        
+        return res.json(result)
+
+        // data.then((res1) => {
+        //     return res.json(res1)
+        // })
 
     } catch (error) {
         console.log("error is " + error.message);
