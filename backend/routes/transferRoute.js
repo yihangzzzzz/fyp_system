@@ -29,59 +29,87 @@ transferRoute.get('/', async (req, res) => {
     const pool = req.sqlPool;
     
     try {
+
+        const transfers = (await pool.query(`SELECT * FROM transfers`)).recordset;
+        const transferItems = (await pool.query(`SELECT * from transferItems`)).recordset;
+
+        const transfersDict = {}
+        transfers.forEach(transfer => {
+            transfer.items = []
+            transfersDict[transfer.transferID] = transfer
+        })
+        transferItems.forEach(transferItem => {
+            transfersDict[transferItem.transferID].items.push(transferItem);
+        })
+
         const result = {
-            outbound: await pool.query(`SELECT
-                t.transferID,
-                t.destination,
-                t.date,
-                t.recipient,
-                t.email,
-                t.status,
-                t.transferDocument,
-                t.type,
-                t.remarks,
-                t.sender,
-                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
-                FROM transfers t
-                JOIN transferItems ti
-                ON t.transferID = ti.transferID
-                WHERE t.type IN ('Transfer Out', 'Loan')
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
-            inbound: await pool.query(`SELECT
-                t.transferID,
-                t.destination,
-                t.date,
-                t.recipient,
-                t.email,
-                t.status,
-                t.transferDocument,
-                t.type,
-                t.remarks,
-                t.sender,
-                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
-                FROM transfers t
-                JOIN transferItems ti
-                ON t.transferID = ti.transferID
-                WHERE t.type = 'Transfer In'
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
-            miscellaneous: await pool.query(`SELECT
-                t.transferID,
-                t.destination,
-                t.date,
-                t.recipient,
-                t.email,
-                t.status,
-                t.transferDocument,
-                t.type,
-                t.remarks,
-                t.sender,
-                STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
-                FROM transfers t
-                JOIN transferItems ti
-                ON t.transferID = ti.transferID
-                WHERE t.type = 'Miscellaneous'
-                GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`)
+            outbound: Object.entries(transfersDict).filter(([key, transfer]) => transfer.type === 'Transfer Out' || transfer.type === 'Loan').map(([key, transfer]) => transfer),
+            inbound: Object.entries(transfersDict).filter(([key, transfer]) => transfer.type === 'Transfer In').map(([key, transfer]) => transfer),
+            miscellaneous: Object.entries(transfersDict).filter(([key, transfer]) => transfer.type === 'Miscellaneous').map(([key, transfer]) => transfer),
         }
+
+
+        // const result = {
+        //     outbound: 
+        //             await pool.query(`SELECT
+        //         t.transferID,
+        //         t.destination,
+        //         t.date,
+        //         t.recipient,
+        //         t.email,
+        //         t.status,
+        //         t.transferDocument,
+        //         t.type,
+        //         t.remarks,
+        //         t.sender,
+        //         STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+        //         FROM transfers t
+        //         JOIN transferItems ti
+        //         ON t.transferID = ti.transferID
+        //         WHERE t.type IN ('Transfer Out', 'Loan')
+        //         GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
+        //         // await pool.query(`
+        //         //     SELECT * 
+        //         //     FROM transfers t JOIN transferItems ti
+        //         //     ON t.transferID = ti.transferID
+        //         //     WHERE t.type IN ('Transfer Out', 'Loan')
+        //         //     ORDER BY t.destination
+        //         // `),
+        //     inbound: await pool.query(`SELECT
+        //         t.transferID,
+        //         t.destination,
+        //         t.date,
+        //         t.recipient,
+        //         t.email,
+        //         t.status,
+        //         t.transferDocument,
+        //         t.type,
+        //         t.remarks,
+        //         t.sender,
+        //         STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+        //         FROM transfers t
+        //         JOIN transferItems ti
+        //         ON t.transferID = ti.transferID
+        //         WHERE t.type = 'Transfer In'
+        //         GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`),
+        //     miscellaneous: await pool.query(`SELECT
+        //         t.transferID,
+        //         t.destination,
+        //         t.date,
+        //         t.recipient,
+        //         t.email,
+        //         t.status,
+        //         t.transferDocument,
+        //         t.type,
+        //         t.remarks,
+        //         t.sender,
+        //         STRING_AGG(CONCAT(ti.itemName, ':', ti.quantity), ', ') AS items
+        //         FROM transfers t
+        //         JOIN transferItems ti
+        //         ON t.transferID = ti.transferID
+        //         WHERE t.type = 'Miscellaneous'
+        //         GROUP BY t.transferID, t.destination, t.date, t.recipient, t.email, t.status, t.transferDocument, t.type, t.remarks, t.sender`)
+        // }
         return res.json(result)
 
     } catch (error) {
@@ -150,9 +178,6 @@ transferRoute.post('/newtransfer', async (req, res) => {
 
     let status 
     switch (info.type) {
-        case 'Loan':
-            status = 'On Loan';
-            break;
         case 'Miscellaneous':
             status = 'Acknowledged';
             break;
@@ -169,7 +194,11 @@ transferRoute.post('/newtransfer', async (req, res) => {
         SELECT SCOPE_IDENTITY() AS transferID`)
         
         const transferID = result.recordset[0].transferID;
-        const transferDocument = await sendTransferEmail(info, items, transferID, info.db);
+        let transferDocument
+        if (info.type != 'Miscellaneous') {
+            transferDocument = await sendTransferEmail(info.type, info, items, transferID, info.db);
+        }
+        
 
         
         pool.query(`UPDATE transfers
@@ -252,25 +281,58 @@ transferRoute.delete('/:itemName', async (req, res) => {
 // =========================== PUT =========================================
 
 // UPDATE ONE RECORD
-transferRoute.put('/', async (req, res) => {
+transferRoute.put('/manualstatuschange', async (req, res) => {
     const pool = req.sqlPool;
 
-    const type = req.query.type;
-
+    const newStatus = req.body.status;
+    const transferID = req.body.id;
+    const type = req.body.type
+    const db = req.query.db;
     try {
 
-        await pool.query(`UPDATE transfers
-            SET status = '${req.body.status}'
-            WHERE transferID = ${req.body.id}`);
+        const result = await pool.query(`
+            SELECT *
+            FROM transferItems
+            WHERE transferID = ${transferID}
+        `)
 
-        if (req.body.status === 'Acknowledged') {
+        await pool.query(`
+            UPDATE transfers
+            SET status = '${newStatus}'
+            WHERE transferID = ${transferID}
+        `)
 
-            req.body.items.forEach (item => {
-                const [itemName, quantity] = item.split(':');
-                pool.query(`UPDATE warehouse 
-                    SET cabinet = cabinet - ${quantity}
-                    WHERE itemName = '${itemName}'`);
+        if (newStatus === 'Returned') {
+            result.recordset.forEach(item => {
+                pool.query(`
+                    UPDATE warehouse
+                    SET cabinet = cabinet + ${item.quantity}
+                    WHERE itemName = '${item.itemName}'
+                `)
             })
+
+            updateTransferDocument(transferID, db, 'Loan Return');
+
+        }
+        else if (newStatus === 'Acknowledged') {
+            if (type === 'Transfer Out') {
+                result.recordset.forEach(item => {
+                    pool.query(`
+                        UPDATE warehouse
+                        SET cabinet = cabinet - ${item.quantity}
+                        WHERE itemName = '${item.itemName}'
+                    `)
+                })
+            }
+            else if (type === 'Transfer In') {
+                result.recordset.forEach(item => {
+                    pool.query(`
+                        UPDATE warehouse
+                        SET cabinet = cabinet - ${item.quantity}
+                        WHERE itemName = '${item.itemName}'
+                    `)
+                })
+            }
         }
 
         res.status(200).json({ message: 'Items updated successfully' });
@@ -336,6 +398,7 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
 
     const pool = req.sqlPool;
     const db = req.query.db;
+    const type = req.query.type;
     const { transferID } = req.params;
     
     try {
@@ -347,25 +410,45 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
         `)
 
         if (status.recordset[0].status === "Pending") {
-            updateTransferDocument(transferID, db);
+            updateTransferDocument(transferID, db, type);
 
             const result = await pool.query(`
                 SELECT *
                 FROM transferItems
                 WHERE transferID = ${transferID}
             `)
-            
-            result.recordset.forEach(item => {
-                pool.query(`
-                    UPDATE warehouse
-                    SET cabinet = cabinet - ${item.quantity}
-                    WHERE itemName = '${item.itemName}'
-                `)
-            })
 
+            if (type === 'Transfer In') {
+                result.recordset.forEach(item => {
+                    pool.query(`
+                        UPDATE warehouse
+                        SET cabinet = cabinet + ${item.quantity}
+                        WHERE itemName = '${item.itemName}'
+                    `)
+                })
+            }
+            else {
+                result.recordset.forEach(item => {
+                    pool.query(`
+                        UPDATE warehouse
+                        SET cabinet = cabinet - ${item.quantity}
+                        WHERE itemName = '${item.itemName}'
+                    `)
+                })
+            }
+            
+
+
+            let newStatus
+            if (type === 'Loan') {
+                newStatus = "On Loan"
+            } else {
+                newStatus = "Acknowledged"
+            }
+            
             pool.query(`
                 UPDATE transfers
-                SET status = 'Acknowledged'
+                SET status = '${newStatus}'
                 WHERE transferID = ${transferID}
             `)
         }

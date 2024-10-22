@@ -178,9 +178,8 @@ const NewTransfer = ({}) => {
 
                 
                   <div className='transfer_info'>
-                    {!(transferInfo.type === 'Miscellaneous') && (
-                    <>
-                    <div className='transfer-info-input'>
+                    {(transferInfo.type === 'Transfer In') && (
+                      <div className='transfer-info-input'>
                       <h5>Sender</h5>
                       <input
                         type="text"
@@ -188,6 +187,9 @@ const NewTransfer = ({}) => {
                         onChange={(e) => handleTransferInfoChange(e.target.value, 'sender')}
                       />
                     </div>
+                    )}
+                    {!(transferInfo.type === 'Miscellaneous') && (
+                    <>
                     <div className='transfer-info-input'>
                       <h5>Recipient</h5>
                       <input

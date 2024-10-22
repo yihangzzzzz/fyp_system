@@ -63,7 +63,7 @@ const Orders = () => {
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
-            setInventory(res.data.recordset);
+            setInventory(res.data);
             console.log("orders are ", res.data.recordset);
             setLoading(false);
         })
@@ -106,7 +106,34 @@ const Orders = () => {
 
         (!filterQuery.status || item.status.includes(filterQuery.status)) && 
 
-        (!filterQuery.finance || item.status.includes(filterQuery.finance)) 
+        (!filterQuery.finance || item.status.includes(filterQuery.finance)) &&
+
+        (item.items.some((itemDetail) => {
+          if (filterQuery.doStartDate) {
+            return (new Date(itemDetail.doDate) >= new Date(filterQuery.doStartDate));
+          }
+          else {
+            return true;
+          }
+        })) &&
+
+        (item.items.some((itemDetail) => {
+          if (filterQuery.doEndDate) {
+            return (new Date(itemDetail.doDate) <= new Date(filterQuery.doEndDate));
+          }
+          else {
+            return true;
+          }
+        })) &&
+
+        (item.items.some((itemDetail) => {
+          if (filterQuery.doNumber) {
+            return itemDetail.doNumber.includes(filterQuery.doNumber);
+          }
+          else {
+            return true;
+          }
+        }))
       );
     })
     .sort((a, b) => {
@@ -115,7 +142,7 @@ const Orders = () => {
       } else if (sortQuery === 'po') {
           return a.poDate - b.poDate;
       } else if (sortQuery === 'do') {
-        return a.items.split(':')[2] - b.items.split(':')[2];
+        return a.items.doDate - b.items.doDate;
     } 
       // Add more sort options as needed
   });;
@@ -290,6 +317,42 @@ const Orders = () => {
                       <option value="Sent">Sent</option>
                     </select>
                   </div>
+                  <div className="input-field">
+                      <h5>DO Number</h5>
+                      <input
+                        type="text"
+                        name='doNumber'
+                        value={filterQuery.doNumber || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        // style={{ outline: '2px solid black' }}
+                      />
+                   </div>
+                  <div className="input-field">
+                      <h5>DO Date</h5>
+                      <div className='date-range-inputs'>
+                        <input
+                          type="date"
+                          name='doStartDate'
+                          value={filterQuery.doStartDate || ''}
+                          onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                          // onChange={(e) => setPoDocument(e.target.files[0])}
+                          // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                          // style={{ outline: '2px solid black' }}
+                        />
+                        <h5>to</h5>
+                        <input
+                          type="date"
+                          name='doEndDate'
+                          value={filterQuery.doEndDate || ''}
+                          onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                          // onChange={(e) => setPoDocument(e.target.files[0])}
+                          // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                          // style={{ outline: '2px solid black' }}
+                        />
+                      </div>
+                   </div>
 
 
                    </div>
@@ -333,7 +396,7 @@ const Orders = () => {
                       <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => {
 
-                                const itemsArray = item.items.split(', ');
+                                const itemsArray = item.items;
                                 const rowSpan = itemsArray.length;
 
                                 const poDate = new Date(item.poDate);
@@ -343,7 +406,7 @@ const Orders = () => {
                                   <>
                                   {itemsArray.map((itemDetail, idx) => {
 
-                                    const doDate = new Date(itemDetail.split(':')[2]);
+                                    const doDate = new Date(itemDetail.doDate);
                                     const formattedDoDate = `${String(doDate.getDate()).padStart(2, '0')}/${String(doDate.getMonth() + 1).padStart(2, '0')}/${doDate.getFullYear()}`;
 
                                     return (
@@ -379,19 +442,19 @@ const Orders = () => {
                                     <td rowSpan={rowSpan} >{item.quantity - item.deliveredQuantity}</td>
                                     </>
                                       )}
-                                    <td>{itemDetail.split(':')[0]}</td>
+                                    <td>{itemDetail.subQuantity}</td>
                                     {/* <td>{(itemDetail.split(':')[2] === null) ? ('') : (formattedDoDate)}</td> */}
-                                    <td>{!itemDetail.split(':')[2] ? '' : formattedDoDate}</td>
+                                    <td>{!itemDetail.doDate ? '' : formattedDoDate}</td>
                                     <td>
-                                      <a href={`/orders_be/pdf/${itemDetail.split(':')[3]}?db=${db}`} target="_blank" rel="noopener noreferrer">
-                                      {itemDetail.split(':')[1]}
+                                      <a href={`/orders_be/pdf/${itemDetail.doDocument}?db=${db}`} target="_blank" rel="noopener noreferrer">
+                                      {itemDetail.doNumber}
                                       </a>
                                     </td>
                                     <td>
-                                      {itemDetail.split(':')[4] === "Send" ? (
-                                        <button style={{color: '#FF922C'}}onClick={() => handleSendFinance(itemDetail.split(':')[1], itemDetail.split(':')[3])}>Send</button>
+                                      {itemDetail.finance === "Send" ? (
+                                        <button style={{color: '#FF922C'}}onClick={() => handleSendFinance(itemDetail.doNumber, itemDetail.doDocument)}>Send</button>
                                       ) : (
-                                        <span style={{color: '#238823'}}>{itemDetail.split(':')[4]}</span>
+                                        <span style={{color: '#238823'}}>{itemDetail.finance}</span>
                                       )}
                                     </td>
                                 </tr>

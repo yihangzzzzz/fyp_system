@@ -33,7 +33,7 @@ const Transfers = () => {
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-    const [statusChange, setStautsChange] = useState({status: '', id: '', items: ''});
+    const [statusChange, setStautsChange] = useState({status: '', id: null, type: ''});
     const [filterQuery, setFilterQuery] = useState({itemName: ''});
     const [tableMode, setTableMode] = useState('Outbound');
     const [showFilters, setShowFilters] = useState(false);
@@ -56,10 +56,11 @@ const Transfers = () => {
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
-          setInventoryInbound(res.data.inbound.recordset);
-          setInventoryOutbound(res.data.outbound.recordset);
-          setInventoryMiscellaneous(res.data.miscellaneous.recordset)
-          setInventory(res.data.outbound.recordset)
+          setInventoryInbound(res.data.inbound);
+          setInventoryOutbound(res.data.outbound);
+          setInventoryMiscellaneous(res.data.miscellaneous)
+          setInventory(res.data.outbound)
+          console.log(res.data.outbound)
           setLoading(false);
         })
         .catch((error) => {
@@ -79,8 +80,8 @@ const Transfers = () => {
     const handleTransferStatusChange = async () => {
         setIsConfirmationOpen(false);
         await axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be?db=${db}`, statusChange);
-        setStautsChange({status: '', id: null, items: null});
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/manualstatuschange?db=${db}`, statusChange);
+        setStautsChange({status: '', id: null, type: ''});
         fetchInventory();
     }
 
@@ -111,15 +112,17 @@ const Transfers = () => {
   
           (!filterQuery.status || item.status.includes(filterQuery.status)) && 
 
-          (item.items.split(',').some((itemDetail) => {
+          (item.items.some((itemDetail) => {
             if (filterQuery.itemName) {
-              const itemName = itemDetail.split(':')[0];
+              const itemName = itemDetail.itemName;
               return itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase());
             }
             else {
               return true;
             }
           }))
+
+
         );
       })
 
@@ -315,7 +318,7 @@ const Transfers = () => {
                       <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => {
 
-                                const itemsArray = item.items.split(', ');
+                                const itemsArray = item.items;
                                 const rowSpan = itemsArray.length;
                                 const date = new Date(item.date);
                                 const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
@@ -345,7 +348,7 @@ const Transfers = () => {
                                                             disabled={item.status === "Acknowledged" || item.status === "Returned"} 
                                                             value={item.status}
                                                             onChange={(e) => {
-                                                                setStautsChange({status: e.target.value, id: item.transferID, items: itemsArray});
+                                                                setStautsChange({status: e.target.value, id: item.transferID, type: item.type});
                                                                 setIsConfirmationOpen(true);
                                                             }}
                                                             style={{
@@ -363,6 +366,7 @@ const Transfers = () => {
                                                             >
                                                             {item.type === 'Loan' ? (
                                                               <>
+                                                                <option style={{ color: 'black' }} value="Pending">Pending</option>
                                                                 <option style={{ color: 'black' }} value="On Loan">On Loan</option>
                                                                 <option style={{ color: 'black' }} value="Returned">Returned</option>
                                                               </>
@@ -380,13 +384,11 @@ const Transfers = () => {
                                                     </>
                                                     
                                                 )}
-                                                {/* Split itemDetail to separate itemName and quantity */}
-                                                {/* <td className={`transfer-table-item ${(itemDetail.split(':')[0].toLowerCase() === 'hex key set') ? 'selected' : ''}`}> */}
-                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
-                                                  {itemDetail.split(':')[0]}
+                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
+                                                  {itemDetail.itemName}
                                                 </td>
-                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.split(':')[0].toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
-                                                  {itemDetail.split(':')[1]}
+                                                <td className={`transfer-table-item ${filterQuery.itemName != '' && (itemDetail.itemName.toLowerCase().includes(filterQuery.itemName.toLowerCase())) ? 'selected' : ''}`}>
+                                                  {itemDetail.quantity}
                                                 </td>
                                                 {idx === 0 && (
                                                   <td rowSpan={rowSpan}>{item.remarks}</td>
