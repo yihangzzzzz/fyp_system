@@ -46,10 +46,8 @@ import EmailTemplates from './pages/EmailTemplates.jsx';
 const App = () => {
   return (
     <div>
-            <Routes>
-        {/* <DefaultRoute element={<Home/>}/> */}
-        {/* <Route path = '/' element = {<Login/>} /> */}
-        {/* <Route path = '/login/:lab' element = {<Login/>} /> */}
+      <Routes>
+
         <Route path = '/' element = {<MainPage/>} />
         <Route path = '/login' element = {<Login/>} />
         <Route path = '/home' element = {<Home/>} />
@@ -63,7 +61,6 @@ const App = () => {
         <Route path = '/orders' element = {<Orders/>} />
         <Route path = '/orders/neworder' element = {<NewOrder/>} />
         <Route path = '/orders/newdelivery' element = {<NewDelivery/>} />
-        {/* <Route path = '/orders/pdf/:fileName' element={<ViewPDF />} /> */}
 
         <Route path = '/transfers' element = {<Transfers/>} />
         <Route path = '/transfers/newtransfer' element = {<NewTransfer/>} />

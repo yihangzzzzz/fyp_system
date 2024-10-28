@@ -1,5 +1,5 @@
 const express = require('express');
-const {PDFDocument} = require('pdf-lib');
+const {PDFDocument, PDFString, PDFName} = require('pdf-lib');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
@@ -140,6 +140,51 @@ async function sendTransferEmail(type, info, items, transferID, db) {
   });
 
 
+  // ADD HYPERLINK TO ACKNOWLEDGE 
+  const createPageLinkAnnotation = (page, uri) =>
+    page.doc.context.register(
+      page.doc.context.obj({
+        Type: 'Annot',
+        Subtype: 'Link',
+        Rect: [72, 195, 192, 215],
+        C: [1, 1, 1],
+        A: {
+          Type: 'Action',
+          S: 'URI',
+          URI: PDFString.of(uri),
+        },
+      }),
+    );
+
+  firstPage.drawText('Acknowledge Transfer', {
+    x: 72,
+    y: 200,
+    size: 12,
+    font: georgiaFont
+  });
+
+  const link = createPageLinkAnnotation(firstPage, `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}`);
+  firstPage.node.set(PDFName.of('Annots'), pdfDoc.context.obj([link]));
+
+  // pdfDoc.textWithLink('Acknowledge', 72, 200, { url: `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}` });
+
+  // firstPage.drawText('Acknowledge Transfer', {
+  //     x: 72,
+  //     y: 200,
+  //     size: 12,
+  //     font: georgiaFont
+  // });
+
+  // // Create a link annotation
+  // firstPage.addLinkAnnotation({
+  //     x: 72,
+  //     y: 200,
+  //     size: 12,
+  //     font: georgiaFont,
+  //     url: `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}`
+  // });
+
+
 
 
   const documentName = `transfer${transferID}.pdf`;
@@ -158,8 +203,8 @@ async function sendTransferEmail(type, info, items, transferID, db) {
           <li>Destination: ${info.destination}</li>
           <li>Recipient: ${info.recipient}</li>
         </ul>
-        <p>Please click on the link below to acknowledge:</p>
-        <a href="http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}">Acknowledge Transfer</a>`
+        <p>Please acknowledge the transfer in the attached document</p>
+        `
         ,
       attachments: {
           filename: 'transferDocument.pdf',

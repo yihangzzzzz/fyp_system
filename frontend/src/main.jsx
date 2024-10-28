@@ -6,32 +6,9 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.jsx'; // Ensure default export
-import './styles/index.css'; // No direct `require` for CSS in ES6; handled by build tools
+import App from './App.jsx';
+import './styles/index.css';
 import { BrowserRouter } from 'react-router-dom';
-
-
-// This code needs to be executed in a browser environment with proper build tools
-// ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  //   <BrowserRouter>
-  //   <App />
-  //   </BrowserRouter>
-  // </React.StrictMode>
-  // 
-  // );
-
-
-// ReactDOM.createRoot(document.getElementById('root')).render(
-//   <BrowserRouter>
-//     <App/>
-//   </BrowserRouter>,
-// )
-
-// ReactDOM.render(
-//   React.createElement(App), // Create the React element from the App component
-//   document.getElementById('root') // Target the div with id 'root'
-// );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

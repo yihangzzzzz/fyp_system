@@ -163,10 +163,10 @@ const Transfers = () => {
                         <h4>Filters</h4>
                         <FaFilter />
                       </div>
-                      <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                      {/* <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
                         <h4>Sort</h4>
                         <FaSortAmountDown />
-                      </div>
+                      </div> */}
                       <div className='filter-child-element'>
                         <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({itemName : ''});setSortQuery({});}}>Clear Filters</button>
                       </div>
@@ -203,10 +203,11 @@ const Transfers = () => {
                       <option value="Transfer Out">Transfer Out</option>
                       <option value="Transfer In">Transfer In</option>
                       <option value="Loan">Loan</option>
+                      <option value="Miscellaneous">Loan</option>
                     </select>
                   </div>
                     <div className="input-field">
-                      <h5>Destination</h5>
+                      <h5>Destination/Source</h5>
                       <input
                         type="text"
                         name='destination'
@@ -301,7 +302,7 @@ const Transfers = () => {
                           <tr className='table-header-row'>
                               {/* <th className='table-header-title'>Type</th> */}
                               {selectedMode === 'All' && (<th className='table-header-title'>Type</th>)}
-                              <th className='table-header-title'>Destination</th>
+                              <th className='table-header-title'>Destination<br></br>/Source</th>
                               <th className='table-header-title'>Date</th>
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Sender</th>)}
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Recipient</th>)}
@@ -338,7 +339,7 @@ const Transfers = () => {
                                                         {selectedMode != 'Miscellaneous' && (<td rowSpan={rowSpan}>{item.email}</td>)}
                                                         <td rowSpan={rowSpan}>
                                                             <a href={`/transfers_be/pdf/${item.transferDocument}?db=${db}`} target="_blank" rel="noopener noreferrer">
-                                                                VIew PDF
+                                                                {item.transferID}
                                                             </a>
                                                         </td>
                                                         {/* <td rowSpan={rowSpan}>{item.description}</td> */}

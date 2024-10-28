@@ -207,8 +207,8 @@ transferRoute.post('/newtransfer', async (req, res) => {
     
         items.forEach(item => {
             // UPDATE transferItems table
-            pool.query(`INSERT INTO transferItems (transferID, itemName, quantity) 
-                VALUES (${transferID}, '${item.name}', ${item.quantity})`);
+            pool.query(`INSERT INTO transferItems (transferID, itemName, quantity, itemID) 
+                VALUES (${transferID}, '${item.name}', ${item.quantity}, ${item.itemID})`);
 
             // UPDATE inventory table if type is Miscellaneous
             if (info.destination.includes('Counter')) {

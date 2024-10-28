@@ -28,7 +28,7 @@ const Modal = ({isOpen, onSubmit, onCancel, editUsername}) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2 className='form-title'>Add New User</h2>
+        <h2 className='form-title'>{editUsername ? 'Change Password' : 'Add New User'}</h2>
         <div className='inputs'>
           <div className="input-field">
             <h5>Username</h5>

@@ -51,7 +51,6 @@ const Inventory = () => {
     //   }, []);
 
     const fetchInventory = async (sortAtt) => {
-        console.log("fetch got run")
         await axios
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be?db=${db}`, {params: {sortBy: sortAtt}})
         // .get(`http://localhost:3000/inventory`, {params: {sortBy: sortAtt}})
@@ -226,13 +225,13 @@ const Inventory = () => {
                               <td >{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>
-                              {item.cabinet < item.lowStock ? (
-                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.cabinet}</td>
-                              ) : (
-                                <td>{item.cabinet}</td>
-                              )}
+                              <td>{item.cabinet}</td>
                               <td>{item.counter}</td>
-                              <td>{item.counter + item.cabinet}</td>
+                              {item.counter + item.cabinet < item.lowStock ? (
+                                <td style={{ backgroundColor: '#f85a68 ', color: 'white' }}>{item.counter + item.cabinet}</td>
+                              ) : (
+                                <td>{item.counter + item.cabinet}</td>
+                              )}
                               <td>{item.ordered}</td>
                               <td>{item.lostDamaged}</td>
                               <td>{item.remarks}</td>

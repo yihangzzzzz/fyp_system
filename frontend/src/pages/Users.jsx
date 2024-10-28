@@ -88,7 +88,7 @@ const Users = () => {
                                         onClick={() => {setIsEditModalOpen(true); setEditUsername(item.username);}}
                                         />
                                     <MdDelete
-                                        title='Delete'
+                                        title='Delete'undefined
                                         onClick={() => {handleDelete(item.username)}}
                                         />
                                 </td>

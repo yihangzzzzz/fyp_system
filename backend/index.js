@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
@@ -31,12 +32,10 @@ app.use(session({
 const sqlPool = async function (req, res, next) {
   if (req.query.db) {
     if (req.query.db === 'sw') {
-      req.sqlPool = await poolSWPromise; // Use hardware inventory pool
-      // console.log("sw pool connected");
+      req.sqlPool = await poolSWPromise; // Use software inventory pool
     } else {
 
       req.sqlPool = await poolHWPromise; // Default to software inventory pool
-      // console.log("hw pool connected");
     }
   }
   next();
@@ -50,10 +49,10 @@ app.use('/transfers_be', transferRouter);
 app.use('/orders_be', orderRouter);
 app.use('/documents', express.static('documents'))
 
-
 app.listen(process.env.PORT || PORT, () => {
-    console.log("System is running sucessfully");
+  console.log("System is running sucessfully");
 })
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));

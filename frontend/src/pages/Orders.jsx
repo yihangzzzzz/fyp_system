@@ -64,7 +64,7 @@ const Orders = () => {
         .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be?db=${db}`, {params: {sortBy: sortAtt}})
         .then((res) => {
             setInventory(res.data);
-            console.log("orders are ", res.data.recordset);
+            console.log("orders are ", res.data);
             setLoading(false);
         })
         .catch((error) => {
@@ -155,6 +155,14 @@ const Orders = () => {
       }
     };
 
+    const handleRowSelectAll = () => {
+      if (selectedRows.includes(item)) {
+        setSelectedRows(selectedRows.filter(selected => selected !== item));
+      } else {
+        setSelectedRows([...selectedRows, item]);
+      }
+    };
+
     const handleSendFinance = async (doNumber, doDocument) => {
       await axios
       .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/sendfinance?db=${db}`, {
@@ -225,13 +233,19 @@ const Orders = () => {
                           <h4>Filters</h4>
                           <FaFilter />
                         </div>
-                        <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
+                        {/* <div className='filter-child-element' onClick={() => {setShowSort(!showSort);setShowFilters(false)}} style={{ cursor: 'pointer' }}>
                           <h4>Sort</h4>
                           <FaSortAmountDown />
-                        </div>
+                        </div> */}
                         <div className='filter-child-element'>
                           <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
                         </div>
+                        {selectedRows.length > 0 && (
+                    // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+                        <button onClick={() => ackNewDelivery()} className='add_new_delivery_button'>
+                          Add New Delivery
+                        </button>
+                         )}
                         {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                     </div>
                     {/* <div className="input-field" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}> */}
@@ -318,18 +332,6 @@ const Orders = () => {
                     </select>
                   </div>
                   <div className="input-field">
-                      <h5>DO Number</h5>
-                      <input
-                        type="text"
-                        name='doNumber'
-                        value={filterQuery.doNumber || ''}
-                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
-                        // onChange={(e) => setPoDocument(e.target.files[0])}
-                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
-                        // style={{ outline: '2px solid black' }}
-                      />
-                   </div>
-                  <div className="input-field">
                       <h5>DO Date</h5>
                       <div className='date-range-inputs'>
                         <input
@@ -353,6 +355,18 @@ const Orders = () => {
                         />
                       </div>
                    </div>
+                   <div className="input-field">
+                      <h5>DO Number</h5>
+                      <input
+                        type="text"
+                        name='doNumber'
+                        value={filterQuery.doNumber || ''}
+                        onChange={(e) => handleSetFilters(e.target.name, e.target.value)}
+                        // onChange={(e) => setPoDocument(e.target.files[0])}
+                        // onChange={(e) => handleAddPODocument(e.target.files[0])}
+                        // style={{ outline: '2px solid black' }}
+                      />
+                   </div>
 
 
                    </div>
@@ -371,12 +385,6 @@ const Orders = () => {
                     </div>
                   )}
                   </div>
-                  {selectedRows.length > 0 && (
-                    // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
-                    <button onClick={() => ackNewDelivery()} className='acknowledgeButton'>
-                      Add New Delivery
-                    </button>
-                  )}
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr className='table-header-row'>
@@ -442,7 +450,9 @@ const Orders = () => {
                                     <td rowSpan={rowSpan} >{item.quantity - item.deliveredQuantity}</td>
                                     </>
                                       )}
-                                    <td>{itemDetail.subQuantity}</td>
+                                    {itemDetail && (
+                                      <>
+                                      <td>{itemDetail.subQuantity}</td>
                                     {/* <td>{(itemDetail.split(':')[2] === null) ? ('') : (formattedDoDate)}</td> */}
                                     <td>{!itemDetail.doDate ? '' : formattedDoDate}</td>
                                     <td>
@@ -457,6 +467,9 @@ const Orders = () => {
                                         <span style={{color: '#238823'}}>{itemDetail.finance}</span>
                                       )}
                                     </td>
+                                      </>
+                                    )}
+
                                 </tr>
                           )})}
 

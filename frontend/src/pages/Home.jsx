@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/navbar.jsx';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { RiH1 } from 'react-icons/ri';
 
 Chart.register(...registerables);
 
@@ -140,7 +141,8 @@ const Home  = () => {
     <div className='home-page'>
         <Navbar />
         <div className="home-page-container">
-            <h1 className="home-title">Inventory Management System</h1>
+            {db === 'sw' ? (<h1 className="home-title">Software Project Lab</h1>) : (<h1 className="home-title">Hardware Project Lab</h1>)}
+            {/* <h1 className="home-title">Inventory Management System</h1> */}
             <div className="header-container">
                 <div className="header-section">
                     <h2>Inventory</h2>
@@ -181,12 +183,12 @@ const Home  = () => {
             </div>
         </div>
 
-        <div className='line_graphs'>
+        {/* <div className='line_graphs'>
                 <h2>Line Graph</h2>
                 <div>
                     <canvas className='transfer_graph' ref={canvasRef}></canvas>
                 </div>
-        </div>
+        </div> */}
 
     </div>
   )

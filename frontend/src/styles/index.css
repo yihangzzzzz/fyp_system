@@ -1,9 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* @import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities"; */
+
 
 body {
   background-color: #f0f0f0; /* Light grey */
@@ -90,6 +88,24 @@ body {
   color: white;
   padding: 10px;
   gap: 30px;
+}
+
+.navbar_logo {
+  padding: 10px;
+  display: flex; /* Use flex to fit content */
+  width: auto; /* Let width adjust to content */
+}
+
+.navbar_picture {
+  height: auto;
+  width: 200px;
+}
+
+.navbar-item {
+  display: flex;
+  align-items: center; /* Align icon and text/button vertically */
+  gap: 2px; /* Space between the icon and the dropdown */
+  position: relative;
 }
 
 .navbar-brand {
@@ -395,12 +411,6 @@ th {
   display: inline-block; */
 }
 
-.navbar-item {
-  display: flex;
-  align-items: center; /* Align icon and text/button vertically */
-  gap: 2px; /* Space between the icon and the dropdown */
-  position: relative;
-}
 /* Dropdown content (hidden by default) */
 .dropdown-content {
   display: none;
@@ -760,4 +770,13 @@ th {
 .user_actions {
   display: flex;
   gap: 10px;
+  height: 100%;
+
+}
+
+.add_new_delivery_button {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: green;
+  color: white;
 }

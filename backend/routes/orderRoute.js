@@ -60,6 +60,8 @@ orderRouter.get('/', async (req, res) => {
         
         const orders = (await pool.query(`SELECT * FROM orders`)).recordset;
         const doDetails = (await pool.query(`SELECT * from doDetails`)).recordset;
+        
+        console.log(doDetails)
 
         const ordersDict = {}
         orders.forEach(order => {
@@ -76,6 +78,18 @@ orderRouter.get('/', async (req, res) => {
                 delivered += subOrder.subQuantity;
             })
             order.deliveredQuantity = delivered;
+            if (order.items.length === 0) {
+                order.items = [
+                    {
+                        doNumber : '',
+                        doDate : '',
+                        doDocument : '',
+                        subQuantity : '',
+                        finance : ''
+                    }
+                ]
+
+            }
         })
         
         return res.json(result)

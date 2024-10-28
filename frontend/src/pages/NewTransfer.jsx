@@ -54,8 +54,8 @@ const NewTransfer = ({}) => {
       }
     };
   
-    const handleAddTransferItem = (name) => {
-      setTransferItems([...transferItems, { name: name, quantity: 0 }]);
+    const handleAddTransferItem = (itemID, name) => {
+      setTransferItems([...transferItems, { itemID: itemID, name: name, quantity: 0 }]);
     };
 
     const handleTransferInfoChange = (e, info) => {
@@ -142,6 +142,7 @@ const NewTransfer = ({}) => {
           {labs.length > 0 && (
             
             <div className='transfer_info_main'>
+              <form onSubmit={handleSubmitTransfer}>
               <div className='transfer_info'>
                 <div className='transfer-info-input'>
                   <h5>Type</h5>
@@ -153,9 +154,9 @@ const NewTransfer = ({}) => {
                   </select>
                 </div>
                 <div className='transfer-info-input'>
-                  <h5>Destination</h5>
-                  <select value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
-                    <option value="">Select Lab</option>
+                  {transferInfo.type === 'Transfer In' ? (<><h5>Source</h5></>) : (<><h5>Destination</h5></>)}
+                  <select required value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
+                    <option value="" disabled>Select Lab</option>
                     {labs
                         .filter(item => item.type === (transferInfo.type === 'Miscellaneous' ? ('Miscellaneous') : ('All')))
                         .map(item => (
@@ -171,6 +172,7 @@ const NewTransfer = ({}) => {
                       type="date"
                       value={transferInfo.date}
                       onChange={(e) => handleTransferInfoChange(e.target.value, 'date')}
+                      required
                     />
                 </div>
               </div>
@@ -201,6 +203,7 @@ const NewTransfer = ({}) => {
                     <div className='transfer-info-input'>
                       <h5>Recipient<br />Email</h5>
                       <input
+                      required
                         type="text"
                         value={transferInfo.email}
                         onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
@@ -217,7 +220,7 @@ const NewTransfer = ({}) => {
                       />
                     </div>
                   </div>
-
+                  </form>
               </div>
           )}
 
@@ -242,7 +245,7 @@ const NewTransfer = ({}) => {
                   <tbody className='inventory-table-body'>
                     {filteredItems.map((item, index) => (
                       <tr key={index}>
-                        <td onMouseDown={() => {handleAddTransferItem(item.itemName)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
+                        <td onMouseDown={() => {handleAddTransferItem(item.itemID, item.itemName)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
                           {item.itemName}
                         </td>
                       </tr>

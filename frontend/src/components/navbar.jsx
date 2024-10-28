@@ -27,8 +27,8 @@ const Navbar = () => {
 
     return (
       <div className='navbar'>
-            <div className='navbar-item'>
-                <img className='dropdown' src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/ntu_ccds_logo.png`} alt="Logo" style={{ height: '100%', marginRight: '10px' }} />
+            <div className='navbar_logo'>
+                <img className='navbar_picture' src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/ntu_ccds_logo_final.png`} alt="Logo"/>
             </div>
             <div className='navbar-item'>
               <FaHome />
