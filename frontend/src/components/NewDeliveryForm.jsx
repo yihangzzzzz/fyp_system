@@ -6,7 +6,6 @@ const NewDeliveryForm = ({ formData, setFormData, deliveredItems }) => {
 
   formData.date = new Date().toISOString().split('T')[0];
   
-  console.log(deliveredItems);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -26,8 +26,8 @@ const NewDelivery = () => {
 
 
     useEffect(() => {
-        console.log(items);
         setDeliveryItems(items.name)
+        console.log(items.name)
     }, []);
 
     const handleDODocumentChange = (e) => {
@@ -54,7 +54,6 @@ const NewDelivery = () => {
     const handleSubmitDelivery = async () => {
 
       const newDelivery = {doDocument: doDocument, info: deliveryInfo, items: deliveryItems}
-      console.log(newDelivery)
 
       try {
         await axios
@@ -80,7 +79,7 @@ const NewDelivery = () => {
           <h1 className="title">New Delivery</h1>
         </div>
         <div className='order_table'>
-
+        <form action="" onSubmit={(e) => {e.preventDefault(); setIsConfirmationOpen(true);}}>
           <div className='transfer_info_main'>
             <div className='transfer_info'>
               <div className='transfer-info-input'>
@@ -92,6 +91,7 @@ const NewDelivery = () => {
                   // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
                   // onChange={(e) => setPoDocument(e.target.files[0])}
                   onChange={(e) => handleDODocumentChange(e)}
+                  required
                 />
               </div>
               <div className='transfer-info-input'>
@@ -138,8 +138,17 @@ const NewDelivery = () => {
                     <td>
                       <input
                         type="number"
-                        // value={item.quantity}
-                        onChange={(e) => handleAddDeliveryItem(e.target.value, item.orderID)}
+                        value={item.subQuantity}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          if (value <= (item.totalQuantity - item.deliveredQuantity)) {
+                            handleAddDeliveryItem(e.target.value, item.orderID)
+                          }
+                          else {
+                            alert(`Quantity cannot be greater than ${item.totalQuantity - item.deliveredQuantity}`);
+                          }
+                          
+                        }}
                         required
                       />
                     </td>
@@ -169,7 +178,8 @@ const NewDelivery = () => {
               })} */}
             </div>
          
-          <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
+          <button className="submit-button" type="submit">Submit</button>
+          </form>
         </div>
         <Confirmation
         isOpen={isConfirmationOpen}

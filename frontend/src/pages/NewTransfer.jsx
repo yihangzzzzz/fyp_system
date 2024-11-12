@@ -54,8 +54,8 @@ const NewTransfer = ({}) => {
       }
     };
   
-    const handleAddTransferItem = (itemID, name) => {
-      setTransferItems([...transferItems, { itemID: itemID, name: name, quantity: 0 }]);
+    const handleAddTransferItem = (itemID, name, cabinet) => {
+      setTransferItems([...transferItems, { itemID: itemID, name: name, cabinet: cabinet, quantity: null}]);
     };
 
     const handleTransferInfoChange = (e, info) => {
@@ -139,14 +139,14 @@ const NewTransfer = ({}) => {
         </div>
         
         <div className='order_table'> 
+        <form onSubmit={(e) => {e.preventDefault(); setIsConfirmationOpen(true);}}>
           {labs.length > 0 && (
             
             <div className='transfer_info_main'>
-              <form onSubmit={handleSubmitTransfer}>
               <div className='transfer_info'>
                 <div className='transfer-info-input'>
                   <h5>Type</h5>
-                  <select value={transferInfo.type} onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
+                  <select value={transferInfo.type} required onChange={(e) => handleTransferInfoChange(e.target.value, 'type')}>
                     <option value="Transfer Out">Transfer Out</option>
                     <option value="Transfer In">Transfer In</option>
                     <option value="Loan">Loan</option>
@@ -155,7 +155,7 @@ const NewTransfer = ({}) => {
                 </div>
                 <div className='transfer-info-input'>
                   {transferInfo.type === 'Transfer In' ? (<><h5>Source</h5></>) : (<><h5>Destination</h5></>)}
-                  <select required value={transferInfo.destination} onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
+                  <select required value={transferInfo.destination} requried onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
                     <option value="" disabled>Select Lab</option>
                     {labs
                         .filter(item => item.type === (transferInfo.type === 'Miscellaneous' ? ('Miscellaneous') : ('All')))
@@ -220,7 +220,6 @@ const NewTransfer = ({}) => {
                       />
                     </div>
                   </div>
-                  </form>
               </div>
           )}
 
@@ -245,7 +244,7 @@ const NewTransfer = ({}) => {
                   <tbody className='inventory-table-body'>
                     {filteredItems.map((item, index) => (
                       <tr key={index}>
-                        <td onMouseDown={() => {handleAddTransferItem(item.itemID, item.itemName)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
+                        <td onMouseDown={() => {handleAddTransferItem(item.itemID, item.itemName, item.cabinet)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
                           {item.itemName}
                         </td>
                       </tr>
@@ -260,6 +259,7 @@ const NewTransfer = ({}) => {
                 <thead>
                   <tr>
                     <th className='table-header-title'>Item</th>
+                    <th className='table-header-title'>Current Cabinet Stock</th>
                     <th className='table-header-title'>Quantity</th>
                   </tr>
                 </thead>
@@ -267,11 +267,22 @@ const NewTransfer = ({}) => {
                   {transferItems.map((transferItem, index) => (
                     <tr className='fixed-height-row' key={index}>
                       <td>{transferItem.name}</td>
+                      <td>{transferItem.cabinet}</td>
                       <td>
                         <input
+                        required
                           type="number"
                           value={transferItem.quantity}
-                          onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
+                          onChange={(e) => {
+                            const value = Number(e.target.value);
+                            if (value <= transferItem.cabinet) {
+                              handleInputChange(index, 'quantity', Number(e.target.value))
+                            }
+                            else {
+                              alert(`Quantity cannot be greater than ${transferItem.cabinet}`);
+                            }
+                            
+                          }}
                         />
                       </td>
                       <td><button onClick={() => {handleDeleteOrderItem(index)}}>Delete</button></td>
@@ -281,7 +292,8 @@ const NewTransfer = ({}) => {
               </table>
             )}
           </div>
-          <button className="submit-button" type="submit" onClick={() => {setIsConfirmationOpen(true)}}>Submit</button>
+          <button className="submit-button" type="submit">Submit</button>
+          </form>
         </div>
         <Confirmation
         isOpen={isConfirmationOpen}

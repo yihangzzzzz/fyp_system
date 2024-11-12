@@ -22,7 +22,7 @@ const NewItem = ({}) => {
 
     const [picture, setPicture] = useState();  
     const [loading, setLoading] = useState(false);
-    const [newItem, setNewItem] = useState({picture: '', name: '', serial: null, quantity: null});
+    const [newItem, setNewItem] = useState({picture: '', name: '', serial: null, quantity: null, description: ''});
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     // const [selectedItem, setSelectedItem] = useState('');
@@ -42,7 +42,6 @@ const NewItem = ({}) => {
       // formData.append('serial', newItem.serial);
       formData.append('quantity', newItem.quantity);
       formData.append('description', newItem.description);
-      console.log("formdata is ",newItem);
 
       axios
       // .post("http://www.iistesting.com:3000/inventory", newItem, {
@@ -148,47 +147,54 @@ const NewItem = ({}) => {
           <h1 className="title">Add New Item</h1>
         </div>
         <div className='order_table'>
-
+        <form onSubmit={(e) => {e.preventDefault(); setIsConfirmationOpen(true)}}>
         <div className='transfer_info_main'>
           <div className='transfer_info'>
-            <div className='transfer-info-input'>
-                <h5 htmlFor='image'>Upload Image</h5>
-                <input
-                    type='file'
-                    id='image'
-                    accept='image/*'
-                    // value={newItem.picture}
-                    onChange={(e) => handleImageChange(e.target.files[0])}
+
+            
+              <div className='transfer-info-input'>
+                  <label htmlFor='image'>Upload Image</label>
+                  <input
+                      type='file'
+                      id='image'
+                      accept='image/*'
+                      // value={newItem.picture}
+                      onChange={(e) => handleImageChange(e.target.files[0])}
+                  />
+              </div>
+              <div className='transfer-info-input'>
+                      <label>Item Name</label>
+                        <input
+                          type="text"
+                          value={newItem.name}
+                          onChange={(e) => handleNewItemChange(e.target.value, 'name')}
+                          required
+                        />
+              </div>
+              <div className='transfer-info-input'>
+                      <label>Quantity</label>
+                        <input
+                          type="number"
+                          value={newItem.quantity}
+                          onChange={(e) => handleNewItemChange(e.target.value, 'quantity')}
+                          required
+                        />
+              </div>
+              <div className='transfer-info-input'>
+                <label>Description</label>
+                <textarea
+                  type="description"
+                  value={newItem.description}
+                  onChange={(e) => handleNewItemChange(e.target.value, 'description')}
                 />
-            </div>
-            <div className='transfer-info-input'>
-                    <h5>Item Name</h5>
-                      <input
-                        type="text"
-                        value={newItem.name}
-                        onChange={(e) => handleNewItemChange(e.target.value, 'name')}
-                      />
-            </div>
-            <div className='transfer-info-input'>
-                    <h5>Quantity</h5>
-                      <input
-                        type="number"
-                        value={newItem.quantity}
-                        onChange={(e) => handleNewItemChange(e.target.value, 'quantity')}
-                      />
-            </div>
-            <div className='transfer-info-input'>
-              <h5>Description</h5>
-              <textarea
-                type="description"
-                value={newItem.description}
-                onChange={(e) => handleNewItemChange(e.target.value, 'description')}
-              />
-            </div>
+              </div>
+            
+
           </div>
         </div>
 
-        <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
+        <button className="submit-button" type="submit">Submit</button>
+        </form>
         
         </div>
         <Confirmation

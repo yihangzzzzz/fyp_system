@@ -31,15 +31,15 @@ inventoryRouter.get('/', async (req, res) => {
 })
 
 // GET 1 RECORD
-inventoryRouter.get('/:itemName', async (req, res) => {
+inventoryRouter.get('/:itemID', async (req, res) => {
     const pool = req.sqlPool;
 
-    const { itemName } = req.params;
+    const itemID = req.params.itemID;
 
     try {
         const data = pool.query(`SELECT *
                                 FROM warehouse
-                                WHERE itemName = '${itemName}'`);
+                                WHERE itemID = ${itemID}`);
         data.then((res1) => {
             return res.json(res1)
         })
@@ -74,11 +74,11 @@ inventoryRouter.post('/newitem', upload.single('picture'), async (req, res) => {
 // ================================= DELETE ====================================================
 
 // DELETE ONE RECORD
-inventoryRouter.delete('/:itemName', async (req, res) => {
+inventoryRouter.delete('/:itemID', async (req, res) => {
     const pool = req.sqlPool;
     try {
-        const { itemName } = req.params;
-        await pool.query(`DELETE FROM warehouse WHERE itemName = '${itemName}'`);
+        const { itemID } = req.params;
+        await pool.query(`DELETE FROM warehouse WHERE itemID = ${itemID}`);
         res.status(200).json({ message: 'Item deleted successfully' });
     } catch (err) {
         console.error(err);
@@ -118,12 +118,12 @@ inventoryRouter.put('/order', async (req, res) => {
 inventoryRouter.put('/lowstock', async (req, res) => {
     const pool = req.sqlPool;
 
-    const {name, newLowStock} = req.body;
+    const {itemID, newLowStock} = req.body;
    
     try {
             pool.query(`UPDATE warehouse
                 SET lowStock = ${newLowStock}
-                WHERE itemName = '${name}'`);
+                WHERE itemID = ${itemID}`);
 
 
         res.status(200).json({ message: 'Items updated successfully' });
@@ -136,8 +136,10 @@ inventoryRouter.put('/lowstock', async (req, res) => {
 })
 
 // UPDATE 1 ITEM DETAILS
-inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => {
+inventoryRouter.put('/:itemID', upload.single('picture'), async (req, res) => {
     const pool = req.sqlPool;
+
+    const { itemID } = req.params;
 
     const oldItemName = req.params.itemName;
     const picture = req.file ? req.file.filename : req.body.picture
@@ -163,7 +165,7 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
                 ordered = ${ordered},
                 remarks = '${remarks}',
                 picture = '${picture}'
-            WHERE itemName = '${oldItemName}'`);
+            WHERE itemID = ${itemID}`);
         // if (req.file === true) {
         //     pool.query(`UPDATE warehouse
         //         SET picture = '${req.file.filename}'
@@ -172,11 +174,11 @@ inventoryRouter.put('/:itemName', upload.single('picture'), async (req, res) => 
 
         pool.query(`UPDATE orders
             SET itemName = '${itemName}'
-            WHERE itemName = '${oldItemName}'`);
+            WHERE itemID = ${itemID}`);
 
         pool.query(`UPDATE transferItems
             SET itemName = '${itemName}'
-            WHERE itemName = '${oldItemName}'`);
+            WHERE itemID = ${itemID}`);
 
             res.send({message : "success"});
 

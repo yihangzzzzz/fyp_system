@@ -112,7 +112,6 @@ const Inventory = () => {
             if (sortQuery === 'name') {
                 return a.itemName.localeCompare(b.itemName);
             } else if (sortQuery === 'cabinet') {
-                console.log("cabinet sort runs");
                 return a.cabinet - b.cabinet;
             }
             else return
@@ -239,8 +238,8 @@ const Inventory = () => {
                               {editingOrderId === index ? ( <h1>pls</h1>
                                 ) : (
                                     <Actions
-                                    toDelete={item.itemName}
-                                    toEdit={item.itemName}
+                                    toDelete={item.itemID}
+                                    toEdit={item.itemID}
                                     mode={'inventory'}/>
                                     // <Actions/>
                                 )}

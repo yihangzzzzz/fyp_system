@@ -89,7 +89,6 @@ const Transfers = () => {
           ...prevFilters, // Spread the previous state
           [field]: value, // Add new key or update existing key
         })); // Update search query as the user types
-        console.log("filters are", filterQuery)
       }
 
     const filteredInventory = inventory

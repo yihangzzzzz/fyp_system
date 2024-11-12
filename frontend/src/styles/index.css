@@ -780,3 +780,13 @@ th {
   background-color: green;
   color: white;
 }
+
+td[rowspan] {
+  position: relative;
+}
+
+.submission_buttons {
+  display: flex;
+  gap: 10px;
+  width: 40%;
+}

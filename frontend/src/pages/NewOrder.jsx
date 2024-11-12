@@ -70,7 +70,6 @@ const NewOrder = ({}) => {
     const handlePredictItems = async (queryItems) => {
       try {
         if (queryItems.length > 0) {
-          console.log("queryitems is", queryItems);
           await axios
           .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/predictitems?db=${db}`, {queryItems})
           .then((res) => {
@@ -99,7 +98,7 @@ const NewOrder = ({}) => {
 
     const handleAddOrderItem = (name) => {
       setIsSearchOpen(false);
-      setOrderItems([...orderItems, { name: name, quantity: 0 }]);
+      setOrderItems([...orderItems, { name: name, quantity: null }]);
     };
   
     const handleEditOrderItem = (index, field, value) => {
@@ -146,7 +145,7 @@ const NewOrder = ({}) => {
         </div>
         <div className='order_table'>
 
-
+        <form onSubmit={(e) => {e.preventDefault(); setIsConfirmationOpen(true);}}>
         <div className='transfer_info_main'>
           <div className='transfer_info'>
             <div className='transfer-info-input'>
@@ -158,6 +157,7 @@ const NewOrder = ({}) => {
                 // onChange={(e) => handleAddOrderInfo(e.target.files[0], "pdf")}
                 // onChange={(e) => setPoDocument(e.target.files[0])}
                 onChange={(e) => handleAddPODocument(e.target.files[0])}
+                required
               />
               {isUploading && (
                 <div style={{ marginLeft: '5px' }}>
@@ -173,6 +173,7 @@ const NewOrder = ({}) => {
                 name="poNumber"
                 value={orderInfo.poNumber}
                 onChange={(e) => handleAddOrderInfo(e.target.value, "poNumber")}
+                required
                 />
             </div>
             <div className='transfer-info-input'>
@@ -182,6 +183,7 @@ const NewOrder = ({}) => {
                 name="poDate"
                 value={orderInfo.poDate}
                 onChange={(e) => handleAddOrderInfo(e.target.value, "poDate")}
+                required
                 />
             </div>
           </div>
@@ -234,6 +236,7 @@ const NewOrder = ({}) => {
                       <td>{orderItem.name}</td>
                       <td>
                         <input
+                        required
                           type="number"
                           value={orderItem.quantity}
                           onChange={(e) => handleEditOrderItem(index, 'quantity', Number(e.target.value))}
@@ -248,7 +251,8 @@ const NewOrder = ({}) => {
 
             </div>
           {/* <button className="submit-button" type="submit" onClick={handleSubmitOrder}>Submit</button> */}
-          <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
+          <button className="submit-button" type="submit" >Submit</button>
+          </form>
         </div>
         <Confirmation
         isOpen={isConfirmationOpen}

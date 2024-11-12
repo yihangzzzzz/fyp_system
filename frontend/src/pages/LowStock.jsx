@@ -51,10 +51,10 @@ const LowStock = () => {
         item.itemName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleLowStockChange = async (name, newLowStock) => {
+    const handleLowStockChange = async (itemID, newLowStock) => {
         
         await axios
-        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/lowstock?db=${db}`, {name: name, newLowStock: newLowStock});
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/lowstock?db=${db}`, {itemID: itemID, newLowStock: newLowStock});
         fetchInventory();
     }
 
@@ -97,12 +97,12 @@ const LowStock = () => {
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
                               <td>{item.itemName}</td>
-                              <td>{item.cabinet}</td>
+                              <td>{item.cabinet + item.counter}</td>
                               <td>
                               <input
                                     type="number"
-                                    value={item.lowStock}
-                                    onChange={(e) => handleLowStockChange(item.itemName, e.target.value)}
+                                    value={item.lowStock ?? 0}
+                                    onChange={(e) => handleLowStockChange(item.itemID, e.target.value === '' ? 0 : e.target.value)}
                                 />
                               </td>
                               </tr>

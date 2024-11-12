@@ -60,8 +60,6 @@ orderRouter.get('/', async (req, res) => {
         
         const orders = (await pool.query(`SELECT * FROM orders`)).recordset;
         const doDetails = (await pool.query(`SELECT * from doDetails`)).recordset;
-        
-        console.log(doDetails)
 
         const ordersDict = {}
         orders.forEach(order => {
@@ -132,16 +130,20 @@ orderRouter.post('/scanDocument', upload.single('poDocument'), async (req, res) 
     const pdfFilePath = path.join(__dirname, `../`, req.file.path);
     const pythonProcess = spawn('python', [pythonScript, pdfFilePath]);
 
+    
+
     let result = '';
     pythonProcess.stdout.on('data', (data) => {
         result += data.toString();
     });
+
+    
    
     let parsedResult = {};
     pythonProcess.on('close', (code) => {
         if (code === 0) {
             parsedResult = JSON.parse(result);
-        console.log("result is ", result);
+            console.log("scan got run", parsedResult)
         } else {
         //   res.status(500).send('Python script failed');
         console.log("failed sia sian");
@@ -318,14 +320,21 @@ orderRouter.put('/fulfillorder', upload.single('doDocument'), async (req, res) =
 
 orderRouter.put('/sendfinance', async (req, res) => {
     const pool = req.sqlPool;
+    const db = req.query.db
 
     const doNumber = req.body.doNumber;
     const doDocument = req.body.doDocument;
 
+    const emailDetails = await pool.query(`
+        SELECT * 
+        FROM emailTemplates
+        WHERE templateName = 'finance'    
+    `)
+
    
     try {
 
-        sendFinanceEmail(doDocument);
+        sendFinanceEmail(doDocument, emailDetails.recordset[0], db);
 
         pool.query(`
             UPDATE doDetails

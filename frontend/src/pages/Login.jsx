@@ -19,8 +19,6 @@ const Login = () => {
     const db = new URLSearchParams(location.search).get('db');
   
     useEffect(() => {
-      console.log("query is ",db)
-      console.log(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be?db=${db}`)
     }, []);
 
     const handleSubmit = async (e) => {

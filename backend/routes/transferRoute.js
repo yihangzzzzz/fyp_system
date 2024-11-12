@@ -195,8 +195,16 @@ transferRoute.post('/newtransfer', async (req, res) => {
         
         const transferID = result.recordset[0].transferID;
         let transferDocument
+
+        const emailDetails = await pool.query(`
+            SELECT * 
+            FROM emailTemplates
+            WHERE templateName = 'transfer'    
+        `)
+        console.log("email details is ",emailDetails.recordset[0])
+
         if (info.type != 'Miscellaneous') {
-            transferDocument = await sendTransferEmail(info.type, info, items, transferID, info.db);
+            transferDocument = await sendTransferEmail(info.type, info, items, transferID, info.db, emailDetails.recordset[0]);
         }
         
 
@@ -215,21 +223,21 @@ transferRoute.post('/newtransfer', async (req, res) => {
                 pool.query(`UPDATE warehouse
                     SET cabinet = cabinet - ${item.quantity},
                         counter = counter + ${item.quantity}
-                    WHERE itemName = '${item.name}'`);
+                    WHERE itemID = ${item.itemID}`);
             }
 
             else if (info.destination.includes('Cabinet')) {
                 pool.query(`UPDATE warehouse
                     SET cabinet = cabinet + ${item.quantity},
                         counter = counter - ${item.quantity}
-                    WHERE itemName = '${item.name}'`);
+                    WHERE itemID = ${item.itemID}`);
             }
 
             else if (info.destination.includes('Lost/Damaged')) {
                 pool.query(`UPDATE warehouse
                     SET cabinet = cabinet - ${item.quantity},
                         lostDamaged = lostDamaged + ${item.quantity}
-                    WHERE itemName = '${item.name}'`);
+                    WHERE itemID = ${item.itemID}`);
             }
         })
         res.status(200).json({ message: 'Items updated successfully' });
@@ -307,7 +315,7 @@ transferRoute.put('/manualstatuschange', async (req, res) => {
                 pool.query(`
                     UPDATE warehouse
                     SET cabinet = cabinet + ${item.quantity}
-                    WHERE itemName = '${item.itemName}'
+                    WHERE itemID = ${item.itemID}
                 `)
             })
 
@@ -320,7 +328,7 @@ transferRoute.put('/manualstatuschange', async (req, res) => {
                     pool.query(`
                         UPDATE warehouse
                         SET cabinet = cabinet - ${item.quantity}
-                        WHERE itemName = '${item.itemName}'
+                        WHERE itemID = ${item.itemID}
                     `)
                 })
             }
@@ -329,7 +337,7 @@ transferRoute.put('/manualstatuschange', async (req, res) => {
                     pool.query(`
                         UPDATE warehouse
                         SET cabinet = cabinet - ${item.quantity}
-                        WHERE itemName = '${item.itemName}'
+                        WHERE itemID = ${item.itemID}
                     `)
                 })
             }
@@ -423,7 +431,7 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
                     pool.query(`
                         UPDATE warehouse
                         SET cabinet = cabinet + ${item.quantity}
-                        WHERE itemName = '${item.itemName}'
+                        WHERE itemID = ${item.itemID}
                     `)
                 })
             }
@@ -432,7 +440,7 @@ transferRoute.put('/accepttransfer/:transferID', async (req, res) => {
                     pool.query(`
                         UPDATE warehouse
                         SET cabinet = cabinet - ${item.quantity}
-                        WHERE itemName = '${item.itemName}'
+                        WHERE itemID = ${item.itemID}
                     `)
                 })
             }

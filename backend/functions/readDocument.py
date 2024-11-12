@@ -12,6 +12,8 @@ result = {}
 
 def extract_order_no(pdf_path):
     
+    
+    
     # Open the PDF file using pdfplumber
     with pdfplumber.open(pdf_path) as pdf:
         first_page = pdf.pages[0]  # Access the first page of the PDF
@@ -21,7 +23,7 @@ def extract_order_no(pdf_path):
 
         # Use a regular expression to find the order number after "ORDER NO."
         match1 = re.search(r"ORDER NO\.\s*(\d+)", text)
-        match2 = re.search(r"Issued on\s*(\d{2}-[a-zA-Z]{3}-\d{4})", text)
+        match2 = re.search(r"Created on\s*([\d]{1,2}-[A-Za-z]{3}-[\d]{4})", text)
         match3 = []
 
         for page in pdf.pages:
@@ -52,6 +54,7 @@ def extract_order_no(pdf_path):
                                 match3.append([target_group.group(2), target_group.group(3)]) 
 
         if match1 and match2:
+        
             order_no = match1.group(1)  # Extract the order number
             date = match2.group(1)
             item = match3
@@ -139,10 +142,11 @@ if __name__ == "__main__":
     pdf_path = sys.argv[1]
     
     # script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
-    # pdf_path = os.path.join(script_dir, '..', 'documents', 'testing.pdf') 
+    # pdf_path = os.path.join(script_dir, 'Order 8100089191_MobyTablet.pdf') 
 
     extract_order_no(pdf_path)
     extract_PO_info(pdf_path)
+    # print(result)
     print(json.dumps(result))
 
 

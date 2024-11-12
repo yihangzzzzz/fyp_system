@@ -14,6 +14,7 @@ const EmailTemplates = () => {
     const db = new URLSearchParams(location.search).get('db');
     const [transferTemplate, setTransferTemplate] = useState({});
     const [financeTemplate, setFinanceTemplate] = useState({});
+    const [lowStockTemplate, setLowStockTemplate] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
@@ -27,6 +28,7 @@ const EmailTemplates = () => {
         .then((res) => {
             setTransferTemplate(res.data.recordset[0]);
             setFinanceTemplate(res.data.recordset[1]);
+            setLowStockTemplate(res.data.recordset[2]);
         })
         .catch((error) => {
             console.log("le error is " + error);
@@ -36,6 +38,12 @@ const EmailTemplates = () => {
     const handleTemplateChange = async (value, template, field) => {
         if (template === 'transfer') {
             setTransferTemplate(prevtemplate => ({
+                ...prevtemplate,
+                [field]: value
+            }))
+        }
+        else if (template === 'lowStock') {
+            setLowStockTemplate(prevtemplate => ({
                 ...prevtemplate,
                 [field]: value
             }))
@@ -54,6 +62,7 @@ const EmailTemplates = () => {
             .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/editemailtemplates?db=${db}`, {
                 transferTemplate,
                 financeTemplate,
+                lowStockTemplate
             })
         } catch (err) {
             console.error("Error editing email templates:", err)
@@ -125,6 +134,40 @@ const EmailTemplates = () => {
                     />
                 </div>
             </div>
+
+            <div className='order_table'>
+                <h2 style={{fontSize: 'x-large'}}>
+                    Weekly Low Stock Alert
+                </h2>
+                <div className='input-box'>
+                    <h5>Subject</h5>
+                    <textarea
+                        type="text"
+                        value={lowStockTemplate.subject}
+                        onChange={(e) => handleTemplateChange(e.target.value, 'lowStock', 'subject')}
+                        style={{ outline: '2px solid black', width: '500px' }} 
+                    />
+                </div>
+                <div className='input-box'>
+                    <h5>Body</h5>
+                    <textarea
+                        type="text"
+                        value={lowStockTemplate.message}
+                        onChange={(e) => handleTemplateChange(e.target.value, 'lowStock', 'message')}
+                        style={{ outline: '2px solid black', width: '500px' }} 
+                    />
+                </div>
+                <div className='input-box'>
+                    <h5>Email</h5>
+                    <textarea
+                        type="text"
+                        value={lowStockTemplate.email}
+                        onChange={(e) => handleTemplateChange(e.target.value, 'lowStock', 'email')}
+                        style={{ outline: '2px solid black', width: '500px' }} 
+                    />
+                </div>
+            </div>
+
             <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
             <Confirmation
         isOpen={isConfirmationOpen}

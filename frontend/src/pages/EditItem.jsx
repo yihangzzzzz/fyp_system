@@ -19,7 +19,7 @@ const EditItem = () => {
 
 
     const navigate = useNavigate();
-    const { itemName } = useParams();
+    const { itemID } = useParams();
     const [item, setItem] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -31,7 +31,7 @@ const EditItem = () => {
     const fetchItem = async () => {
         setLoading(true);
         await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemName)}?db=${db}`)
+        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemID)}?db=${db}`)
         .then((res) => {
             setItem(res.data.recordset[0]);
             setLoading(false);
@@ -46,7 +46,6 @@ const EditItem = () => {
             ...prevState,
             [info]: e  // Replace with the new value for destination
         }));
-        console.log(item)
       }
       
       const handleImageChange = (e) => {
@@ -57,10 +56,9 @@ const EditItem = () => {
       }
 
     const handleSaveItemChanges = async () => {
-        console.log(item);
         try {
             await axios
-            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemName)}?db=${db}`, item, {
+            .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/inventory_be/${encodeURIComponent(itemID)}?db=${db}`, item, {
                 headers: {
                   "Content-Type": "multipart/form-data"
                 }
@@ -78,6 +76,9 @@ const EditItem = () => {
                 <h1 className="title">Edit Item</h1>
             </div>
             <div className='order_table'>
+                <form onSubmit={(e) => {e.preventDefault(); setIsConfirmationOpen(true);}}>
+                <div className='transfer_info_main'>
+                <div className='transfer_info'>
                 <div>
                     <h5 htmlFor='image'>Upload Image</h5>
                     <input
@@ -86,7 +87,7 @@ const EditItem = () => {
                         accept='image/*'
                         onChange={(e) => handleImageChange(e.target.files[0])}
                     />
-                    <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}` + item.picture} />
+                    {/* <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}` + item.picture} /> */}
                 </div>
                 <div className='input-box'>
                     <h5>Item Name</h5>
@@ -95,6 +96,7 @@ const EditItem = () => {
                         value={item.itemName}
                         onChange={(e) => handleItemChange(e.target.value, 'itemName')}
                         style={{ outline: '2px solid black' }}
+                        required
                     />
                 </div>
                 <div className='input-box'>
@@ -113,6 +115,7 @@ const EditItem = () => {
                         value={item.cabinet}
                         onChange={(e) => handleItemChange(e.target.value, 'cabinet')}
                         style={{ outline: '2px solid black' }}
+                        required
                     />
                 </div>
                 <div className='input-box'>
@@ -151,8 +154,15 @@ const EditItem = () => {
                         style={{ outline: '2px solid black', width: '500px' }} 
                     />
                 </div>
-                <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Save</button>
-                <button className="cancel-button" type="submit" onClick={() => navigate(`/inventory?db=${db}`)}>Cancel</button>
+
+                </div>
+                </div>
+                <div className='submission_buttons'>
+                <button className="submit-button" type="submit">Save</button>
+                <button className="cancel-button" onClick={() => navigate(`/inventory?db=${db}`)}>Cancel</button>
+                </div>
+
+                </form>
             </div>
             <Confirmation
             isOpen={isConfirmationOpen}

@@ -46,7 +46,6 @@ const Home  = () => {
                 date: formatDate(item.date),
             }));
             setData(formattedData);
-            console.log(formattedData);
         })
         .catch((error) => {
             console.log("le error is " + error);
@@ -58,7 +57,6 @@ const Home  = () => {
 
     const createGraph = async () => {
         const groupedData = {};
-        console.log("data is", data)
 
         data.forEach(({ itemName, date, quantity }) => {
             if (!groupedData[itemName]) {

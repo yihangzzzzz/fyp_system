@@ -1,0 +1,3 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB

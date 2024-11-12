@@ -87,7 +87,6 @@ const Orders = () => {
         ...prevFilters, // Spread the previous state
         [field]: value, // Add new key or update existing key
       })); // Update search query as the user types
-      console.log("filters are", filterQuery)
     }
 
     const filteredInventory = inventory
@@ -170,22 +169,6 @@ const Orders = () => {
         doDocument,
       })
     }
-
-    // const handleNewDelivery = async () => {
-    //   setIsModalOpen(false);
-
-    //   const itemsToUpdate = {doDate: formData.doDate, doNumber: formData.doNumber, doDocument: formData.doDocument, items: selectedRows}
-    //   console.log(itemsToUpdate);
-    //   await axios
-    //   .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/fulfillorder`, itemsToUpdate, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data"
-    //     }
-    //   })
-
-    //   console.log('Acknowledged items:', itemsToUpdate);
-    //   // Your acknowledge logic here
-    // };
 
     const ackNewDelivery = async () => {
       navigate(`/orders/newdelivery?db=${db}`, { state: { name: selectedRows.map(item => ({
