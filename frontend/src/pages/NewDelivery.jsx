@@ -27,7 +27,6 @@ const NewDelivery = () => {
 
     useEffect(() => {
         setDeliveryItems(items.name)
-        console.log(items.name)
     }, []);
 
     const handleDODocumentChange = (e) => {
@@ -118,7 +117,7 @@ const NewDelivery = () => {
           </div>
 
 
-            <div>
+            <div className='new_delivery_items_table'>
 
             <table>
               <thead>
@@ -138,6 +137,9 @@ const NewDelivery = () => {
                     <td>
                       <input
                         type="number"
+                        style={{
+                          outline: '2px solid black' // Adds a black outline
+                        }}
                         value={item.subQuantity}
                         onChange={(e) => {
                           const value = Number(e.target.value);
@@ -184,7 +186,8 @@ const NewDelivery = () => {
         <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
-        onSubmit={handleSubmitDelivery}/>
+        onSubmit={handleSubmitDelivery}
+        message={"Confirm to Add new DO?"}/>
         
     </div>
   )

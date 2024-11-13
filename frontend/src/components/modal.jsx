@@ -11,18 +11,22 @@ const Modal = ({isOpen, onSubmit, onCancel, editUsername}) => {
   const db = new URLSearchParams(location.search).get('db');
 
   const[newUser, setNewUser] = useState({})
-  
+
   if (!isOpen) return null;
+  
 
   const handleSetNewUser = (field, value) => {
     setNewUser(prevState => ({
       ...prevState,
       [field]: value  // Replace with the new value for destination
     }));
+    console.log('user is', newUser)
   }
 
   const handleSubmit = (user) => {
+    
     onSubmit(user)
+    
   }
 
   return (
@@ -35,8 +39,9 @@ const Modal = ({isOpen, onSubmit, onCancel, editUsername}) => {
             <input
               type="text"
               name='username'
+              value = {editUsername ? editUsername : ''}
               disabled = {editUsername ? true : false}
-              placeholder = {editUsername ? editUsername : ''}
+              // placeholder = {editUsername ? editUsername : ''}
               onChange={(e) => handleSetNewUser(e.target.name, e.target.value)}
               style={{ outline: '2px solid black' }}
             />

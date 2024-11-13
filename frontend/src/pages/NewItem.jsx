@@ -61,6 +61,7 @@ const NewItem = ({}) => {
       });
 
       navigate(`/inventory?db=${db}`);
+      window.location.reload();
     };
 
     const handleNewItemChange = (e, info) => {
@@ -99,7 +100,7 @@ const NewItem = ({}) => {
   const handleImageChange = (e) => {
     setNewItem(prevState => ({
       ...prevState,
-      picture: ResizeImage(e)  // Replace with the new value for destination
+      picture: e  // Replace with the new value for destination
     }));
 
   
@@ -200,7 +201,8 @@ const NewItem = ({}) => {
         <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
-        onSubmit={handleAddItem}/>
+        onSubmit={handleAddItem}
+        message={"Confirm to Add New Item?"}/>
       </div>
     );
   }

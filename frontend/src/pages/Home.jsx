@@ -10,6 +10,7 @@ import Navbar from '../components/navbar.jsx';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { RiH1 } from 'react-icons/ri';
+import { jwtDecode }from 'jwt-decode';
 
 Chart.register(...registerables);
 
@@ -28,92 +29,103 @@ const Home  = () => {
         return `${day}/${month}/${year}`;
     };
 
-    const getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
+    // const getRandomColor = () => {
+    //     const letters = '0123456789ABCDEF';
+    //     let color = '#';
+    //     for (let i = 0; i < 6; i++) {
+    //         color += letters[Math.floor(Math.random() * 16)];
+    //     }
+    //     return color;
+    // };
 
-    const fetchTransferGraphData = async () => {
-        await axios
-        .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/transfergraph?db=${db}`)
-        .then((res) => {
-            const formattedData = res.data.recordset.map(item => ({
-                ...item,
-                date: formatDate(item.date),
-            }));
-            setData(formattedData);
-        })
-        .catch((error) => {
-            console.log("le error is " + error);
-            setLoading(false);
-        });
+    // const fetchTransferGraphData = async () => {
+    //     await axios
+    //     .get(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/transfers_be/transfergraph?db=${db}`)
+    //     .then((res) => {
+    //         const formattedData = res.data.recordset.map(item => ({
+    //             ...item,
+    //             date: formatDate(item.date),
+    //         }));
+    //         setData(formattedData);
+    //     })
+    //     .catch((error) => {
+    //         console.log("le error is " + error);
+    //         setLoading(false);
+    //     });
 
 
-    }
+    // }
 
-    const createGraph = async () => {
-        const groupedData = {};
+    // const createGraph = async () => {
+    //     const groupedData = {};
 
-        data.forEach(({ itemName, date, quantity }) => {
-            if (!groupedData[itemName]) {
-                groupedData[itemName] = {};
-            }
-            groupedData[itemName][date] = (groupedData[itemName][date] || 0) + quantity;
-        });
+    //     data.forEach(({ itemName, date, quantity }) => {
+    //         if (!groupedData[itemName]) {
+    //             groupedData[itemName] = {};
+    //         }
+    //         groupedData[itemName][date] = (groupedData[itemName][date] || 0) + quantity;
+    //     });
 
         
 
-        const labels = [...new Set(data.map(item => item.date))].sort();
-        const datasets = Object.keys(groupedData).map(itemName => {
-            return {
-                label: itemName,
-                data: labels.map(date => groupedData[itemName][date] || 0),
-                borderColor: getRandomColor(),
-                fill: false,
-            };
-        });
+    //     const labels = [...new Set(data.map(item => item.date))].sort();
+    //     const datasets = Object.keys(groupedData).map(itemName => {
+    //         return {
+    //             label: itemName,
+    //             data: labels.map(date => groupedData[itemName][date] || 0),
+    //             borderColor: getRandomColor(),
+    //             fill: false,
+    //         };
+    //     });
 
-        const ctx = canvasRef.current.getContext('2d');
+    //     const ctx = canvasRef.current.getContext('2d');
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: datasets,
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'category',
-                        title: {
-                            display: true,
-                            text: 'Date',
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Quantity',
-                        },
-                    },
-                },
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                },
-            },
-        });
-    }
+    //     new Chart(ctx, {
+    //         type: 'line',
+    //         data: {
+    //             labels: labels,
+    //             datasets: datasets,
+    //         },
+    //         options: {
+    //             scales: {
+    //                 x: {
+    //                     type: 'category',
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Date',
+    //                     },
+    //                 },
+    //                 y: {
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Quantity',
+    //                     },
+    //                 },
+    //             },
+    //             responsive: true,
+    //             plugins: {
+    //                 legend: {
+    //                     display: true,
+    //                     position: 'top',
+    //                 },
+    //             },
+    //         },
+    //     });
+    // }
 
     useEffect(() => {
-            fetchTransferGraphData();
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+            try {
+              // Decode JWT to get user role
+              const decodedToken = jwtDecode(token);
+              console.log("decoded token is ", decodedToken)
+              console.log("current user role is ", decodedToken.role); // userRole could be 'admin', 'user', 'guest', etc.
+            } catch (err) {
+              console.error('Failed to decode token:', err);
+            }
+          }
 
     }, []);
 

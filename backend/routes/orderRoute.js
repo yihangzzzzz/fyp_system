@@ -322,9 +322,7 @@ orderRouter.put('/sendfinance', async (req, res) => {
     const pool = req.sqlPool;
     const db = req.query.db
 
-    const doNumber = req.body.doNumber;
-    const doDocument = req.body.doDocument;
-
+    const {doNumber, doDocument} = req.body;
     const emailDetails = await pool.query(`
         SELECT * 
         FROM emailTemplates
@@ -349,6 +347,27 @@ orderRouter.put('/sendfinance', async (req, res) => {
         res.send({message : error.message});
     }
 
+})
+
+orderRouter.put('/cancelorder', async (req, res) => {
+    const pool = req.sqlPool;
+
+    const items = req.body;
+
+    try {
+        items.forEach(item => {
+            pool.query(`
+                UPDATE orders
+                SET status = 'Cancelled'
+                WHERE orderID = ${item.orderID}
+                `)
+        })
+        res.status(200).json({ message: 'Status updated successfully' });
+    } catch (error) {
+        console.log("error is " + error.message);
+        res.send({message : error.message});
+    }
+    
 })
 
 

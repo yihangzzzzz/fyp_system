@@ -8,10 +8,25 @@ const { json } = require('express');
 const { log } = require('console');
 const upload = require('../functions/picture.js');
 const { poolHWPromise, poolSWPromise } = require('../config.js');
+const jwt = require('jsonwebtoken');
+const secretKey = 'fyp';
 
 
 
 const loginRouter = express.Router();
+
+// loginRouter.get('/', async (req, res) => {
+
+//     const pool = req.sqlPool;
+
+//     const userData = await pool.query(`
+//         SELECT *
+//         FROM users
+//         WHERE username = 'sw'
+//     `);
+
+//     return res.json(userData.recordset)
+// })
 
 loginRouter.post('/', async (req, res) => {
 
@@ -29,7 +44,12 @@ loginRouter.post('/', async (req, res) => {
         res.status(401).json({ success: false, message: 'Invalid username' });
     }
     else if(userData.recordset[0].password === password) {
-        res.json({ success: true });
+        const token = jwt.sign({
+            username: userData.recordset[0].username,
+            password: userData.recordset[0].password,
+            role: userData.recordset[0].role
+        }, secretKey)
+        res.json({token: token});
     }
     else {
         res.status(401).json({ success: false, message: 'Incorrect password' });
@@ -38,57 +58,41 @@ loginRouter.post('/', async (req, res) => {
 
 loginRouter.post('/newuser', async (req, res) => {
     const pool = req.sqlPool;
-
+    const userRole = req.query.userRole;
     const username = req.body.username;
     const password = req.body.password;
 
     try {
-        await pool.query(`
-            INSERT INTO users
-            (username, password)
-            VALUES ('${username}', '${password}')
-        `);
-        res.send('New user added');
+        if (userRole === 'general') {
+            await pool.query(`
+                INSERT INTO users
+                (username, password, role)
+                VALUES ('${username}', '${password}', 'general')
+            `);
+            res.send('New user added');
+        }
+
+        else {
+            const swPool = await poolSWPromise;
+            await swPool.query(`
+                INSERT INTO users
+                (username, password, role)
+                VALUES ('${username}', '${password}', 'super')
+                `)
+            const hwPool = await poolHWPromise;
+            await hwPool.query(`
+                INSERT INTO users
+                (username, password, role)
+                VALUES ('${username}', '${password}', 'super')
+                `)
+            res.send('New super user added');
+        }
+
     } catch (err) {
         console.error('Error:', err);
         res.status(500).send('Internal Server Error');
     }
 
-})
-
-loginRouter.get('/', async (req, res) => {
-    const pool = req.sqlPool;
-
-    try {
-        const userData = pool.query(`
-            SELECT *
-            FROM users
-        `);
-        userData.then((res1) => {
-            return res.json(res1)
-        })
-
-    } catch (error) {
-        console.log("error is " + error.message);
-    }
-
-})
-
-loginRouter.delete('/:username', async (req, res) => {
-    const pool = req.sqlPool;
-
-    const {username} = req.params
-
-    try {
-        await pool.query(`
-            DELETE FROM users
-            WHERE username = '${username}'
-        `)
-        res.send('User deleted');
-    } catch (err) {
-        console.error('Error:', err);
-        res.status(500).send('Internal Server Error');
-    }
 })
 
 loginRouter.get('/emailtemplates', async (req, res) => {
@@ -108,6 +112,73 @@ loginRouter.get('/emailtemplates', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 })
+
+loginRouter.get('/:userRole', async (req, res) => {
+    const pool = req.sqlPool;
+    const {userRole} = req.params
+
+    try {
+        let userData
+        if (userRole === 'super') {
+            userData = pool.query(`
+                SELECT *
+                FROM users
+                WHERE role = 'super'
+            `);
+        }
+        else {
+            userData = pool.query(`
+                SELECT *
+                FROM users
+                WHERE role NOT LIKE 'super'
+            `);
+        }
+
+        userData.then((res1) => {
+            return res.json(res1)
+        })
+
+    } catch (error) {
+        console.log("error is " + error.message);
+    }
+
+})
+
+loginRouter.delete('/:username', async (req, res) => {
+    const pool = req.sqlPool;
+    const userRole = req.query.userRole;
+    const {username} = req.params
+
+    try {
+
+        if (userRole != 'super') {
+            await pool.query(`
+                DELETE FROM users
+                WHERE username = '${username}'
+            `)
+            res.send('User deleted');
+        }
+
+        else {
+            const swPool = await poolSWPromise;
+            await swPool.query(`
+                DELETE FROM users
+                WHERE username = '${username}'
+            `);
+            const hwPool = await poolHWPromise;
+            await hwPool.query(`
+                DELETE FROM users
+                WHERE username = '${username}'
+            `);
+            res.send('Super User deleted');
+        }
+        
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
 
 loginRouter.put('/editemailtemplates', async (req, res) => {
     const pool = req.sqlPool;
@@ -141,4 +212,43 @@ loginRouter.put('/editemailtemplates', async (req, res) => {
         console.error('Error updating email templates: ', err)
     }
 })
+
+loginRouter.put('/edituser', async (req, res) => {
+    const pool = req.sqlPool;
+    const userRole = req.query.userRole;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    try {
+        if (userRole != 'super') {
+            await pool.query(`
+                UPDATE users
+                SET password = '${password}'
+                WHERE username = '${username}'
+            `);
+            res.send('User password updated');
+        }
+
+        else {
+            const swPool = await poolSWPromise;
+            await swPool.query(`
+                UPDATE users
+                SET password = '${password}'
+                WHERE username = '${username}'
+            `);
+            const hwPool = await poolHWPromise;
+            await hwPool.query(`
+                UPDATE users
+                SET password = '${password}'
+                WHERE username = '${username}'
+            `);
+            res.send('Super User password updated');
+        }
+
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
 module.exports = loginRouter;

@@ -9,7 +9,7 @@
 import React, { useRef } from 'react';
 
 
-const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
+const Confirmation = ({isOpen, onClose, onSubmit, message}) => {
   if (!isOpen) return null;
 
   const newFormRef = useRef(null);
@@ -28,9 +28,9 @@ const Confirmation = ({isOpen, onClose, onSubmit, FormComponent}) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-      <h2 className='form-title'>Confirm to Submit?</h2>
+      <h2 className='form-title'>{message}</h2>
           <div className='submission-buttons'>
-            <button className="submit-button" onClick={onSubmit} type="submit">Submit</button>
+            <button className="confirmation-submit-button" onClick={onSubmit} type="submit">Submit</button>
             <button className="cancel-button" onClick={onClose}>Cancel</button>
           </div>
       </div>

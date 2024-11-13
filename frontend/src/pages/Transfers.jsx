@@ -202,7 +202,7 @@ const Transfers = () => {
                       <option value="Transfer Out">Transfer Out</option>
                       <option value="Transfer In">Transfer In</option>
                       <option value="Loan">Loan</option>
-                      <option value="Miscellaneous">Loan</option>
+                      <option value="Miscellaneous">Miscellaneous</option>
                     </select>
                   </div>
                     <div className="input-field">
@@ -296,6 +296,7 @@ const Transfers = () => {
                   <button className={`transfer-table-mode-button ${selectedMode === 'Miscellaneous' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryMiscellaneous);setSelectedMode('Miscellaneous');}}>Miscellaneous</button>
                   <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound, ...inventoryMiscellaneous]);setSelectedMode('All');}}>All</button>
                   </div>
+                  <div className='inventory-table-container'>
                   <table className='inventory-table' id='table-to-print'>
                       <thead>
                           <tr className='table-header-row'>
@@ -412,12 +413,14 @@ const Transfers = () => {
                       </tbody>
                   </table>
                   </div>
+                  </div>
                 </div>
             )}
         <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
-        onSubmit={handleTransferStatusChange}/>
+        onSubmit={handleTransferStatusChange}
+        message={"Confirm to Change transfer status?"}/>
     </div>
 
 )

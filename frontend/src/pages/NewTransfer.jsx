@@ -11,6 +11,7 @@ import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { checkEmail } from '../functions/checkEmail.jsx';
 
 
 const NewTransfer = ({}) => {
@@ -54,8 +55,8 @@ const NewTransfer = ({}) => {
       }
     };
   
-    const handleAddTransferItem = (itemID, name, cabinet) => {
-      setTransferItems([...transferItems, { itemID: itemID, name: name, cabinet: cabinet, quantity: null}]);
+    const handleAddTransferItem = (itemID, name, cabinet, counter) => {
+      setTransferItems([...transferItems, { itemID: itemID, name: name, cabinet: cabinet, counter: counter, quantity: null}]);
     };
 
     const handleTransferInfoChange = (e, info) => {
@@ -207,6 +208,16 @@ const NewTransfer = ({}) => {
                         type="text"
                         value={transferInfo.email}
                         onChange={(e) => handleTransferInfoChange(e.target.value, 'email')}
+                        onBlur={(e) => {
+                          const email = e.target.value;
+                          if (checkEmail(email)) {
+                            return
+                          }
+                          else {
+                            alert(`Please enter valid email`);
+                          }
+                        }}
+                        
                     />
                     </div>
                     </>
@@ -244,7 +255,7 @@ const NewTransfer = ({}) => {
                   <tbody className='inventory-table-body'>
                     {filteredItems.map((item, index) => (
                       <tr key={index}>
-                        <td onMouseDown={() => {handleAddTransferItem(item.itemID, item.itemName, item.cabinet)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
+                        <td onMouseDown={() => {handleAddTransferItem(item.itemID, item.itemName, item.cabinet, item.counter)}} className='add-item-table-row' key={item.id} style={{cursor:'pointer'}}>
                           {item.itemName}
                         </td>
                       </tr>
@@ -259,7 +270,8 @@ const NewTransfer = ({}) => {
                 <thead>
                   <tr>
                     <th className='table-header-title'>Item</th>
-                    <th className='table-header-title'>Current Cabinet Stock</th>
+                    
+                    {transferInfo.destination === 'SPL Cabinet' ? (<th className='table-header-title'>Current Counter Stock</th>) : (<th className='table-header-title'>Current Cabinet Stock</th>)}
                     <th className='table-header-title'>Quantity</th>
                   </tr>
                 </thead>
@@ -267,19 +279,22 @@ const NewTransfer = ({}) => {
                   {transferItems.map((transferItem, index) => (
                     <tr className='fixed-height-row' key={index}>
                       <td>{transferItem.name}</td>
-                      <td>{transferItem.cabinet}</td>
+                      {transferInfo.destination === 'SPL Cabinet' ? (<td>{transferItem.counter}</td>) : (<td>{transferItem.cabinet}</td>)}
                       <td>
                         <input
                         required
+                        style={{
+                          outline: '2px solid black' // Adds a black outline
+                        }}
                           type="number"
                           value={transferItem.quantity}
                           onChange={(e) => {
                             const value = Number(e.target.value);
-                            if (value <= transferItem.cabinet) {
-                              handleInputChange(index, 'quantity', Number(e.target.value))
+                            if ((transferInfo.type != 'Transfer In' && value > transferItem.cabinet) || (transferInfo.destination === 'SPL Cabinet' && value > transferItem.counter)) {
+                              alert(`Quantity cannot be greater than current quantity`);
                             }
                             else {
-                              alert(`Quantity cannot be greater than ${transferItem.cabinet}`);
+                              handleInputChange(index, 'quantity', Number(e.target.value));
                             }
                             
                           }}
@@ -298,7 +313,8 @@ const NewTransfer = ({}) => {
         <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
-        onSubmit={handleSubmitTransfer}/>
+        onSubmit={handleSubmitTransfer}
+        message={"Confirm to Add new transfer?"}/>
       </div>
     );
 }

@@ -220,7 +220,7 @@ const Inventory = () => {
                       <tbody className='inventory-table-body'>
                           {filteredInventory.map((item, index) => (
                               <tr key={index}>
-                              <td> <img width="100" height="100" src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}/` + item.picture} /></td>
+                              <td className='image_cell'> <img className='inventory_image' src={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/documents/${db}/` + item.picture} /></td>
                               <td >{item.itemName}</td>
                               {/* <td>{item.serialNumber}</td> */}
                               <td>{item.description}</td>

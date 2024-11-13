@@ -154,6 +154,12 @@ body {
   overflow-y: auto;
 }
 
+.inventory-table-container {
+  max-height: 75vh;  /* Adjust the height to whatever fits your layout */
+  overflow-y: auto;   /* Enable vertical scrolling */
+  display: block;     /* Ensure the table scrolls within the container */
+}
+
 .inventory-table-body tr {
   height: 50px;
   background-color: white;
@@ -257,13 +263,21 @@ th {
   font-family: 'Roboto', sans-serif; /* Space below the title */
 }
 
-.submit-button {
+.submit-button, .confirmation-submit-button{
   background-color: green;  /* Grey background */
   color: white;            /* White text */
   font-weight: bold;       /* Bold text */
   padding: 10px;           /* Padding around the title */
   border-radius: 8px;      /* Rounded corners */
   text-align: center;
+}
+
+.submit-button {
+  width: 20%;   /* Centered text */
+  margin-left: 10px;
+}
+
+.confirmation-submit-button {
   width: 50%;   /* Centered text */
 }
 
@@ -631,6 +645,14 @@ th {
   margin-bottom: 0px;
 }
 
+.email-templates-mode {
+  display: flex;
+  align-items: left;
+  gap: 0px;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
 .transfer-main-table {
   display: flex; /* Use flexbox for layout */
   flex-direction: column; /* Stack children vertically */
@@ -781,6 +803,18 @@ th {
   color: white;
 }
 
+.cancel_order_button {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: red;
+  color: white;
+}
+
+.orders_buttons {
+  display: flex;
+  gap: 10px;
+}
+
 td[rowspan] {
   position: relative;
 }
@@ -789,4 +823,32 @@ td[rowspan] {
   display: flex;
   gap: 10px;
   width: 40%;
+}
+
+.inventory_image {
+  transition: transform 0.3s ease; /* Smooth transition for scaling */
+  width: 40%; /* Ensures the image takes the full width of the cell initially */
+  height: 40%; /* Ensures the image takes the full height of the cell initially */
+  object-fit: cover; /* Ensures the image covers the cell area properly */
+}
+
+.image_cell {
+  position: relative; /* Ensures the image can overflow from its cell */
+  overflow: visible;  /* Allows the image to overflow beyond the cell */
+  padding: 0;         /* Optional: Removes any padding from the table cell */
+  
+}
+
+.image_cell:hover .inventory_image {
+  transform: scale(1.5);   /* Enlarge the image by 1.5 times */
+  z-index: 10; 
+}
+
+.user_management_title {
+  font-size: x-large;
+  margin-left: 15px;
+}
+
+.new_delivery_items_table {
+  margin: 30px 0px 30px 10px;
 }

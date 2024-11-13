@@ -41,11 +41,13 @@ const Orders = () => {
     // const [sortAttribute, setSortAttribute] = useState(''); // State for sort attribute
     const [editingOrderId, setEditingOrderId] = useState(null);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [isCancelConfirmationOpen, setIsCancelConfirmationOpen] = useState(false);
     const [statusChange, setStautsChange] = useState({status: '', id: null, items: null});
     const [selectedRows, setSelectedRows] = useState([]); // State to track selected rows
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [showSort, setShowSort] = useState(false);
+    const [sendFinance, setSendFinance] = useState({});
     
 
     useEffect(() => {
@@ -105,8 +107,6 @@ const Orders = () => {
 
         (!filterQuery.status || item.status.includes(filterQuery.status)) && 
 
-        (!filterQuery.finance || item.status.includes(filterQuery.finance)) &&
-
         (item.items.some((itemDetail) => {
           if (filterQuery.doStartDate) {
             return (new Date(itemDetail.doDate) >= new Date(filterQuery.doStartDate));
@@ -128,6 +128,15 @@ const Orders = () => {
         (item.items.some((itemDetail) => {
           if (filterQuery.doNumber) {
             return itemDetail.doNumber.includes(filterQuery.doNumber);
+          }
+          else {
+            return true;
+          }
+        })) &&
+
+        (item.items.some((itemDetail) => {
+          if (filterQuery.finance) {
+            return itemDetail.finance.includes(filterQuery.finance);
           }
           else {
             return true;
@@ -162,12 +171,15 @@ const Orders = () => {
       }
     };
 
-    const handleSendFinance = async (doNumber, doDocument) => {
+    const handleSendFinance = async () => {
+      setIsConfirmationOpen(false)
       await axios
-      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/sendfinance?db=${db}`, {
-        doNumber,
-        doDocument,
-      })
+      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/sendfinance?db=${db}`, 
+        sendFinance
+      )
+      setSendFinance({});
+      window.location.reload();
+      
     }
 
     const ackNewDelivery = async () => {
@@ -179,13 +191,12 @@ const Orders = () => {
       })) } });
     };
 
-    // const openFilterModal = () => {
-    //     setIsFilterModalOpen(true); // Open the modal
-    // };
-
-    // const closeFilterModal = () => {
-    //     setIsFilterModalOpen(false); // Close the modal
-    // };
+    const handleCancelOrder = async () => {
+      setIsCancelConfirmationOpen(false);
+      await axios
+      .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/cancelorder?db=${db}`,
+      selectedRows)
+    }
 
 
   return (
@@ -224,10 +235,14 @@ const Orders = () => {
                           <button title='Reset' className='clear-filters-button' onClick={() => {setFilterQuery({});setSortQuery({});}}>Clear Filters</button>
                         </div>
                         {selectedRows.length > 0 && (
-                    // <button onClick={() => setIsModalOpen(true)} className='acknowledgeButton'>
+                          <div className='orders_buttons'>
                         <button onClick={() => ackNewDelivery()} className='add_new_delivery_button'>
                           Add New Delivery
                         </button>
+                        <button onClick={() => setIsCancelConfirmationOpen(true)} className='cancel_order_button'>
+                          Cancel Order
+                        </button>
+                        </div>
                          )}
                         {/* <RxCross1 title='Reset' className='addButton' onClick={() => {setFilterQuery({})}} /> */}
                     </div>
@@ -445,7 +460,7 @@ const Orders = () => {
                                     </td>
                                     <td>
                                       {itemDetail.finance === "Send" ? (
-                                        <button style={{color: '#FF922C'}}onClick={() => handleSendFinance(itemDetail.doNumber, itemDetail.doDocument)}>Send</button>
+                                        <button style={{color: '#FF922C'}}onClick={() => {setIsConfirmationOpen(true); setSendFinance({doNumber: itemDetail.doNumber, doDocument: itemDetail.doDocument})}}>Send</button>
                                       ) : (
                                         <span style={{color: '#238823'}}>{itemDetail.finance}</span>
                                       )}
@@ -472,6 +487,17 @@ const Orders = () => {
           onClose={() => setIsFilterModalOpen(false)}
         />
       )} */}
+        <Confirmation
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onSubmit={handleSendFinance}
+        message={"Confirm to Send email?"}/>
+
+      <Confirmation
+        isOpen={isCancelConfirmationOpen}
+        onClose={() => setIsCancelConfirmationOpen(false)}
+        onSubmit={handleCancelOrder}
+        message={"Confirm to Cancel orders?"}/>
     </div>
 
 )

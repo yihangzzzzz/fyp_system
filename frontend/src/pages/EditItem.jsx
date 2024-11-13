@@ -11,6 +11,7 @@ import axios from 'axios';
 import Navbar from '../components/navbar.jsx';
 import Confirmation from '../components/confirmation.jsx';
 import { useLocation } from 'react-router-dom';
+import { ResizeImage } from '../functions/resizeImage.jsx';
 
 
 const EditItem = () => {
@@ -53,6 +54,41 @@ const EditItem = () => {
             ...prevState,
             picture: e  // Replace with the new value for destination
         }));
+        const file = e; // The file is the image file from input
+        // Create a FileReader to read the file
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+    
+            img.onload = () => {
+                // Create a canvas element
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+    
+                // Set the canvas size to 100x100
+                canvas.width = 100;
+                canvas.height = 100;
+    
+                // Draw the image onto the canvas with forced dimensions (no aspect ratio preservation)
+                ctx.drawImage(img, 0, 0, 100, 100);
+    
+                // Convert canvas to a Blob (file-like object)
+                canvas.toBlob((blob) => {
+                  const resizedFile = new File([blob], file.name, { type: blob.type });
+                  setItem(prevState => ({
+                    ...prevState,
+                    picture: resizedFile  // Replace with the new value for destination
+                  }));
+    
+                    // You can now use `resizedFile` to upload via Axios or any other metho
+    
+    
+                }, file.type, 1); // Set quality to 1 (100%)
+            };
+        };
+        // Read the image file as Data URL
+        reader.readAsDataURL(file);
       }
 
     const handleSaveItemChanges = async () => {
@@ -157,17 +193,18 @@ const EditItem = () => {
 
                 </div>
                 </div>
-                <div className='submission_buttons'>
+                {/* <div className='submission_buttons'> */}
                 <button className="submit-button" type="submit">Save</button>
-                <button className="cancel-button" onClick={() => navigate(`/inventory?db=${db}`)}>Cancel</button>
-                </div>
+                {/* <button className="cancel-button" onClick={() => navigate(`/inventory?db=${db}`)}>Cancel</button> */}
+                {/* </div> */}
 
                 </form>
             </div>
             <Confirmation
             isOpen={isConfirmationOpen}
             onClose={() => setIsConfirmationOpen(false)}
-            onSubmit={handleSaveItemChanges}/>
+            onSubmit={handleSaveItemChanges}
+            message={"Confirm to Save item details?"}/>
         </div>
     )
 }

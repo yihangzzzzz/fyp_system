@@ -237,6 +237,9 @@ const NewOrder = ({}) => {
                       <td>
                         <input
                         required
+                        style={{
+                          outline: '2px solid black' // Adds a black outline
+                        }}
                           type="number"
                           value={orderItem.quantity}
                           onChange={(e) => handleEditOrderItem(index, 'quantity', Number(e.target.value))}
@@ -257,7 +260,8 @@ const NewOrder = ({}) => {
         <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
-        onSubmit={handleSubmitOrder}/>
+        onSubmit={handleSubmitOrder}
+        message={"Confirm to Add new PO?"}/>
       </div>
     );
   }

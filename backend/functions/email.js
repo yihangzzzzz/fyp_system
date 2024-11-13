@@ -1,5 +1,5 @@
 const express = require('express');
-const {PDFDocument, PDFString, PDFName} = require('pdf-lib');
+const {PDFDocument, PDFString, PDFName, rgb} = require('pdf-lib');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
@@ -148,7 +148,7 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
       page.doc.context.obj({
         Type: 'Annot',
         Subtype: 'Link',
-        Rect: [72, 195, 192, 215],
+        Rect: [72, 120, 212, 150],
         C: [1, 1, 1],
         A: {
           Type: 'Action',
@@ -157,12 +157,19 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
         },
       }),
     );
-
+    firstPage.drawRectangle({
+      x: 72, // Starting x position
+      y: 120, // Starting y position
+      width: 140, // Width of the rectangle
+      height: 30, // Height of the rectangle
+      color: rgb(0, 0.6, 0), // Green color
+    });
   firstPage.drawText('Acknowledge Transfer', {
-    x: 72,
-    y: 200,
+    x: 84,
+    y: 130,
     size: 12,
-    font: georgiaFont
+    font: georgiaFont,
+    color: rgb(0,0,0) // White text for contrast
   });
 
   const link = createPageLinkAnnotation(firstPage, `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}`);
@@ -351,21 +358,21 @@ async function updateTransferDocument (transferID, db, type) {
 
   // Draw acknowledgment
   if (type === 'Loan') {
-    firstPage.drawText('Loan Out Accepted', { x: 72, y: 105, size: 12, font: georgiaFont });
+    firstPage.drawText('Loan Out Accepted', { x: 72, y: 85, size: 12, font: georgiaFont });
     const todayDate = getTodayFormatted();
-    firstPage.drawText(todayDate, { x: 72, y: 90, size: 12, font: georgiaFont });
+    firstPage.drawText(todayDate, { x: 72, y: 70, size: 12, font: georgiaFont });
   }
 
   else if (type === 'Loan Return') {
-    firstPage.drawText('Loan Returned', { x: 200, y: 105, size: 12, font: georgiaFont });
+    firstPage.drawText('Loan Returned', { x: 200, y: 85, size: 12, font: georgiaFont });
     const todayDate = getTodayFormatted();
-    firstPage.drawText(todayDate, { x: 200, y: 90, size: 12, font: georgiaFont });
+    firstPage.drawText(todayDate, { x: 200, y: 70, size: 12, font: georgiaFont });
   }
 
   else {
-    firstPage.drawText('Transfer Accepted', { x: 72, y: 105, size: 12, font: georgiaFont });
+    firstPage.drawText('Transfer Accepted', { x: 72, y: 85, size: 12, font: georgiaFont });
     const todayDate = getTodayFormatted();
-    firstPage.drawText(todayDate, { x: 72, y: 90, size: 12, font: georgiaFont });
+    firstPage.drawText(todayDate, { x: 72, y: 70, size: 12, font: georgiaFont });
   }
 
 

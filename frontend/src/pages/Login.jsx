@@ -34,7 +34,9 @@ const Login = () => {
         //   password,
         // });
   
-        if (response.data.success) {
+        if (response.data.token) {
+          console.log("token is",response.data.token)
+          localStorage.setItem('token', response.data.token);
           // Handle successful login (e.g., redirect to dashboard)
         //   alert('Login Successful!');
           navigate(`/home?db=${db}`);
