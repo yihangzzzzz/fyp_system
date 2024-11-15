@@ -1,0 +1,58 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Thursday
+hour is 16
+minute is 01
+labs are [
+  { lab: 'SWL 1', recipient: 'erger', email: 'werfg@fke.cpom' },
+  { lab: 'SWL 2', recipient: 'erg', email: 'few@jifew.com' }
+]
+stuck 1
+stuck 1
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+Email sent: 250 2.0.0 OK  1731649788 d2e1a72fcca58-724770eefdcsm591995b3a.14 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf
+Email sent: 250 2.0.0 OK  1731649789 d9443c01a7336-211d0f348d9sm5312455ad.169 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf
+labs are [
+  { lab: 'Loan', recipient: 'e', email: 'ege@rwekf.co' },
+  { lab: 'Others', recipient: 'dfg', email: 'few@rweigf.erw' }
+]
+stuck 1
+stuck 1
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+Email sent: 250 2.0.0 OK  1731649898 d9443c01a7336-211d0f56e05sm5321205ad.258 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferInForm.pdf
+Email sent: 250 2.0.0 OK  1731649898 d9443c01a7336-211d0f348e4sm5181345ad.125 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferInForm.pdf

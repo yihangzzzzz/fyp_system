@@ -1,0 +1,22 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Thursday
+hour is 16
+minute is 01
+labs are [
+  { lab: 'HWL 1', recipient: 'fwe', email: 'few@erw.com' },
+  { lab: 'HPL', recipient: 'fwe', email: 'few@3eiosd.cfwe' }
+]
+stuck 1
+stuck 1
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}

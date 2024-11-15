@@ -77,7 +77,7 @@ const transporter = nodemailer.createTransport({
 //     return documentName;
 // }
 
-async function sendTransferEmail(type, info, items, transferID, db, emailDetails) {
+async function sendTransferEmail(type, info, items, transferID, db, emailDetails, lab, url) {
 
   const __dirname = path.resolve();
   let template
@@ -109,11 +109,13 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
   // Writing recipient name and destination
   if (type === 'Transfer In') {
     firstPage.drawText(`${info.sender}`, { x: 72, y: 515, size: 12, font: georgiaFont });
-    firstPage.drawText(`${info.destination}`, { x: 72, y: 499, size: 12, font: georgiaFont });
+    firstPage.drawText(`${lab.recipient}`, { x: 251, y: 515, size: 12, font: georgiaFont });
+    firstPage.drawText(`${lab.lab}`, { x: 72, y: 499, size: 12, font: georgiaFont });
   }
   else {
-    firstPage.drawText(`${info.recipient}`, { x: 251, y: 515, size: 12, font: georgiaFont });
-    firstPage.drawText(`${info.destination}`, { x: 251, y: 499, size: 12, font: georgiaFont });
+    firstPage.drawText(`${info.sender}`, { x: 72, y: 515, size: 12, font: georgiaFont });
+    firstPage.drawText(`${lab.recipient}`, { x: 251, y: 515, size: 12, font: georgiaFont });
+    firstPage.drawText(`${lab.lab}`, { x: 251, y: 499, size: 12, font: georgiaFont });
   }
 
   // Adding table of items
@@ -172,7 +174,7 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
     color: rgb(0,0,0) // White text for contrast
   });
 
-  const link = createPageLinkAnnotation(firstPage, `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}`);
+  const link = createPageLinkAnnotation(firstPage, `${url}/transfers/accepttransfer/${transferID}?db=${db}&type=${type}`);
   firstPage.node.set(PDFName.of('Annots'), pdfDoc.context.obj([link]));
 
   // pdfDoc.textWithLink('Acknowledge', 72, 200, { url: `http://localhost:3000/transfers/accepttransfer/${transferID}?db=${db}&type=${type}` });
@@ -203,14 +205,14 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
 
   const mailOptions = {
       from: 'fyp.inventory.system@gmail.com',
-      to: `${info.email}`,
+      to: `${lab.email}`,
       subject: `${emailDetails.subject}`,
       html: `
         <p>${emailDetails.message}</p>
         <ul>
           <li>Date: ${date}</li>
-          <li>Destination: ${info.destination}</li>
-          <li>Recipient: ${info.recipient}</li>
+          <li>Destination: ${lab.lab}</li>
+          <li>Recipient: ${lab.recipient}</li>
         </ul>
         <p>Please acknowledge the transfer in the attached document</p>
         `
@@ -264,7 +266,7 @@ async function sendFinanceEmail(doDocument, emailDetails, db) {
   });
 }
 
-async function sendWeeklyLowStock() {
+async function sendWeeklyLowStock(toggle) {
   const swPool = await poolSWPromise;
   const swDetails = await swPool.query(`
     SELECT *
@@ -310,24 +312,48 @@ async function sendWeeklyLowStock() {
       </ul>
       `
   };
+  
+  const dayMap = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6
+  };
 
-  schedule.scheduleJob('39 13 * * 1', () => {
-    transporter.sendMail(swLowStockmailOptions, function(error, info){
+  console.log("day is",swDetails.recordset[0].day)
+  console.log("hour is",swDetails.recordset[0].time.split(':')[0])
+  console.log("minute is",swDetails.recordset[0].time.split(':')[1])
+
+  let job
+  
+  if (toggle){
+    job = schedule.scheduleJob(`${swDetails.recordset[0].time.split(':')[1]} ${swDetails.recordset[0].time.split(':')[0]} * * ${dayMap[swDetails.recordset[0].day.toLowerCase()]}`, () => {
+      transporter.sendMail(swLowStockmailOptions, function(error, info){
+          if (error) {
+          console.log('Error:', error);
+          } else {
+          console.log('SW Email sent:', info.response);
+          }
+      });
+  
+      transporter.sendMail(hwLowStockmailOptions, function(error, info){
         if (error) {
         console.log('Error:', error);
         } else {
-        console.log('SW Email sent:', info.response);
+        console.log('HW Email sent:', info.response);
         }
     });
+    })
+    console.log("job on")
+  }
+  else if (job){
+    job.cancel()
+    console.log("job off")
+  }
 
-    transporter.sendMail(hwLowStockmailOptions, function(error, info){
-      if (error) {
-      console.log('Error:', error);
-      } else {
-      console.log('HW Email sent:', info.response);
-      }
-  });
-  })
 
 
 
@@ -449,6 +475,7 @@ module.exports = {
   sendTransferEmail,
   sendFinanceEmail,
   updateTransferDocument,
+  sendWeeklyLowStock
 };
 
 

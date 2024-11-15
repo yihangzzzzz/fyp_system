@@ -291,9 +291,9 @@ const Transfers = () => {
                   </div>
                   <div className='transfer-main-table'>
                   <div className='transfer-tables-mode'>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'Inbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryInbound);setSelectedMode('Inbound');}}>Inbound</button>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'Outbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryOutbound);setSelectedMode('Outbound');}}>Outbound</button>
-                  <button className={`transfer-table-mode-button ${selectedMode === 'Miscellaneous' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryMiscellaneous);setSelectedMode('Miscellaneous');}}>Miscellaneous</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Inbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryInbound);setSelectedMode('Inbound');}}>Incoming</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Outbound' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryOutbound);setSelectedMode('Outbound');}}>Outgoing</button>
+                  <button className={`transfer-table-mode-button ${selectedMode === 'Miscellaneous' ? 'selected' : ''}`} onClick={() => {setInventory(inventoryMiscellaneous);setSelectedMode('Miscellaneous');}}>Cabinet,Counter,Lost/Damaged</button>
                   <button className={`transfer-table-mode-button ${selectedMode === 'All' ? 'selected' : ''}`} onClick={() => {setInventory([...inventoryInbound, ...inventoryOutbound, ...inventoryMiscellaneous]);setSelectedMode('All');}}>All</button>
                   </div>
                   <div className='inventory-table-container'>
@@ -307,7 +307,7 @@ const Transfers = () => {
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Sender</th>)}
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Recipient</th>)}
                               {selectedMode != 'Miscellaneous' && (<th className='table-header-title'>Email</th>)}
-                              <th className='table-header-title'>Transfer<br></br>Document</th>
+                              <th className='table-header-title'>Transfer<br></br>Form</th>
                               <th className='table-header-title'>Status</th>
                               {/* <th className='table-header-title'>Description</th> */}
                               <th className='table-header-title'>Items</th>

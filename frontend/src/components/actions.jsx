@@ -16,6 +16,7 @@ import axios from 'axios';
 import Confirmation from './confirmation';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { BiTransfer } from "react-icons/bi";
 
 
 const Actions = ({toDelete, toEdit, mode}) => {
@@ -79,10 +80,12 @@ const Actions = ({toDelete, toEdit, mode}) => {
         title='Edit'
         onClick={handleEdit}/>
       <MdDelete onClick={() => setIsConfirmationOpen(true)} title='Delete' />
+      {mode === 'inventory' ? (<><BiTransfer onClick={() => navigate(`/transfers/newtransfer?db=${db}`)}/></>) : (<></>)}
       <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
         onSubmit={handleDelete}/>
+      
     </div>
 
   );

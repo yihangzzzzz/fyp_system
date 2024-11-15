@@ -211,7 +211,7 @@ const Inventory = () => {
                               <th className='table-header-title'>Cabinet</th>
                               <th className='table-header-title'>Counter</th>
                               <th className='table-header-title'>Total</th>
-                              <th className='table-header-title'>Ordered</th>
+                              <th className='table-header-title'>Ordered<br />Pending Delivery</th>
                               <th className='table-header-title'>Lost/Damaged</th>
                               <th className='table-header-title'>Remarks</th>
                               <th className='table-header-title'>Actions</th>

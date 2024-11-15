@@ -10,6 +10,7 @@ const upload = require('../functions/picture.js');
 const { poolHWPromise, poolSWPromise } = require('../config.js');
 const jwt = require('jsonwebtoken');
 const secretKey = 'fyp';
+const {sendWeeklyLowStock} = require('../functions/email.js')
 
 
 
@@ -205,7 +206,9 @@ loginRouter.put('/editemailtemplates', async (req, res) => {
             UPDATE emailTemplates
             SET subject = '${lowStockTemplate.subject}',
                 message = '${lowStockTemplate.message}',
-                email = '${lowStockTemplate.email}'
+                email = '${lowStockTemplate.email}',
+                day = '${lowStockTemplate.day}',
+                time = '${lowStockTemplate.time}'
             WHERE templateName = 'lowStock'
         `);
     } catch (err) {
@@ -249,6 +252,14 @@ loginRouter.put('/edituser', async (req, res) => {
         console.error('Error:', err);
         res.status(500).send('Internal Server Error');
     }
+})
+
+loginRouter.put('/togglealert', async (req, res) => {
+
+    const {toggle} = req.body
+    console.log(toggle)
+    sendWeeklyLowStock(toggle);
+    res.send('success');
 })
 
 module.exports = loginRouter;

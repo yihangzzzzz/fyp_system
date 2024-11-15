@@ -39,9 +39,9 @@ const Modal = ({isOpen, onSubmit, onCancel, editUsername}) => {
             <input
               type="text"
               name='username'
-              value = {editUsername ? editUsername : ''}
+              // value = {editUsername ? editUsername : ''}
               disabled = {editUsername ? true : false}
-              // placeholder = {editUsername ? editUsername : ''}
+              placeholder = {editUsername ? editUsername : ''}
               onChange={(e) => handleSetNewUser(e.target.name, e.target.value)}
               style={{ outline: '2px solid black' }}
             />

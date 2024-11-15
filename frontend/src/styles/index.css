@@ -852,3 +852,7 @@ td[rowspan] {
 .new_delivery_items_table {
   margin: 30px 0px 30px 10px;
 }
+
+.select_day {
+  width: 100px;
+}

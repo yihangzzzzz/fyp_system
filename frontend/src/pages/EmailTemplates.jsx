@@ -5,7 +5,7 @@ import Navbar from '../components/navbar.jsx';
 import Modal from '../components/modal.jsx';
 import Actions from '../components/actions.jsx';
 import Confirmation from '../components/confirmation.jsx';
-import {checkEmail} from '../functions/checkEmail.jsx';
+
 
 
 
@@ -20,6 +20,7 @@ const EmailTemplates = () => {
     const [lowStockTemplate, setLowStockTemplate] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [toggle, setToggle] = useState(true)
 
     useEffect(() => {
         fetchEmailTemplates();
@@ -83,6 +84,12 @@ const EmailTemplates = () => {
         
     }
 
+    const handleAlertToggle = async () => {
+        setToggle(!toggle);
+        await axios
+        .put(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/login_be/togglealert?db=${db}`, toggle)
+    }
+
     return (
         <div>
             <Navbar/>
@@ -134,6 +141,27 @@ const EmailTemplates = () => {
                               alert(`Please enter valid email`);
                             }
                           }}
+                    />
+                </div>
+                )}
+                {currentMode === 'Low Stock' && (
+                <div className='input-box'>
+                    <h5>Weekly Schedule</h5>
+                    <select  className='select_day' value={currentTemplate.day} required onChange={(e) => handleTemplateChange(e.target.value, currentMode, 'day')} style={{ outline: '2px solid black'}}>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                    
+                    <input
+                        type="time"
+                        value={currentTemplate.time}
+                        onChange={(e) => handleTemplateChange(e.target.value, currentMode, 'time')}
+                        required
                     />
                 </div>
                 )}
@@ -207,6 +235,7 @@ const EmailTemplates = () => {
             </div> */}
 
             <button className="submit-button" type="submit" onClick={() => setIsConfirmationOpen(true)}>Submit</button>
+            <button onClick={handleAlertToggle}>toggle</button>
             <Confirmation
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}

@@ -1,0 +1,32 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Thursday
+hour is 16
+minute is 01
+labs are [
+  { lab: 'HWL 2', recipient: 'dsf', email: 'ewfw@dkf.cpom' },
+  { lab: 'SWL 2', recipient: 'vcv', email: 'fwe@jfew.cowe' }
+]
+stuck 1
+stuck 1
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+email details is  {
+  templateName: 'transfer',
+  subject: 'transfer subject',
+  message: 'transfer message',
+  email: null,
+  day: null,
+  time: null
+}
+Email sent: 250 2.0.0 OK  1731650105 d9443c01a7336-211d0dc3121sm5414445ad.20 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf
+Email sent: 250 2.0.0 OK  1731650111 41be03b00d2f7-7f8c1dce42esm442009a12.80 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf

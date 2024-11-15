@@ -174,7 +174,9 @@ transferRoute.get('/pdf/:filename', (req, res) => {
 transferRoute.post('/newtransfer', async (req, res) => {
     const pool = req.sqlPool;
 
-    const {info, items} = req.body;
+    const {info, items, labs, url} = req.body;
+
+    console.log("labs are",labs)
 
     let status 
     switch (info.type) {
@@ -186,66 +188,81 @@ transferRoute.post('/newtransfer', async (req, res) => {
             break;
     }
 
-    try {
-        
-        // Uptdaing TRANSFERS table
-        const result = await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status, remarks, sender) 
-        VALUES ('${info.type}', '${info.date}', '${info.destination}', '${info.recipient}', '${info.email}', '${status}', '${info.remarks}', '${info.sender}')
-        SELECT SCOPE_IDENTITY() AS transferID`)
-        
-        const transferID = result.recordset[0].transferID;
-        let transferDocument
-
-        const emailDetails = await pool.query(`
-            SELECT * 
-            FROM emailTemplates
-            WHERE templateName = 'transfer'    
-        `)
-        console.log("email details is ",emailDetails.recordset[0])
-
-        if (info.type != 'Miscellaneous') {
-            transferDocument = await sendTransferEmail(info.type, info, items, transferID, info.db, emailDetails.recordset[0]);
-        }
-        
-
-        
-        pool.query(`UPDATE transfers
-            SET transferDocument =  '${transferDocument}'
-            WHERE transferID = ${transferID}`)
+    const handleOneTransfer = async (lab) => {
+         // Uptdaing TRANSFERS table
+         const result =  await pool.query(`INSERT INTO transfers (type, date, destination, recipient, email, status, remarks, sender) 
+            VALUES ('${info.type}', '${info.date}', '${lab.lab}', '${lab.recipient}', '${lab.email}', '${status}', '${info.remarks}', '${info.sender}')
+            SELECT SCOPE_IDENTITY() AS transferID`)
     
-        items.forEach(item => {
-            // UPDATE transferItems table
-            pool.query(`INSERT INTO transferItems (transferID, itemName, quantity, itemID) 
-                VALUES (${transferID}, '${item.name}', ${item.quantity}, ${item.itemID})`);
-
-            // UPDATE inventory table if type is Miscellaneous
-            if (info.destination.includes('Counter')) {
-                pool.query(`UPDATE warehouse
-                    SET cabinet = cabinet - ${item.quantity},
-                        counter = counter + ${item.quantity}
-                    WHERE itemID = ${item.itemID}`);
+            console.log("stuck 1")
+            
+            const transferID = result.recordset[0].transferID;
+            let transferDocument
+    
+            console.log("stuck 1")
+    
+            const emailDetails = await pool.query(`
+                SELECT * 
+                FROM emailTemplates
+                WHERE templateName = 'transfer'    
+            `)
+            console.log("email details is ",emailDetails.recordset[0])
+    
+            if (info.type != 'Miscellaneous') {
+                transferDocument = await sendTransferEmail(info.type, info, items, transferID, info.db, emailDetails.recordset[0], lab, url);
             }
+            
+    
+            
+            pool.query(`UPDATE transfers
+                SET transferDocument =  '${transferDocument}'
+                WHERE transferID = ${transferID}`)
+        
+            items.forEach(item => {
+                // UPDATE transferItems table
+                pool.query(`INSERT INTO transferItems (transferID, itemName, quantity, itemID) 
+                    VALUES (${transferID}, '${item.name}', ${item.quantity}, ${item.itemID})`);
+    
+                // UPDATE inventory table if type is Miscellaneous
+                if (info.destination.includes('Counter')) {
+                    pool.query(`UPDATE warehouse
+                        SET cabinet = cabinet - ${item.quantity},
+                            counter = counter + ${item.quantity}
+                        WHERE itemID = ${item.itemID}`);
+                }
+    
+                else if (info.destination.includes('Cabinet')) {
+                    pool.query(`UPDATE warehouse
+                        SET cabinet = cabinet + ${item.quantity},
+                            counter = counter - ${item.quantity}
+                        WHERE itemID = ${item.itemID}`);
+                }
+    
+                else if (info.destination.includes('Lost/Damaged')) {
+                    pool.query(`UPDATE warehouse
+                        SET cabinet = cabinet - ${item.quantity},
+                            lostDamaged = lostDamaged + ${item.quantity}
+                        WHERE itemID = ${item.itemID}`);
+                }
+            })
+    }
 
-            else if (info.destination.includes('Cabinet')) {
-                pool.query(`UPDATE warehouse
-                    SET cabinet = cabinet + ${item.quantity},
-                        counter = counter - ${item.quantity}
-                    WHERE itemID = ${item.itemID}`);
-            }
+    
 
-            else if (info.destination.includes('Lost/Damaged')) {
-                pool.query(`UPDATE warehouse
-                    SET cabinet = cabinet - ${item.quantity},
-                        lostDamaged = lostDamaged + ${item.quantity}
-                    WHERE itemID = ${item.itemID}`);
-            }
-        })
+        labs.forEach(lab => {
+
+            try {
+
+                handleOneTransfer(lab);
+       
+            } catch (error) {
+                console.log("error is le " + error.message);
+                res.send({message : error.message});
+            };
+
+    })
         res.status(200).json({ message: 'Items updated successfully' });
 
-    } catch (error) {
-        console.log("error is le " + error.message);
-        res.send({message : error.message});
-    };
 })
 
 

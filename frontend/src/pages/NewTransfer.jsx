@@ -20,6 +20,7 @@ const NewTransfer = ({}) => {
     const navigate = useNavigate(); 
     const [items, setItems] = useState([]);
     const [labs, setLabs] = useState([]);
+    const [transferLabs, setTransferLabs] = useState([]);
     const [transferItems, setTransferItems] = useState([]);
     const [transferInfo, setTransferInfo] = useState({db: db, destination: '', date: new Date().toISOString().split('T')[0], recipient: '', email: '', status: '', type:"Transfer Out", remarks:'', sender:'' });
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -77,8 +78,23 @@ const NewTransfer = ({}) => {
       setTransferItems(updatedItems);
     } 
 
+    const handleAddTransferLab = (lab) => {
+      setTransferLabs([...transferLabs, { lab: lab, recipient: null, email: null}]);
+    }
+
+    const handleLabInputChange = (index, value, field) => {
+      const updatedLabs = [...transferLabs];
+      updatedLabs[index][field] = value;
+      setTransferLabs(updatedLabs);
+    }
+
+    const handleDeleteLab = (indexToRemove) => {
+      const updatedLabs = transferLabs.filter((item, index) => index !== indexToRemove);
+      setTransferLabs(updatedLabs);
+    } 
+
     const handleSubmitTransfer = async () => {
-      const newTransfer = {info: transferInfo, items: transferItems}
+      const newTransfer = {info: transferInfo, items: transferItems, labs: transferLabs, url: `${window.location.protocol}//${window.location.hostname}:${window.location.port}`}
       // let transferID, transferType;
 
       try {
@@ -151,10 +167,10 @@ const NewTransfer = ({}) => {
                     <option value="Transfer Out">Transfer Out</option>
                     <option value="Transfer In">Transfer In</option>
                     <option value="Loan">Loan</option>
-                    <option value="Miscellaneous">Miscellaneous</option>
+                    <option value="Miscellaneous">Cabinet,Counter,Lost/Damaged</option>
                   </select>
                 </div>
-                <div className='transfer-info-input'>
+                {/* <div className='transfer-info-input'>
                   {transferInfo.type === 'Transfer In' ? (<><h5>Source</h5></>) : (<><h5>Destination</h5></>)}
                   <select required value={transferInfo.destination} requried onChange={(e) => handleTransferInfoChange(e.target.value, 'destination')}>
                     <option value="" disabled>Select Lab</option>
@@ -166,7 +182,8 @@ const NewTransfer = ({}) => {
                           </option>
                       ))}
                   </select>
-                </div>
+                </div> */}
+        
                 <div className='transfer-info-input'>
                   <h5>Date</h5>
                     <input
@@ -176,21 +193,29 @@ const NewTransfer = ({}) => {
                       required
                     />
                 </div>
-              </div>
-
-
-                
-                  <div className='transfer_info'>
-                    {(transferInfo.type === 'Transfer In') && (
+                {(transferInfo.type != 'Miscellaneous') && (
                       <div className='transfer-info-input'>
                       <h5>Sender</h5>
                       <input
+                      required
                         type="text"
                         value={transferInfo.sender}
                         onChange={(e) => handleTransferInfoChange(e.target.value, 'sender')}
                       />
                     </div>
                     )}
+                                        <div className='transfer-info-input'>
+                      <h5>Remarks</h5>
+                      <textarea
+                        type="text"
+                        value={transferInfo.remarks}
+                        onChange={(e) => handleTransferInfoChange(e.target.value, 'remarks')}
+                      />
+                    </div>
+              </div>
+
+                  {/* <div className='transfer_info'>
+                    
                     {!(transferInfo.type === 'Miscellaneous') && (
                     <>
                     <div className='transfer-info-input'>
@@ -222,15 +247,69 @@ const NewTransfer = ({}) => {
                     </div>
                     </>
                       )}
-                    <div className='transfer-info-input'>
-                      <h5>Remarks</h5>
-                      <textarea
-                        type="text"
-                        value={transferInfo.remarks}
-                        onChange={(e) => handleTransferInfoChange(e.target.value, 'remarks')}
-                      />
-                    </div>
+                  </div> */}
+
+                  <div className='transfer_info'>
+                  <div className='transfer-info-input'>
+                  {transferInfo.type === 'Transfer In' ? (<><h5>Source</h5></>) : (<><h5>Destination</h5></>)}
+                  <select value={transferInfo.destination} requried onChange={(e) => handleAddTransferLab(e.target.value)}>
+                    <option value="" disabled>Select Lab</option>
+                    {labs
+                        .filter(item => item.type === (transferInfo.type === 'Miscellaneous' ? ('Miscellaneous') : ('All')))
+                        .map(item => (
+                          <option key={item.id} value={item.labCode}>
+                            {item.labCode}
+                          </option>
+                      ))}
+                  </select>
+                </div>
+                  {transferLabs.length > 0 && (
+              <table className='new-order-items'>
+                <thead>
+                  <tr>
+                    <th className='table-header-title'>Lab</th>
+                    <th className='table-header-title'>Recipient</th>
+                    <th className='table-header-title'>Recipient Email</th>
+                  </tr>
+                </thead>
+                <tbody className='inventory-table-body'>
+                  {transferLabs.map((transferLab, index) => (
+                    <tr className='fixed-height-row' key={index}>
+                      <td>{transferLab.lab}</td>
+                      <td>
+                        <input
+                          type="text"
+                          value={transferLab.recipient}
+                          onChange={(e) => handleLabInputChange(index, e.target.value, 'recipient')}
+                        />
+                      </td>
+                      <td>
+                          <input
+                          required
+                            type="text"
+                            value={transferLab.email}
+                            onChange={(e) => handleLabInputChange(index, e.target.value, 'email')}
+                            onBlur={(e) => {
+                              const email = e.target.value;
+                              if (checkEmail(email)) {
+                                return
+                              }
+                              else {
+                                alert(`Please enter valid email`);
+                              }
+                            }}
+                            
+                        />
+                        
+                      </td>
+                      <td><button onClick={() => {handleDeleteLab(index)}}>Delete</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
                   </div>
+
               </div>
           )}
 

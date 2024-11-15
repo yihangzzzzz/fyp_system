@@ -1,0 +1,7 @@
+(node:9788) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Application has thrown an uncaught exception and is terminated:
+ReferenceError: window is not defined
+    at sendTransferEmail (C:\VSC\fyp_system\backend\functions\email.js:177:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async handleOneTransfer (C:\VSC\fyp_system\backend\routes\transferRoute.js:212:36)
