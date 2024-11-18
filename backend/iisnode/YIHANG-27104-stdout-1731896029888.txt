@@ -1,0 +1,6 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Thursday
+hour is 16
+minute is 01
