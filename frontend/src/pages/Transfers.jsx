@@ -393,7 +393,6 @@ const Transfers = () => {
                                     <>{item.type}</>
                                   )}
                                 </td>
-                                <td rowSpan={rowSpan}>{item.type}</td>
                                 <td rowSpan={rowSpan}>{item.source}</td>
                                 <td rowSpan={rowSpan}>{item.destination}</td>
                                 <td rowSpan={rowSpan}>{formattedDate}</td>
