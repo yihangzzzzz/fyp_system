@@ -1,34 +1,27 @@
-
-// const React = require('react');
-// const { useEffect, useState } = React;
-// const { useParams } = require('react-router-dom');
-
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const ViewPDF = () => {
+  const [pdfUrl, setPdfUrl] = useState("");
+  const { fileName } = useParams();
 
-    const [pdfUrl, setPdfUrl] = useState('');
-    const { fileName } = useParams();
+  useEffect(() => {
+    setPdfUrl(
+      `${window.location.protocol}//${window.location.hostname}:${
+        window.location.port
+      }/orders_be/pdf/${encodeURIComponent(fileName)}?db=${db}`
+    );
+  }, []);
 
-    useEffect(() => {
-      setPdfUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/orders_be/pdf/${encodeURIComponent(fileName)}?db=${db}`);
-    }, []);
+  return (
+    <div className="fullscreen-container">
+      {pdfUrl ? (
+        <iframe src={pdfUrl} className="fullscreen-iframe" />
+      ) : (
+        <p>Loading PDF...</p>
+      )}
+    </div>
+  );
+};
 
-    return (
-        <div className="fullscreen-container">
-          {pdfUrl ? (
-            <iframe
-              src={pdfUrl}
-              className="fullscreen-iframe"
-            />
-          ) : (
-            <p>Loading PDF...</p>
-          )}
-        </div>
-      );
-}
-
-// module.exports = ViewPDF
 export default ViewPDF;

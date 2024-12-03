@@ -1,0 +1,23 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Tuesday
+hour is 12
+minute is 23
+file name is Battery holder.jpg
+file name is ADC cable.jpeg
+labs are [ { lab: 'SWL 3', recipient: 'you', email: 'yihangzzzzz@gmail.com' } ]
+lab is { lab: 'SWL 3', recipient: 'you', email: 'yihangzzzzz@gmail.com' }
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'New Items Transfer',
+  message: 'Please acknowledge the transfer by clicking on the ACCEPT button on the attached document.',
+  email: null,
+  day: null,
+  time: null
+}
+Email sent: 250 2.0.0 OK  1733253363 d9443c01a7336-2159ebcf60asm35011395ad.108 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\loanForm.pdf
+file name is Battery holder.jpg
+file name is 3 pin battery charger, 2A.jpeg

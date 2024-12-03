@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // use SSL
   auth: {
-    user: 'fyp.inventory.system@gmail.com',
-    pass: 'mjqvcfewvocuaztd',
+    user: 'ccds.item.inventory.system@gmail.com',
+    pass: 'zdlvewwujtfhewbi',
   }
 });
 
@@ -200,7 +200,7 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
 
   const documentName = `transfer${transferID}.pdf`;
   const newPdfBytes = await pdfDoc.save();
-  const newFilePath = path.join(__dirname, '..', `/backend/documents/${db}/` , documentName);
+  const newFilePath = path.join(__dirname, '..', `/backend/documents/${db}/transferForms/` , documentName);
   fs.writeFileSync(newFilePath, newPdfBytes);
 
   const mailOptions = {
@@ -238,7 +238,7 @@ async function sendTransferEmail(type, info, items, transferID, db, emailDetails
 async function sendFinanceEmail(doDocument, emailDetails, db) {
 
 
-  const filePath = path.join(__dirname, '..', `/documents/${db}` , doDocument);
+  const filePath = path.join(__dirname, '..', `/documents/${db}/doDocuments` , doDocument);
 
 
 
@@ -327,10 +327,10 @@ async function sendWeeklyLowStock(toggle) {
   console.log("hour is",swDetails.recordset[0].time.split(':')[0])
   console.log("minute is",swDetails.recordset[0].time.split(':')[1])
 
-  let job
+
   
-  if (toggle){
-    job = schedule.scheduleJob(`${swDetails.recordset[0].time.split(':')[1]} ${swDetails.recordset[0].time.split(':')[0]} * * ${dayMap[swDetails.recordset[0].day.toLowerCase()]}`, () => {
+
+    const job = schedule.scheduleJob(`${swDetails.recordset[0].time.split(':')[1]} ${swDetails.recordset[0].time.split(':')[0]} * * ${dayMap[swDetails.recordset[0].day.toLowerCase()]}`, () => {
       transporter.sendMail(swLowStockmailOptions, function(error, info){
           if (error) {
           console.log('Error:', error);
@@ -347,12 +347,7 @@ async function sendWeeklyLowStock(toggle) {
         }
     });
     })
-    console.log("job on")
-  }
-  else if (job){
-    job.cancel()
-    console.log("job off")
-  }
+
 
 
 
@@ -362,7 +357,7 @@ async function sendWeeklyLowStock(toggle) {
 
 async function updateTransferDocument (transferID, db, type) {
   documentName = `transfer${transferID}.pdf`
-  const filePath = path.join(__dirname, '..', `/documents/${db}/` , documentName);
+  const filePath = path.join(__dirname, '..', `/documents/${db}/transferForms/` , documentName);
   const pdfBytes = fs.readFileSync(filePath); // Read the PDF as a buffer
   const pdfDoc = await PDFDocument.load(pdfBytes);
   pdfDoc.registerFontkit(fontkit);

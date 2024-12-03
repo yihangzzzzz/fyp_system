@@ -2,8 +2,8 @@ const PORT = 3500;
 const sql = require('mssql');
 const { ConnectionPool } = require('mssql')
 // const server = 'DESKTOP-VN9PRPU\\SQLEXPRESS';
-const server = 'YIHANG\\SQLEXPRESS';
-// const server = 'MDPADMIN\\SQLEXPRESS';
+// const server = 'YIHANG\\SQLEXPRESS';
+const server = 'MDPADMIN\\SQLEXPRESS';
 // const mongodbURL = 
 //     'mongodb+srv://fypinventorysystem:Blackpink12%40@fyp-inventory-system.4oowh.mongodb.net/inventory_management?retryWrites=true&w=majority&appName=fyp-inventory-system';
 // const mssqlURL = 

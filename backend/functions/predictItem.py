@@ -1,6 +1,7 @@
+import sys
+sys.path.append(r"C:\\Users\\Vmuser\\AppData\\Roaming\\Python\\Python312\site-packages")
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import sys
 import json
 
 def predictItems(db_items, query_items):
