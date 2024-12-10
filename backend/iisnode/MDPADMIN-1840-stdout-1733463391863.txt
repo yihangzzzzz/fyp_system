@@ -1,0 +1,83 @@
+System is running sucessfully
+Connected to Software Inventory DB
+Connected to Hardware Inventory DB
+day is Tuesday
+hour is 12
+minute is 23
+script is C:\VSC\fyp_system\backend\functions\readDocument.py
+file is C:\VSC\fyp_system\backend\documents\sw\poDocuments\poDocument_1733463463641.pdf
+before process
+middle process
+results is 
+results is {"poNumber": "9100066649", "poDate": "2021-08-26", "items": [["Encoder motor 12V 1:30 ratio ", "40"], ["Li-ion rechargeable battery ", "20"], ["Servo motor ", "20"], ["Top plates for nanocar ", "10"]]}
+
+code is 0
+scan got run {
+  poNumber: '9100066649',
+  poDate: '2021-08-26',
+  items: [
+    [ 'Encoder motor 12V 1:30 ratio ', '40' ],
+    [ 'Li-ion rechargeable battery ', '20' ],
+    [ 'Servo motor ', '20' ],
+    [ 'Top plates for nanocar ', '10' ]
+  ]
+}
+predicted result is  {"db items": ["3 pin battery charger 2 Amp", "Aluminium bracket", "Bracket_Black", "Card reader", "Debugger", "Digital Multimeter_UT33A", "HDMI to micro HDMI", "IR Sensor cable", "Li-ion battery_NCR186508b", "5mm soldering iron red handle", "Tip soldering 2mm slim", "Cleaning wire 4m", "Go pro dual battery charger 90W", "Go pro black tripod", "Black acrylic box (Small)", "Nanocar top metal plates", "Servo motor 12V", "Encoder motor 1:30"], "query items": ["Encoder motor 12V 1:30 ratio ", "Li-ion rechargeable battery ", "Servo motor ", "Top plates for nanocar "], "query_item_quantities": ["40", "20", "20", "10"], "predictedResult": [["Encoder motor 1:30", "40"], ["Li-ion battery_NCR186508b", "20"], ["Servo motor 12V", "20"], ["Nanocar top metal plates", "10"]]}
+
+script is C:\VSC\fyp_system\backend\functions\readDocument.py
+file is C:\VSC\fyp_system\backend\documents\sw\poDocuments\poDocument_1733465908300.pdf
+before process
+middle process
+results is 
+results is {"poNumber": "9100066649", "poDate": "2021-08-26", "items": [["Encoder motor 12V 1:30 ratio ", "40"], ["Li-ion rechargeable battery ", "20"], ["Servo motor ", "20"], ["Top plates for nanocar ", "10"]]}
+
+code is 0
+scan got run {
+  poNumber: '9100066649',
+  poDate: '2021-08-26',
+  items: [
+    [ 'Encoder motor 12V 1:30 ratio ', '40' ],
+    [ 'Li-ion rechargeable battery ', '20' ],
+    [ 'Servo motor ', '20' ],
+    [ 'Top plates for nanocar ', '10' ]
+  ]
+}
+predicted result is  {"db items": ["3 pin battery charger 2 Amp", "Aluminium bracket", "Bracket_Black", "Card reader", "Debugger", "Digital Multimeter_UT33A", "HDMI to micro HDMI", "IR Sensor cable", "Li-ion battery_NCR186508b", "5mm soldering iron red handle", "Tip soldering 2mm slim", "Cleaning wire 4m", "Go pro dual battery charger 90W", "Go pro black tripod", "Black acrylic box (Small)", "Nanocar top metal plates", "Servo motor 12V", "Encoder motor 1:30", "Ribbon cable"], "query items": ["Encoder motor 12V 1:30 ratio ", "Li-ion rechargeable battery ", "Servo motor ", "Top plates for nanocar "], "query_item_quantities": ["40", "20", "20", "10"], "predictedResult": [["Encoder motor 1:30", "40"], ["Li-ion battery_NCR186508b", "20"], ["Servo motor 12V", "20"], ["Nanocar top metal plates", "10"]]}
+
+Email sent: 250 2.0.0 OK  1733466180 98e67ed59e1d1-2ef2708b921sm4300808a91.45 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\doDocuments\doDocument_1733466143411.pdf
+labs are [
+  {
+    lab: 'SWL 1',
+    recipient: 'person1',
+    email: 'yihangzzzzz@gmail.com'
+  },
+  {
+    lab: 'SWL 2',
+    recipient: 'person2',
+    email: 'ooiy0009@e.ntu.edu.sg'
+  }
+]
+lab is { lab: 'SWL 1', recipient: 'person1', email: 'yihangzzzzz@gmail.com' }
+lab is { lab: 'SWL 2', recipient: 'person2', email: 'ooiy0009@e.ntu.edu.sg' }
+stuck 1
+stuck 1
+stuck 1
+stuck 1
+email details is  {
+  templateName: 'transfer',
+  subject: 'New Items Transfer - testing',
+  message: 'Please acknowledge the transfer by clicking on the ACCEPT button on the attached document.',
+  email: null,
+  day: null,
+  time: null
+}
+email details is  {
+  templateName: 'transfer',
+  subject: 'New Items Transfer - testing',
+  message: 'Please acknowledge the transfer by clicking on the ACCEPT button on the attached document.',
+  email: null,
+  day: null,
+  time: null
+}
+Email sent: 250 2.0.0 OK  1733466287 98e67ed59e1d1-2ef2700cc6esm4315376a91.21 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf
+Email sent: 250 2.0.0 OK  1733466287 d9443c01a7336-215f8e3e828sm22002585ad.35 - gsmtp at C:\VSC\fyp_system\backend\documents\sw\templates\transferOutForm.pdf

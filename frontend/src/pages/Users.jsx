@@ -12,6 +12,7 @@ const Users = () => {
   const location = useLocation();
   const db = new URLSearchParams(location.search).get("db");
   const [currentUser, setCurrentUser] = useState();
+  const [currentUsername, setCurrentUsername] = useState();
   const [users, setUsers] = useState([]);
   const [superUsers, setSuperUsers] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -29,6 +30,9 @@ const Users = () => {
       try {
         const decodedToken = jwtDecode(token);
         setCurrentUser(decodedToken.role);
+        setCurrentUsername(decodedToken.username);
+        console.log("user role is", decodedToken.role);
+        console.log("username is", decodedToken.username);
         if (decodedToken.role === "super") {
           fetchUsers("super");
         }
@@ -143,26 +147,40 @@ const Users = () => {
                 <tr key={index}>
                   {}
                   <td>{item.username}</td>
-                  <td>{item.password}</td>
+                  <td>
+                    {currentUser === "general" &&
+                    currentUsername != item.username ? (
+                      <>********</>
+                    ) : (
+                      <>{item.password}</>
+                    )}
+                  </td>
                   <td>
                     <div className="user-actions">
-                      <MdModeEditOutline
-                        title="Edit"
-                        onClick={() => {
-                          setIsEditModalOpen(true);
-                          setEditUsername(item.username);
-                        }}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <MdDelete
-                        title="Delete"
-                        undefined
-                        onClick={() => {
-                          setIsConfirmationOpen(true);
-                          setDeleteUsername(item.username);
-                        }}
-                        style={{ cursor: "pointer" }}
-                      />
+                      {currentUser === "general" &&
+                      currentUsername != item.username ? (
+                        <></>
+                      ) : (
+                        <>
+                          <MdModeEditOutline
+                            title="Edit"
+                            onClick={() => {
+                              setIsEditModalOpen(true);
+                              setEditUsername(item.username);
+                            }}
+                            style={{ cursor: "pointer" }}
+                          />
+                          <MdDelete
+                            title="Delete"
+                            undefined
+                            onClick={() => {
+                              setIsConfirmationOpen(true);
+                              setDeleteUsername(item.username);
+                            }}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -216,6 +234,7 @@ const Users = () => {
                       {}
                       <td>{item.username}</td>
                       <td>{item.password}</td>
+
                       <td>
                         <div className="user-actions">
                           <MdModeEditOutline

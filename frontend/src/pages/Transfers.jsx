@@ -9,7 +9,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
 
 const Transfers = () => {
-  const location = useLocation();
+  const { search } = useLocation();
   const db = new URLSearchParams(location.search).get("db");
   const navigate = useNavigate();
   const [inventory, setInventory] = useState([]);
@@ -32,7 +32,7 @@ const Transfers = () => {
   useEffect(() => {
     fetchInventory();
     fetchLabs();
-  }, [location.search]);
+  }, [search]);
 
   const fetchInventory = async (sortAtt) => {
     await axios
@@ -49,11 +49,9 @@ const Transfers = () => {
           ...res.data.outbound,
           ...res.data.miscellaneous,
         ]);
-        setLoading(false);
       })
       .catch((error) => {
         console.log("le error is " + error);
-        setLoading(false);
       });
   };
   const handleSearch = (e) => {

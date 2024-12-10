@@ -155,6 +155,7 @@ const NewTransfer = ({}) => {
     }
 
     navigate(`/transfers?db=${db}`);
+    window.location.reload();
   };
 
   const filteredItems = items.filter((item) => {

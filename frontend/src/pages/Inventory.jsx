@@ -8,7 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
 
 const Inventory = () => {
-  const location = useLocation();
+  const { search } = useLocation();
   const db = new URLSearchParams(location.search).get("db");
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const Inventory = () => {
 
   useEffect(() => {
     fetchInventory();
-  }, [location.search]);
+  }, [search]);
 
   const fetchInventory = async (sortAtt) => {
     await axios
@@ -150,7 +150,7 @@ const Inventory = () => {
           )}
         </div>
         <div className="items-table">
-          <table className="inventory-table" id="table-to-print">
+          <table className="inventory-table-main" id="table-to-print">
             <thead class>
               <tr className="table-header-row">
                 <th className="table-header-title">Picture</th>

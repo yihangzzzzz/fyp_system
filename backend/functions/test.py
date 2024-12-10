@@ -1,12 +1,6 @@
-import pdfplumber
-import pytesseract
-from pdf2image import convert_from_path
-from PIL import Image
-import re
-import os
-from datetime import datetime
-import json
 import sys
+sys.path.append(r"C:\\Users\\Vmuser\\AppData\\Roaming\\Python\\Python312\site-packages")
+from sklearn.feature_extraction.text import TfidfVectorizer
  
 # Example usage
 if __name__ == "__main__":

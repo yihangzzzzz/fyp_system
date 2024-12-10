@@ -9,7 +9,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
 
 const Orders = () => {
-  const location = useLocation();
+  const { search } = useLocation();
   const db = new URLSearchParams(location.search).get("db");
   const navigate = useNavigate();
   const [inventory, setInventory] = useState([]);
@@ -26,7 +26,7 @@ const Orders = () => {
 
   useEffect(() => {
     fetchInventory();
-  }, [location.search]);
+  }, [search]);
 
   const fetchInventory = async (sortAtt) => {
     await axios
